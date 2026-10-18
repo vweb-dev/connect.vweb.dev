@@ -127,3 +127,8 @@ Avoid uploading real .env or passwords to Git.
 **Not yet verified**: actual billing schema, credentials, production PHP, RouterOS
 version/HotSpot service, network/ISP permissions, web push cron and real PWA
 deployment. These depend on live user-owned services and cannot be faked.
+
+
+### Minimum-necessary RADIUS collection
+
+Set CONNECT_TARGETS_URL=https://connect.vweb.dev/api/isp-targets.php in the authorized ISP agent. It fetches only approved PPPoE usernames through a signed HTTPS request; the SQL query then reads only those accounts. Account-link requests must first be verified independently by ISP staff. Existing router credentials and PPPoE configurations are not modified.

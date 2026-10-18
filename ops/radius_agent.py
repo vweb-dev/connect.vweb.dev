@@ -6,7 +6,8 @@ Install free dependency: python3 -m pip install -r requirements.txt
 Set environment variables via an OS-protected file or service config:
 RADIUS_DB_HOST, RADIUS_DB_USER, RADIUS_DB_PASSWORD, RADIUS_DB_NAME,
 CONNECT_API_URL=https://connect.vweb.dev/api/isp-sync.php,
-CONNECT_SYNC_KEY=<long private secret>.
+CONNECT_SYNC_KEY=<long private secret>,
+CONNECT_TARGETS_URL=https://connect.vweb.dev/api/isp-targets.php.
 
 Default radacct query is an ESTIMATE for sessions starting during current UTC
 month; it is not authoritative usage if sessions span billing periods.
@@ -42,6 +43,19 @@ def main():
     key=required('CONNECT_SYNC_KEY')
     if not url.startswith('https://'):
         raise RuntimeError('HTTPS required for sync.')
+    target_url=required('CONNECT_TARGETS_URL')
+    from urllib.parse import urlsplit
+    ts=str(int(time.time()));nonce=secrets.token_hex(16)
+    path=urlsplit(target_url).path
+    signature=hmac.new(key.encode(),('GET\n'+path+'\n'+ts+'\n'+nonce+'\n').encode(),hashlib.sha256).hexdigest()
+    with urllib.request.urlopen(urllib.request.Request(target_url,headers={
+        'X-Connect-Timestamp':ts,'X-Connect-Nonce':nonce,'X-Connect-Signature':signature}),timeout=20) as response:
+        targets=json.loads(response.read().decode('utf-8'))
+    if not targets.get('ok'):raise RuntimeError('Approved account lookup rejected.')
+    usernames=list(dict.fromkeys(str(s) for s in targets.get('usernames',[]) if isinstance(s,str)))
+    if not usernames:
+        print('No approved subscriber links to synchronize.');return
+    if len(usernames)>2000:raise RuntimeError('Too many authorized subscriber names.')
     db=pymysql.connect(
         host=required('RADIUS_DB_HOST'),port=int(os.getenv('RADIUS_DB_PORT','3306')),
         user=required('RADIUS_DB_USER'),password=required('RADIUS_DB_PASSWORD'),
@@ -52,6 +66,7 @@ def main():
             # FreeRADIUS default radacct columns. Check schema first. NAS
             # input bytes = subscriber upload; NAS output = subscriber download.
             # No live MikroTik sessions are modified.
+            placeholders=','.join(['%s']*len(usernames))
             cur.execute("""
             SELECT username,
              MAX(CASE WHEN acctstoptime IS NULL THEN 1 ELSE 0 END) AS is_online,
@@ -62,9 +77,11 @@ def main():
                THEN COALESCE(acctoutputoctets,0) ELSE 0 END) AS reported_download_bytes,
              SUM(CASE WHEN acctstarttime >= DATE_FORMAT(UTC_TIMESTAMP(),'%Y-%m-01')
                THEN COALESCE(acctinputoctets,0) ELSE 0 END) AS reported_upload_bytes
-            FROM radacct WHERE acctstarttime >= DATE_SUB(UTC_TIMESTAMP(),INTERVAL 40 DAY)
+            FROM radacct WHERE username IN ("""+placeholders+""")
+              AND (acctstarttime >= DATE_SUB(UTC_TIMESTAMP(),INTERVAL 40 DAY)
+                OR acctstoptime IS NULL)
               GROUP BY username
-            """)
+            """, usernames)
             rows=cur.fetchall()
         period=datetime.datetime.now(datetime.timezone.utc).strftime('%Y-%m')
         accounts=[]
