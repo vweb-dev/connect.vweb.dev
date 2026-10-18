@@ -31,7 +31,7 @@ test('catalog renders immediately, revalidates and handles offline failure',()=>
  assert.match(hub,/for\(const fn of \[renderHome,renderStudios,renderApps/);
 });
 test('independent local tools and stable routes are preserved',()=>{
- assert.match(hub,/for\(const init of \[addQR,addDeveloperUtilities\]\)/);
+ assert.match(hub,/for\(const init of \[addQR,addDeveloperUtilities,addExtraUtilities,initToolsTabs\]\)/);
  for(const page of ['studios','tools','apps','convert'])
   assert.match(html,new RegExp('id="page-'+page+'"'));
  assert.match(hub,/qrcode@1\.5\.4/);

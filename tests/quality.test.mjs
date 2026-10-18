@@ -68,7 +68,7 @@ test('premium responsive styling and canonical metadata',()=>{
 
 test('independent offline utilities and revalidated catalogs',()=>{
  const start=hub.indexOf('function boot(){');
- const setup=hub.indexOf('for(const init of [addQR,addDeveloperUtilities])',start);
+ const setup=hub.indexOf('for(const init of [addQR,addDeveloperUtilities,addExtraUtilities,initToolsTabs])',start);
  const fallback=hub.indexOf('applyCatalog(JSON.parse',start);
  const request=hub.indexOf('void refreshCatalog()',start);
  assert.ok(start>=0&&setup>start&&fallback>setup&&request>fallback,'local tools and fallback must initialize before network revalidation');
