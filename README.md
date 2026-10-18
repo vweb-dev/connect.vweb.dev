@@ -1,47 +1,49 @@
-# VWEB.DEV Connect
+# VWEB.DEV Connect — Phase 1
 
-A zero-additional-subscription-cost, mobile-first PWA starter for VWEB.DEV: browser tools, curated offers, services, and optional Puter AI.
+Official project repo: https://github.com/vweb-dev/connect.vweb.dev
 
-**Status:** deployable Phase 1. No ISP integration, RADIUS sync, user account system, live quota/rewards, push subscriptions, paid ad serving, or live news feed is connected yet. The UI labels unavailable modules. No mock user data is represented as real.
+## Status
 
-## Hostinger deployment
+Deployable Phase 1 PWA starter. Working responsive homepage, original VWEB.DEV header logo referenced from its approved external image URL, curated service/offers library with search and category filters, private device-side saved deals, first-party promotional cards, browser-only image compression, password generation, text tools and JSON formatting, optional Puter AI Chat & Image generation, evergreen learning guides, installable PWA, and offline cached interface.
 
-1. In hPanel, create/select the **separate connect.vweb.dev website**, never the main vweb.dev site.
-2. Dashboard > Advanced > Git > Connect with GitHub.
-3. Authorize private repository vweb-dev/connect.vweb.dev and select branch **main**.
-4. Select the document root of the **separate Connect website** (normally its own public_html). Initial deployment target should be empty; do not overwrite other websites.
-5. Click Deploy; enable auto-deployment after checking the first release.
-6. Enable HTTPS and check https://connect.vweb.dev on a phone.
+No fabricated coupon codes, fake live news, mock ISP usage or fake earned internet quotas. The My Internet and Rewards modules explicitly show integration pending. Coupon administration, authenticated first-party ads dashboard, account linking, push back end and live ISP reports are NOT part of this initial deployable static release.
 
-Plain HTML/CSS/JS: no build step, PHP server, database migration or API secrets. Compatible with future Cloudflare Pages migration.
+## Deploy Hostinger (main branch)
 
-## Working features
+1. In Hostinger hPanel add/choose a **separate website** for connect.vweb.dev, using HTTPS. Make sure it has its **own document root**.
+2. Dashboard → Advanced → Git → Connect with GitHub.
+3. Authorize private repository **vweb-dev/connect.vweb.dev** and select **main**.
+4. Deploy into **this website's public_html**, not the main vweb.dev site's folder. Ensure initial deployment target is empty and no existing website files would be replaced.
+5. Check https://connect.vweb.dev, click Free Tools, test on mobile, and confirm service worker loads over HTTPS.
+6. Turn on auto-deployment only after verifying the root path.
 
-- Responsive accessible home, service promotions and navigation.
-- Curated offers in data/offers.json: genuine landing links, not fabricated coupon codes.
-- Local-only tools: image compressor, password generator, text tools and URL utility.
-- Optional Puter.js image generation and AI chat: end users are subject to credits and login.
-- PWA manifest, offline service worker, in-app local navigation and install affordance.
-- Unconnected network dashboard and rewards modules explicitly labelled not connected.
+No npm, composer, PHP extensions, database migration or environment secrets are needed. This also works as a static build on Cloudflare Pages later.
 
-## Future modules (not yet enabled)
+## File layout
 
-- Hostinger PHP/MySQL API with verified accounts, coupons CMS, first-party ad manager and opted-in web push.
-- ISP-side **authorized, read-only** MikroTik/RADIUS sync; never expose SSH, RADIUS or shared ONT admin passwords to browsers.
-- Separate free outdoor Wi-Fi quota gateway, isolated from PPPoE customers.
-- Reliable live news feed with attribution and consent-based marketing.
+- index.html: all UI sections
+- assets/style.css: dark responsive interface
+- assets/app.js: navigation, offer/filter UI, local tools, lazy Puter SDK, PWA install
+- assets/connect-icon.svg: neutral standalone PWA icon (not a replacement VWEB.DEV logo)
+- manifest.webmanifest: install metadata
+- sw.js: same-origin static cache/offline fallback
+- .htaccess: Apache headers, MIME types and directory protection
 
-## Cost & safety
+## Costs
 
-- No paid dependency to deploy starter. Existing Hostinger/bandwidth/electricity costs still apply.
-- Puter uses end-user allowances/credits; free AI use is not unlimited.
-- Browser image processing does not upload files to VWEB.DEV.
-- Never commit router credentials, API keys, ISP customers, billing data or environment secrets.
-- Verify discount eligibility and affiliate programme terms before publishing specific codes.
-- Do not reward affiliate clicks or use deceptive forced ads.
+No new paid hosting or API credentials required. Existing Hostinger and ISP bandwidth/electricity cost remain. Puter use is paid by the end user's own allowances/credits and **not unlimited free**. Browser-only tools do not upload files to our server.
 
-## Files
+## Limitations & launch requirements
 
-index.html, assets/app.css, assets/app.js, assets/icon.svg, data/offers.json, manifest.webmanifest, sw.js, .htaccess.
+- Puter login/AI generation requires access to Puter services; a restrictive Wi-Fi gateway would need tested domain exceptions.
+- No real-time ISP billing/RADIUS read access is present. **Never commit PPPoE secrets, ONT shared passwords or SSH credentials**.
+- Keep ISP integrations read-only through an authorized, secured private sync service.
+- Real promotions/affiliate codes require verification, attribution, and disclosure before publication.
+- Public community news should be verified and dated before it is listed as live.
+- The PWA installed experience does not turn into a full in-app external browser.
 
-Copyright VWEB.DEV. Third-party trademarks are their owners' property.
+## Next releases
+
+Phase 2: private PHP/MySQL APIs, approved coupon and own ads CMS, customer authentication/linked PPPoE accounts, opt-in notifications. Phase 3: read-only MikroTik/RADIUS synchronization, outdoor free Wi-Fi gateway quota rewards, merchant integrations.
+
+© VWEB.DEV
