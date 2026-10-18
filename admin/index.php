@@ -35,7 +35,7 @@ if ($configReady && $_SERVER['REQUEST_METHOD']==='POST') {
             $token=(string)($_POST['setup_token']??'');
             $username=trim((string)($_POST['username']??''));
             $pass=(string)($_POST['password']??'');
-            if (strlen((string)$cfg['setup_token'])<32 || !hash_equals((string)$cfg['setup_token'],$token)) {
+            if (strlen((string)$cfg['setup_token'])<32 || str_contains((string)$cfg['setup_token'],'CHANGE_ME') || !hash_equals((string)$cfg['setup_token'],$token)) {
                 throw new InvalidArgumentException('Invalid setup token.');
             }
             if (!preg_match('/^[A-Za-z0-9._-]{3,40}$/',$username)) {
@@ -162,7 +162,7 @@ function admin_date_value(?array $row,string $key):string {
 <title>Connect Content Manager | VWEB.DEV</title><link rel="stylesheet" href="/admin/style.css"></head><body>
 <header><div><strong>VWEB.DEV CONNECT</strong><br><small>FIRST-PARTY CONTENT & AD MANAGER</small></div>
 <div><a href="/" class="btn secondary">← Public PWA</a>
-<?php if($logged): ?><form method="post" action="/admin/" style="display:inline"><input type="hidden" name="csrf" value="<?= $e(connect_csrf()) ?>"><input type="hidden" name="action" value="logout"><button class="secondary" type="submit">Sign out</button></form><?php endif; ?></div></header>
+<?php if($logged): ?><form method="post" action="/admin/" class="inline-form"><input type="hidden" name="csrf" value="<?= $e(connect_csrf()) ?>"><input type="hidden" name="action" value="logout"><button class="secondary" type="submit">Sign out</button></form><?php endif; ?></div></header>
 <main>
 <?php if ($error): ?><div class="error" role="alert"><?= $e($error) ?></div><?php endif; ?>
 <?php if(isset($_GET['saved'])): ?><div class="notice">Content saved.</div><?php endif; ?>

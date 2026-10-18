@@ -11,10 +11,11 @@ function connect_config(): array {
     $file = dirname(__DIR__, 2) . '/connect-secrets.php';
     if (!is_file($file)) throw new RuntimeException('Backend not configured.');
     $value = require $file;
-    if (!is_array($value) || !isset($value['db'], $value['setup_token'])) {
+    if (!is_array($value) || !isset($value['db'])) {
         throw new RuntimeException('Invalid private configuration.');
     }
     $config = $value;
+    $config['setup_token'] = (string)($config['setup_token'] ?? '');
     return $config;
 }
 function connect_db(): PDO {
