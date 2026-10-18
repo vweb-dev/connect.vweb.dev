@@ -13,6 +13,56 @@
   let loadTimer = null;
   let signedIn = false;
 
+  // Four independent tool tabs. Switching changes only visibility;
+  // prompts, in-progress jobs and completed results remain mounted in the DOM.
+  const aiTabKinds=['chat','image','video','caption'];
+  const aiTabNames={chat:'Ask AI',image:'Images',video:'Videos',caption:'Captions'};
+  const aiTabStates={chat:'idle',image:'idle',video:'idle',caption:'idle'};
+  let selectedAiTab='chat';
+  function markTab(kind,status){
+    if(!aiTabKinds.includes(kind))return;
+    aiTabStates[kind]=status;
+    const tab=$('#ai-tab-'+kind);
+    if(!tab)return;
+    const marker=tab.querySelector('.ai-tab-status');
+    if(marker)marker.dataset.status=status;
+    const suffix=status==='running'?'generating':status==='completed'?'result ready':status==='failed'?'generation failed':'';
+    tab.setAttribute('aria-label',aiTabNames[kind]+(suffix?' — '+suffix:''));
+  }
+  function activateTab(kind,focus){
+    if(!aiTabKinds.includes(kind))return;
+    selectedAiTab=kind;
+    aiTabKinds.forEach((entry)=>{
+      const chosen=entry===kind;
+      const tab=$('#ai-tab-'+entry),panel=$('#ai-pane-'+entry);
+      if(!tab||!panel)return;
+      tab.classList.toggle('is-selected',chosen);
+      tab.setAttribute('aria-selected',chosen?'true':'false');
+      tab.tabIndex=chosen?0:-1;
+      panel.hidden=!chosen;
+    });
+    if(aiTabStates[kind]==='completed'||aiTabStates[kind]==='failed')
+      markTab(kind,'idle'); // Result/error remains in the panel.
+    if(focus)$('#ai-tab-'+kind).focus({preventScroll:true});
+  }
+  aiTabKinds.forEach((kind,index)=>{
+    const tab=$('#ai-tab-'+kind);
+    if(!tab)return;
+    tab.addEventListener('click',()=>activateTab(kind,false));
+    tab.addEventListener('keydown',(event)=>{
+      let next=index;
+      if(event.key==='ArrowRight')next=(index+1)%aiTabKinds.length;
+      else if(event.key==='ArrowLeft')next=(index+aiTabKinds.length-1)%aiTabKinds.length;
+      else if(event.key==='Home')next=0;
+      else if(event.key==='End')next=aiTabKinds.length-1;
+      else return;
+      event.preventDefault();
+      activateTab(aiTabKinds[next],true);
+    });
+  });
+  activateTab('chat',false);
+
+
   function setStatus(title, message) {
     $('#puter-auth-label').textContent = title;
     $('#puter-auth-message').textContent = message;
@@ -243,7 +293,9 @@
       time.textContent=formatElapsed(duration(job))+'  ↗';
       line.append(label,time);
       line.addEventListener('click',() => {
-        // On a different route, wait for hashchange to reveal the panel first.
+        activateTab(job.kind,false);
+        // Reveal the intended tool before scrolling, even if it was hidden
+        // behind another tab or the user navigated to another PWA page.
         requestAnimationFrame(() => requestAnimationFrame(() => job.output.scrollIntoView({
           behavior: matchMedia('(prefers-reduced-motion: reduce)').matches?'auto':'smooth',
           block:'center'
@@ -282,6 +334,7 @@
     }
     const job={kind,output:out,started:performance.now(),active:true};
     aiJobs.set(kind,job);
+    markTab(kind,'running');
     button.disabled=true;button.classList.add('is-generating');button.setAttribute('aria-busy','true');
     createBusyPanel(job);
     drawTray();
@@ -292,8 +345,10 @@
       const endSeconds=duration(job);
       const rendered=await render(out,result);
       out.prepend(resultHeader(kind,true,endSeconds,rendered||'Generation completed'));
+      markTab(kind,'completed');
     }catch(err){
       const seconds=duration(job);
+      markTab(kind,'failed');
       out.replaceChildren(
         resultHeader(kind,false,seconds,'Generation failed'),
         (()=>{const p=document.createElement('p');p.className='ai-error-description';p.textContent=getError(err);return p;})()

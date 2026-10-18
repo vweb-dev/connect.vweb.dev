@@ -89,3 +89,8 @@ The standalone AI Studio script maintains a per-tool, in-page **indeterminate** 
 ## AI Studio media layout containment
 
 Media outputs from Puter are mounted in a bounded responsive frame rather than directly inside a grid card. Video players (including SDK HTMLVideoElement returns with intrinsic dimensions or inline styles) are constrained to the card, preserving 16:9, portrait, or square orientation via metadata when available. Image results are similarly bounded. Small-screen playback uses a compact player, and versioned asset URLs plus the v8 service worker invalidate stale PWA CSS and AI JavaScript.
+
+
+## AI Studio tabs (October 2026)
+
+AI Studio now has four proper ARIA tabs: Ask AI, Images, Videos and Captions. Each tab preserves its prompt, generated media, progress timer, and output when switching tools. Only the selected panel is displayed, so video previews cannot overlap another AI tool. Desktop uses a focused prompt/preview workspace, mobile uses compact 2×2 tabs and vertically stacked editor/preview. JavaScript supports mouse/touch and Left/Right/Home/End keyboard navigation. A background generation continues on the same page while another tab is shown, with a visible status dot and the existing floating activity tray. Closing/reloading still interrupts the local UI and may not stop upstream Puter processing.
