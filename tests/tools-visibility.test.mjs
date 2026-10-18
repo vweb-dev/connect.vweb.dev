@@ -37,8 +37,8 @@ test('independent local tools and stable routes are preserved',()=>{
  assert.match(hub,/qrcode@1\.5\.4/);
 });
 test('PWA cache bust and visible fallback status',()=>{
- assert.match(sw,/vweb-connect-static-v18/);
- assert.match(html,/hub\.js\?v=tools-(?:recovery|fix|tabs)-/);
+ assert.match(sw,/vweb-connect-static-v19/);
+ assert.match(html,/hub\.js\?v=(?:tools-(?:recovery|fix|tabs)-|connect-refresh-)/);
  assert.match(css,/hub-catalog-status/);
  assert.match(html,/id="hub-catalog-retry"/);
 });
@@ -74,7 +74,7 @@ test('utility tabs use multi-element selector and avoid duplicate contrast widge
  assert.match(hub,/const buttons=\$\$\('#page-tools \[data-tools-tab\]'\);/);
  assert.doesNotMatch(hub,/const buttons=\$\('#page-tools \[data-tools-tab\]'\);/);
  assert.match(css,/#page-tools \.tool-card:has\(#contrast-fg\)\{display:none!important\}/);
- assert.match(html,/hub\.js\?v=tools-tabs-/);
+ assert.match(html,/hub\.js\?v=(?:tools-tabs-|connect-refresh-)/);
 });
 
 test('single-tool utility workbench keeps original handler IDs and hides the legacy vault',()=>{
@@ -88,5 +88,5 @@ test('single-tool utility workbench keeps original handler IDs and hides the leg
  assert.match(css,/\.qt-layout\{display:grid/);
  assert.match(css,/\.qt-tool-choice\.active/);
  assert.match(html,/id="hub-tools-controls" class="qt-controls" hidden/);
- assert.match(html,/hub\.js\?v=tools-tabs-20261018e/);
+ assert.match(html,/hub\.js\?v=(?:tools-tabs-20261018e|connect-refresh-20261018a)/);
 });

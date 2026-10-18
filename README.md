@@ -1,3 +1,20 @@
+## Connected experience refresh — October 18, 2026
+
+This release improves the whole VWEB.DEV Connect experience while preserving the free/browser-first architecture and retiring no additional modules.
+
+- **Site navigation:** contextual breadcrumbs and related destinations on all 14 non-home sections, improved keyboard focus on route changes and focus-visible controls.
+- **Homepage:** direct journeys for local conversion, Windows setup and learning; eight main shortcuts; four counts from the current verified local catalog.
+- **Find everything:** global search and Ctrl+K now index all ten individual Quick Utilities; choosing a result opens the correct active tool, without losing its existing input.
+- **App Directory:** purpose shortcuts plus grid/list view, with official publisher links, saved apps and pagination intact.
+- **Windows & PC Help:** WinGet pack builder now displays up to seven removable package chips with an accurate selection count and compact overflow indicator. Script generation remains local.
+- **My Workspace:** one-click links for utilities, software, learning and file conversion.
+- **PWA:** static cache v19, revised asset URLs and native route-title focus. Embedded catalog remains available if the network is slow.
+- **Quality:** new cross-page source tests. Anonymous visitors do not incur new PHP calls, no additional paid tools/API keys or hardware are required.
+
+**Publish and verify:** Deploy `main` to Hostinger for `connect.vweb.dev`, verify that Cloudflare and the service worker serve a matching HTML/CSS/JS version, then test desktop and mobile navigation, search, App Directory list/grid, selected package removal and the offline catalog. GitHub push does not independently establish that the live deployment succeeded. External apps, YouTube, Puter and PDF/QR helper libraries depend on their respective services and allowances.
+
+---
+
 ## Tools Visibility Reliability Fix (October 2026)
 
 The Tool Studios section now has seven navigable HTML fallback cards and the homepage has static tool/app links, making the interface useful even if the catalog JavaScript does not run. A complete editor-curated static JSON snapshot is embedded in index.html. assets/hub.js renders it immediately, then revalidates data/connect-hub.json in the background with a timeout. If the external static catalog fails, the embedded catalog is preserved and an optional retry notice appears instead of empty cards. Quick tools initialize independently so one optional widget cannot stop the whole directory. Service worker upgraded to v17 and assets use cache-busting URLs.
