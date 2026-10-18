@@ -146,7 +146,7 @@ function safeMedia(item){
 async function loadCatalog(){
  let local=[];
  try{
-  const r=await fetch('/data/entertainment.json',{cache:'force-cache'});
+  const r=await fetch('/data/entertainment.json',{cache:'no-cache'});
   if(r.ok){const d=await r.json();local=(d.items||[]).map(safeMedia).filter(Boolean);}
  }catch(_){}
  if(!local.length){empty($('#tv-list'),'Catalog unavailable offline until first successful load.');return;}

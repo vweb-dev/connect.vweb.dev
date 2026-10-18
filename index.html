@@ -3,14 +3,20 @@
 <head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="theme-color" content="#0d1117"><meta name="description" content="VWEB.DEV Connect — free online tool studios, YouTube courses, Windows help, official software & PWA directory."><meta name="color-scheme" content="dark">
-<title>VWEB.DEV Connect — Discover. Create. Connect.</title>
+<title>VWEB.DEV Connect — Free Tools, Software & Learning</title>
+<link rel="canonical" href="https://connect.vweb.dev/">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://connect.vweb.dev/">
+<meta property="og:title" content="VWEB.DEV Connect — Free Tools, Software & Learning">
+<meta property="og:description" content="Browser-first file tools, trusted software links, genuine Windows help and organized free YouTube courses in one lightweight digital hub.">
+<meta name="twitter:card" content="summary">
 <link rel="manifest" href="/manifest.webmanifest"><link rel="apple-touch-icon" href="/assets/connect-icon.svg"><link rel="icon" type="image/svg+xml" href="/assets/connect-icon.svg">
-<link rel="preconnect" href="https://i.ibb.co"><link rel="stylesheet" href="/assets/style.css?v=connect20-20261018-a">
-<script src="/assets/app.js?v=connect20-20261018-a" defer></script>
-<script src="/assets/puter-ai.js?v=connect20-20261018-a" defer></script>
-<script src="/assets/entertainment.js?v=connect20-20261018-a" defer></script>
-<script src="/assets/converter.js?v=connect20-20261018-a" defer></script>
-<script src="/assets/hub.js?v=connect20-20261018-a" defer></script>
+<link rel="preconnect" href="https://i.ibb.co"><link rel="stylesheet" href="/assets/style.css?v=connect20-polish-20261018-b">
+<script src="/assets/app.js?v=connect20-polish-20261018-b" defer></script>
+<script src="/assets/puter-ai.js?v=connect20-polish-20261018-b" defer></script>
+<script src="/assets/entertainment.js?v=connect20-polish-20261018-b" defer></script>
+<script src="/assets/converter.js?v=connect20-polish-20261018-b" defer></script>
+<script src="/assets/hub.js?v=connect20-polish-20261018-b" defer></script>
 </head>
 <body>
 <a class="skip" href="#main">Skip to content</a>
@@ -48,9 +54,18 @@
 <div class="workspace">
 <header class="top">
 <div class="top-copy"><span class="gold-square">✦</span> YOUR FREE DIGITAL COMPANION</div>
-<div class="top-actions"><span class="live-dot">FREE HUB</span><button id="mobile-menu-toggle" class="mobile-menu-toggle" type="button" aria-controls="mobile-drawer" aria-expanded="false" aria-label="Open all sections">☰ <span>Menu</span></button><button id="install" class="button secondary small" type="button" hidden>Install app ↓</button><a class="avatar" href="#account" aria-label="My VWEB.DEV Connect account">V</a></div>
+<div class="top-actions"><button type="button" id="hub-command-open" class="hub-command-trigger" aria-haspopup="dialog" aria-controls="hub-command-dialog" title="Search everything (Ctrl+K)">⌕ <span>Search</span><kbd>Ctrl K</kbd></button><span class="live-dot">FREE HUB</span><button id="mobile-menu-toggle" class="mobile-menu-toggle" type="button" aria-controls="mobile-drawer" aria-expanded="false" aria-label="Open all sections">☰ <span>Menu</span></button><button id="install" class="button secondary small" type="button" hidden>Install app ↓</button><a class="avatar" href="#account" aria-label="My VWEB.DEV Connect account">V</a></div>
 </header>
+<div id="hub-network-status" class="hub-network-status" role="status" hidden></div>
+<div id="hub-update-alert" class="hub-update-alert" hidden><span>New version available.</span><button id="hub-update-reload" type="button">Reload to update ↗</button></div>
 <main id="main">
+<dialog id="hub-command-dialog" class="hub-command-dialog" aria-labelledby="hub-command-title">
+ <div class="hub-command-shell">
+  <form method="dialog" class="hub-command-bar" id="hub-command-form"><label for="hub-command-query" class="visually-hidden" id="hub-command-title">Search tools, courses and apps</label><span aria-hidden="true">⌕</span><input id="hub-command-query" type="search" autocomplete="off" placeholder="What would you like to do?"><button id="hub-command-close" type="submit" aria-label="Close search">Esc ✕</button></form>
+  <div id="hub-command-results" class="hub-command-results" role="listbox" aria-label="Search results"></div>
+  <div class="hub-command-foot"><span>↑ ↓ Navigate</span><span>↵ Open</span><span>Esc Close</span><span>Processing stays on your device</span></div>
+ </div>
+</dialog>
 <section class="page hub-home" id="page-home">
   <div class="hub-hero">
     <div class="hub-hero-main">
@@ -83,6 +98,8 @@
   <div id="hub-home-studios" class="hub-studio-grid"></div>
   <div class="hub-home-heading"><div><span class="overline">TRUSTED DIRECT LINKS</span><h2>Useful software & apps</h2></div><a href="#apps">Explore app library ↗</a></div>
   <div id="hub-home-apps" class="hub-app-grid"></div>
+  <div class="hub-home-heading"><div><span class="overline">START LEARNING</span><h2>Learning paths</h2></div><a href="#academy">View Academy ↗</a></div>
+  <div id="hub-home-courses" class="hub-learning-grid"></div>
   <div id="home-promotions" hidden></div>
   <p class="hub-footnote">Connect organizes official resources and on-device utilities. External providers control their own availability, content and download terms. VWEB.DEV does not host their installers or videos.</p>
 </section>
@@ -379,13 +396,16 @@
  </div>
  <section class="hub-panel hub-winget"><div class="hub-pane-heading"><div><span class="overline">NO EXECUTABLE UPLOADS OR HOSTING</span><h2>Windows Software Pack Builder</h2></div><span class="hub-mini-pill">WinGet</span></div>
  <p>Select trusted packages. Generate official Windows Package Manager commands and review each package before running them yourself.</p>
- <div id="hub-winget-options" class="hub-winget-grid"></div><div class="hub-winget-results"><div><strong id="hub-winget-count">0 apps selected</strong><small>Commands run on your Windows PC, not on our server.</small></div><button id="hub-winget-copy" type="button" class="button primary">Copy install commands</button></div>
- <label for="hub-winget-output">Generated PowerShell commands</label><textarea id="hub-winget-output" rows="6" spellcheck="false" readonly placeholder="Select apps above…"></textarea><p id="hub-winget-message" class="hub-small-note" role="status"></p></section>
+ <div class="hub-pack-presets" role="group" aria-label="Software pack presets">
+<button type="button" data-pack="essential">◈ Essentials</button><button type="button" data-pack="creator">✦ Creator</button><button type="button" data-pack="developer">⌘ Developer</button><button type="button" data-pack="clear">Clear selection</button></div>
+<div id="hub-winget-options" class="hub-winget-grid"></div><div class="hub-winget-results"><div><strong id="hub-winget-count">0 apps selected</strong><small>Commands run on your Windows PC, not on our server.</small></div><button id="hub-winget-copy" type="button" class="button primary">Copy install commands</button></div>
+ <div class="hub-setup-actions"><button id="hub-winget-download" class="button secondary" type="button">Download .ps1 ↓</button><button id="hub-winget-json" class="button secondary" type="button">Export package list ↓</button></div>
+<label for="hub-winget-output">Generated PowerShell commands</label><textarea id="hub-winget-output" rows="6" spellcheck="false" readonly placeholder="Select apps above…"></textarea><p id="hub-winget-message" class="hub-small-note" role="status"></p></section>
 </section>
 <section class="page hub-page" id="page-apps" hidden>
  <div class="hub-page-title"><div class="overline">OFFICIAL LINKS · NO MIRRORS</div><h1>App Directory<span class="accent">.</span></h1><p>Discover useful PWAs, web apps and Windows software. Open the official publisher site, save favorites and find related tools.</p></div>
  <div class="hub-app-controls"><label class="visually-hidden" for="hub-app-search">Search apps</label><input id="hub-app-search" type="search" placeholder="Search apps by name or function…"><div id="hub-app-categories" class="hub-app-filters"></div></div>
- <div id="hub-app-count" class="hub-results-count"></div><div id="hub-app-library" class="hub-app-grid"></div>
+ <div id="hub-app-count" class="hub-results-count" role="status" aria-live="polite"></div><div id="hub-app-library" class="hub-app-grid"></div>
  <div class="hub-inline-info"><strong>About installing PWAs</strong><p>Open an app's official website, then use your browser's install option if offered. VWEB.DEV cannot remotely install other websites as PWAs, and not every listed website is installable. Windows apps open official download pages rather than being mirrored here.</p></div>
 </section>
 <section class="page hub-page" id="page-dashboard" hidden>

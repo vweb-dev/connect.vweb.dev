@@ -290,3 +290,6 @@ PWA installs: browser/official destination controls installability. Some web-app
 Performance: catalog static JSON and front-end JS may be cached by Cloudflare. External player video, downloads, PDF/QR helpers and client-side processing use third-party delivery and visitor device resources. No guarantee of absolute zero static Hostinger traffic. Course notes/progress/saved apps use localStorage only, exportable as JSON and not synced to the ISP database.
 
 QA: home search, route navigation, Academy chapters/playlist, manual progress/notes persistence, WinGet commands, Apps filters/favorites, tools tabs, QR creation, dashboard import/export/clear, responsive screens and existing ISP/Puter/ads regression. Do not treat source smoke tests as live browser verification.
+NaN
+
+Static delivery note: the root .htaccess now sends short public cache hints for JS/CSS/fonts/images and catalog JSON, and forces revalidation for the app HTML and SW. These are limited to files; session-aware API and admin responses remain governed by their own PHP headers. Cloudflare should respect asset query strings and avoid public caching of api/, admin/ or authenticated responses. Static catalogs fetch with `cache: no-cache` online so changes can revalidate, with the service worker handling offline fallback. Core QR/JSON/contrast tools bootstrap independently of the catalog.

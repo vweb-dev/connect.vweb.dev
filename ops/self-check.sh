@@ -14,7 +14,7 @@ if command -v node >/dev/null 2>&1; then
  node --check assets/puter-ai.js
  node --check assets/entertainment.js
  node --check sw.js
- node --test tests/entertainment.test.mjs tests/converter.test.mjs tests/connect20.test.mjs
+ node --test tests/entertainment.test.mjs tests/converter.test.mjs tests/connect20.test.mjs tests/quality.test.mjs
 else
  echo "[Connect] Node unavailable: JS syntax check skipped."
 fi

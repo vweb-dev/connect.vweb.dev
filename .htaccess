@@ -14,3 +14,18 @@ AddType image/svg+xml .svg
 RewriteEngine On
 RewriteRule ^(?:\.git|vendor|node_modules)(?:/|$) - [F,L,NC]
 </IfModule>
+
+
+# Low-overhead delivery: cache versioned static assets, revalidate the HTML
+# application shell/service worker, never make user/API data publicly cacheable.
+<IfModule mod_headers.c>
+  <FilesMatch "\.(?:css|js|svg|png|jpe?g|webp|avif|woff2?)$">
+    Header set Cache-Control "public, max-age=3600, stale-while-revalidate=86400"
+  </FilesMatch>
+  <FilesMatch "\.json$">
+    Header set Cache-Control "public, max-age=300, stale-while-revalidate=3600"
+  </FilesMatch>
+  <FilesMatch "^(?:index\.html|sw\.js|manifest\.webmanifest)$">
+    Header set Cache-Control "no-cache, must-revalidate"
+  </FilesMatch>
+</IfModule>

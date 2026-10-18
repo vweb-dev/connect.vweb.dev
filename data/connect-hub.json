@@ -1,5 +1,5 @@
 {
-  "schema": 1,
+  "schema": 2,
   "updated": "2026-10-18",
   "courses": [
     {
@@ -147,6 +147,296 @@
             [
               "Save shareable templates",
               3434
+            ]
+          ]
+        }
+      ]
+    },
+    {
+      "id": "python",
+      "title": "Python Programming — Full Course",
+      "category": "Coding",
+      "language": "English",
+      "provider": "freeCodeCamp.org / Mike Dane",
+      "description": "A complete beginner Python course from freeCodeCamp. Lessons are chapter timestamps published by the creator.",
+      "videoId": "rfscVS0vtbw",
+      "duration": "4 hr 26 min",
+      "level": "Beginner",
+      "icon": "⌘",
+      "modules": [
+        {
+          "title": "Get Started",
+          "lessons": [
+            [
+              "Course introduction",
+              0
+            ],
+            [
+              "Install Python and IDE",
+              105
+            ],
+            [
+              "Hello World and setup",
+              400
+            ],
+            [
+              "Drawing a shape",
+              623
+            ],
+            [
+              "Variables and data types",
+              906
+            ],
+            [
+              "Working with strings",
+              1623
+            ]
+          ]
+        },
+        {
+          "title": "Python Foundations",
+          "lessons": [
+            [
+              "Numbers",
+              2298
+            ],
+            [
+              "User input",
+              2906
+            ],
+            [
+              "Build a calculator",
+              3157
+            ],
+            [
+              "Lists",
+              3790
+            ],
+            [
+              "Functions",
+              5055
+            ],
+            [
+              "If statements",
+              6006
+            ],
+            [
+              "Dictionaries",
+              7637
+            ]
+          ]
+        },
+        {
+          "title": "Apply Your Skills",
+          "lessons": [
+            [
+              "While loops",
+              8053
+            ],
+            [
+              "For loops",
+              9164
+            ],
+            [
+              "2D lists",
+              10061
+            ],
+            [
+              "Error handling",
+              11057
+            ],
+            [
+              "Read and write files",
+              11561
+            ],
+            [
+              "Modules and pip",
+              12493
+            ],
+            [
+              "Classes",
+              13436
+            ],
+            [
+              "Inheritance",
+              15157
+            ],
+            [
+              "Python interpreter",
+              15643
+            ]
+          ]
+        }
+      ]
+    },
+    {
+      "id": "htmlcss",
+      "title": "HTML & CSS — Build Real Websites",
+      "category": "Web Development",
+      "language": "English",
+      "provider": "freeCodeCamp.org / Scrimba",
+      "description": "Learn HTML and CSS by building practical projects. Chapters follow the original creator's published timestamps.",
+      "videoId": "a_iQb1lnAEQ",
+      "duration": "5 hr 20 min",
+      "level": "Beginner",
+      "icon": "⌘",
+      "modules": [
+        {
+          "title": "Learn HTML",
+          "lessons": [
+            [
+              "Welcome to HTML",
+              92
+            ],
+            [
+              "HTML tags",
+              252
+            ],
+            [
+              "Images",
+              583
+            ],
+            [
+              "Buttons and form inputs",
+              1354
+            ],
+            [
+              "Build a Google clone",
+              1767
+            ],
+            [
+              "HTML page structure",
+              2383
+            ],
+            [
+              "Build personal website",
+              2967
+            ]
+          ]
+        },
+        {
+          "title": "CSS Essentials",
+          "lessons": [
+            [
+              "Start with CSS",
+              3786
+            ],
+            [
+              "First styles",
+              3833
+            ],
+            [
+              "Link CSS file",
+              4423
+            ],
+            [
+              "CSS classes",
+              5050
+            ],
+            [
+              "Flexbox",
+              7902
+            ],
+            [
+              "Google clone recap",
+              8280
+            ]
+          ]
+        },
+        {
+          "title": "Build & Publish",
+          "lessons": [
+            [
+              "Digital business card",
+              8427
+            ],
+            [
+              "Space exploration page",
+              11657
+            ],
+            [
+              "Birthday gift site",
+              14282
+            ],
+            [
+              "Final solo project",
+              18809
+            ]
+          ]
+        }
+      ]
+    },
+    {
+      "id": "excel",
+      "title": "Microsoft Excel for Beginners",
+      "category": "Productivity",
+      "language": "English",
+      "provider": "Kevin Stratvert",
+      "description": "Short, practical Excel overview. Each chapter uses the original tutorial's published timestamps.",
+      "videoId": "LgXzzu68j7M",
+      "duration": "16 min",
+      "level": "Beginner",
+      "icon": "▤",
+      "modules": [
+        {
+          "title": "Spreadsheet Basics",
+          "lessons": [
+            [
+              "Introduction and getting Excel",
+              0
+            ],
+            [
+              "Cells, columns and rows",
+              90
+            ],
+            [
+              "Enter data",
+              143
+            ],
+            [
+              "Cell formatting",
+              221
+            ],
+            [
+              "Tables",
+              392
+            ]
+          ]
+        },
+        {
+          "title": "Useful Features",
+          "lessons": [
+            [
+              "Insert columns and rows",
+              439
+            ],
+            [
+              "Conditional formatting",
+              466
+            ],
+            [
+              "Formulas",
+              555
+            ],
+            [
+              "Functions",
+              589
+            ],
+            [
+              "Sorting and filtering",
+              639
+            ],
+            [
+              "Charts",
+              697
+            ],
+            [
+              "Pivot tables",
+              738
+            ],
+            [
+              "Collaboration",
+              902
             ]
           ]
         }
@@ -438,6 +728,171 @@
       ],
       "winget": "Google.Chrome",
       "initial": "◉"
+    },
+    {
+      "id": "localsend",
+      "name": "LocalSend",
+      "category": "Productivity",
+      "kind": "Windows App",
+      "open": "https://localsend.org/",
+      "desc": "Open-source, cross-platform local-network file sharing. Official app download and platform links.",
+      "tags": [
+        "files",
+        "transfer",
+        "offline"
+      ],
+      "initial": "⇄"
+    },
+    {
+      "id": "pairdrop",
+      "name": "PairDrop",
+      "category": "Productivity",
+      "kind": "Web App",
+      "open": "https://pairdrop.net/",
+      "desc": "Browser-based device-to-device file sharing; public provider may assist connection.",
+      "tags": [
+        "share",
+        "files",
+        "transfer"
+      ],
+      "initial": "◉"
+    },
+    {
+      "id": "mermaid",
+      "name": "Mermaid Live Editor",
+      "category": "Design",
+      "kind": "Web App",
+      "open": "https://mermaid.live/",
+      "desc": "Create and export flowcharts and diagrams from text-based syntax.",
+      "tags": [
+        "diagrams",
+        "charts",
+        "flowchart"
+      ],
+      "initial": "◇"
+    },
+    {
+      "id": "stackedit",
+      "name": "StackEdit",
+      "category": "Productivity",
+      "kind": "Web App",
+      "open": "https://stackedit.io/app",
+      "desc": "Browser Markdown editor with writing and export tools.",
+      "tags": [
+        "notes",
+        "markdown",
+        "writing"
+      ],
+      "initial": "Aa"
+    },
+    {
+      "id": "regex101",
+      "name": "regex101",
+      "category": "Developer",
+      "kind": "Web App",
+      "open": "https://regex101.com/",
+      "desc": "Test, explain and debug regular expressions.",
+      "tags": [
+        "regex",
+        "javascript",
+        "python"
+      ],
+      "initial": ".*"
+    },
+    {
+      "id": "penpot",
+      "name": "Penpot",
+      "category": "Design",
+      "kind": "Web App",
+      "open": "https://design.penpot.app/",
+      "desc": "Open-source UI/UX design platform; account and service terms apply.",
+      "tags": [
+        "ui",
+        "ux",
+        "design"
+      ],
+      "initial": "◧"
+    },
+    {
+      "id": "typingclub",
+      "name": "TypingClub",
+      "category": "Learning",
+      "kind": "Web App",
+      "open": "https://www.typingclub.com/",
+      "desc": "Typing practice and lessons through its own hosted service.",
+      "tags": [
+        "typing",
+        "learning"
+      ],
+      "initial": "⌨"
+    },
+    {
+      "id": "gimp",
+      "name": "GIMP",
+      "category": "PC Software",
+      "kind": "Windows App",
+      "open": "https://www.gimp.org/downloads/",
+      "desc": "Open-source raster graphics and photo editor.",
+      "tags": [
+        "image",
+        "photoshop",
+        "design"
+      ],
+      "initial": "▣"
+    },
+    {
+      "id": "inkscape",
+      "name": "Inkscape",
+      "category": "PC Software",
+      "kind": "Windows App",
+      "open": "https://inkscape.org/release/",
+      "desc": "Free vector graphics, SVG and illustrations.",
+      "tags": [
+        "vector",
+        "svg",
+        "logo"
+      ],
+      "initial": "✎"
+    },
+    {
+      "id": "blender",
+      "name": "Blender",
+      "category": "PC Software",
+      "kind": "Windows App",
+      "open": "https://www.blender.org/download/",
+      "desc": "Free 3D modeling, animation and rendering suite.",
+      "tags": [
+        "3d",
+        "design",
+        "video"
+      ],
+      "initial": "⬡"
+    },
+    {
+      "id": "audacity",
+      "name": "Audacity",
+      "category": "PC Software",
+      "kind": "Windows App",
+      "open": "https://www.audacityteam.org/download/",
+      "desc": "Audio recording and editing on desktop.",
+      "tags": [
+        "audio",
+        "editing"
+      ],
+      "initial": "♫"
+    },
+    {
+      "id": "keepassxc",
+      "name": "KeePassXC",
+      "category": "PC Software",
+      "kind": "Windows App",
+      "open": "https://keepassxc.org/download/",
+      "desc": "Open-source local password manager.",
+      "tags": [
+        "password",
+        "security"
+      ],
+      "initial": "◆"
     }
   ],
   "studios": [
@@ -590,6 +1045,34 @@
       "description": "Use built-in antivirus and ransomware protection.",
       "url": "https://support.microsoft.com/en-us/windows/stay-protected-with-the-windows-security-app",
       "category": "Security"
+    },
+    {
+      "id": "localbackup",
+      "title": "Back up Windows files",
+      "description": "Use built-in Windows Backup and File History guidance from Microsoft.",
+      "url": "https://support.microsoft.com/en-us/windows/back-up-your-windows-pc",
+      "category": "Security"
+    },
+    {
+      "id": "bitlocker",
+      "title": "Find your BitLocker recovery key",
+      "description": "Official Microsoft recovery-key support.",
+      "url": "https://support.microsoft.com/en-us/windows/find-your-bitlocker-recovery-key",
+      "category": "Security"
+    },
+    {
+      "id": "reinstall",
+      "title": "Reinstall Windows safely",
+      "description": "Official Microsoft recovery and reinstall options.",
+      "url": "https://support.microsoft.com/en-us/windows/reinstall-windows",
+      "category": "Windows"
+    },
+    {
+      "id": "windowsupdate",
+      "title": "Fix Windows Update",
+      "description": "Official Microsoft troubleshooting for update issues.",
+      "url": "https://support.microsoft.com/en-us/windows/windows-update-troubleshooter",
+      "category": "Drivers"
     }
   ]
 }

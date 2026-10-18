@@ -130,3 +130,4 @@ Production: catalogs load from data/connect-hub.json; application UI loads asset
 Deploy newest main to Hostinger, invalidate PWA v12 cache, test main routes on mobile and desktop, and run the smoke tests in tests/connect20.test.mjs. Any external YouTube embedding restrictions or outdated software links need periodic source review. Imported playlists use YouTube's own native playlist viewer; custom lesson titles cannot be extracted without YouTube Data API.
 
 Legacy single-image compressor remains in the DOM for JS compatibility but is visually consolidated into Convert Studio's richer Image Lab. The existing data/text utilities remain accessible under Quick Utilities.
+NaN
