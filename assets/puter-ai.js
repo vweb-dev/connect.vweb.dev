@@ -159,85 +159,243 @@
     return value == null ? 'No text was returned.' : JSON.stringify(value);
   }
 
-  function bind(id, fn) {
-    const button = $(id);
-    button.addEventListener('click', async () => {
-      button.disabled = true;
-      try { await fn(); }
-      finally { button.disabled = false; }
+  // Model APIs return one completed response, rather than a live percentage.
+  // Track elapsed real time and the state of each local request; never fabricate
+  // remote rendering stages or guarantee that closing the tab cancels a charge.
+  const aiJobs = new Map();
+  const taskKinds = {
+    chat: {label:'AI answer',waiting:'Waiting for the AI answer…',late:'The AI answer is taking longer than usual.'},
+    image: {label:'AI image',waiting:'Waiting for the generated image…',late:'The image is taking longer than usual.'},
+    video: {label:'AI video',waiting:'Waiting for Puter to return the video…',late:'Video rendering can take several minutes. Keep this tab open.'},
+    caption: {label:'Social caption',waiting:'Waiting for the generated caption…',late:'The caption is taking longer than usual.'}
+  };
+  const tray = document.createElement('aside');
+  tray.className = 'ai-job-tray';
+  tray.setAttribute('aria-label','AI generation activity');
+  tray.hidden = true;
+  document.body.append(tray);
+
+  function formatElapsed(seconds) {
+    const n = Math.max(0, Math.floor(seconds));
+    return String(Math.floor(n / 60)).padStart(2,'0') + ':' + String(n % 60).padStart(2,'0');
+  }
+  function duration(job) {
+    return Math.round((performance.now() - job.started) / 1000);
+  }
+  function jobMessage(job,elapsed) {
+    const messages = taskKinds[job.kind];
+    if(elapsed < 10) return 'Connecting to Puter and requesting generation…';
+    if(elapsed < 50) return messages.waiting;
+    if(elapsed < 150) return messages.late;
+    return job.kind === 'video'
+      ? 'Still awaiting the Puter video response. This does not confirm progress or failure. Check your Puter allowance if the wait is excessive.'
+      : 'Still waiting for Puter. The request has not returned a result or error yet.';
+  }
+  function createBusyPanel(job) {
+    const panel = document.createElement('div');
+    panel.className = 'ai-busy-panel';
+    panel.setAttribute('role','status');
+    const top = document.createElement('div');
+    top.className = 'ai-busy-top';
+    const spinner = document.createElement('span');
+    spinner.className = 'ai-loader';
+    spinner.setAttribute('aria-hidden','true');
+    const heading = document.createElement('div');
+    heading.className = 'ai-busy-heading';
+    heading.textContent = 'Generating ' + taskKinds[job.kind].label.toLowerCase() + '…';
+    const timer = document.createElement('span');
+    timer.className = 'ai-time';
+    timer.textContent = '00:00';
+    timer.setAttribute('aria-label','Elapsed time');
+    top.append(spinner,heading,timer);
+    const track = document.createElement('div');
+    track.className = 'ai-activity-track';
+    track.setAttribute('role','progressbar');
+    track.setAttribute('aria-label','Generation in progress; exact percentage unavailable');
+    const shimmer = document.createElement('span');
+    track.append(shimmer);
+    const message = document.createElement('p');
+    message.className = 'ai-busy-detail';
+    message.textContent = jobMessage(job,0);
+    message.setAttribute('aria-live','polite');
+    const foot = document.createElement('small');
+    foot.textContent = 'Puter has not supplied a progress percentage. Avoid resubmitting while this request is running.';
+    panel.append(top,track,message,foot);
+    job.ui = {timer,message,panel};
+    job.output.replaceChildren(panel);
+  }
+  function drawTray() {
+    tray.replaceChildren();
+    const active = Array.from(aiJobs.values()).filter((job) => job.active);
+    if(!active.length){tray.hidden=true;return;}
+    tray.hidden=false;
+    const title=document.createElement('div');
+    title.className='ai-tray-title';
+    title.textContent='✦  ' + active.length + (active.length===1?' AI generation running':' AI generations running');
+    tray.append(title);
+    active.forEach((job) => {
+      const line=document.createElement('a');
+      line.className='ai-tray-item';
+      line.href='#ai';
+      const label=document.createElement('span');
+      label.textContent=taskKinds[job.kind].label;
+      const time=document.createElement('strong');
+      time.textContent=formatElapsed(duration(job))+'  ↗';
+      line.append(label,time);
+      line.addEventListener('click',() => {
+        // On a different route, wait for hashchange to reveal the panel first.
+        requestAnimationFrame(() => requestAnimationFrame(() => job.output.scrollIntoView({
+          behavior: matchMedia('(prefers-reduced-motion: reduce)').matches?'auto':'smooth',
+          block:'center'
+        })));
+      });
+      tray.append(line);
     });
   }
-
-  bind('#puter-test', async () => {
-    const status = $('#puter-auth-message');
-    status.textContent = 'Testing with a tiny AI request. This may count toward Puter usage…';
-    try {
-      const result = await aiReady().ai.chat('Reply with the single word READY.');
-      status.textContent = 'AI request successful: ' + chatText(result).slice(0,160);
-    } catch (err) {
-      status.textContent = 'Puter signed in, but AI request failed: ' + getError(err) +
-        '. Check model access, allowance/credits and network connectivity.';
+  function updateBusy(job) {
+    if(!job.active)return;
+    const elapsed=duration(job);
+    job.ui.timer.textContent=formatElapsed(elapsed);
+    const message=jobMessage(job,elapsed);
+    if(job.ui.message.textContent!==message)job.ui.message.textContent=message;
+    drawTray();
+  }
+  function resultHeader(kind,ok,seconds,message) {
+    const header=document.createElement('div');
+    header.className='ai-result-state ' + (ok?'is-complete':'is-error');
+    const marker=document.createElement('span');
+    marker.textContent=ok?'✓':'!';
+    marker.setAttribute('aria-hidden','true');
+    const text=document.createElement('span');
+    text.textContent=message+' · '+formatElapsed(seconds);
+    header.append(marker,text);
+    return header;
+  }
+  async function generate(kind,buttonSelector,outputSelector,executor,render) {
+    const button=$(buttonSelector),out=$(outputSelector);
+    if(button.disabled)return;
+    let sdk;
+    try{sdk=aiReady();}
+    catch(err){
+      out.replaceChildren(resultHeader(kind,false,0,getError(err)));
+      return;
     }
-  });
-
-  bind('#ask-ai', async () => {
-    const prompt = $('#chat-prompt').value.trim();
-    const out = $('#chat-result');
-    if (!prompt) { out.textContent = 'Enter a question first.'; return; }
+    const job={kind,output:out,started:performance.now(),active:true};
+    aiJobs.set(kind,job);
+    button.disabled=true;button.classList.add('is-generating');button.setAttribute('aria-busy','true');
+    createBusyPanel(job);
+    drawTray();
+    const ticker=window.setInterval(() => updateBusy(job),1000);
+    try{
+      // The returned Promise is the only source of generation completion.
+      const result=await executor(sdk);
+      const endSeconds=duration(job);
+      const rendered=await render(out,result);
+      out.prepend(resultHeader(kind,true,endSeconds,rendered||'Generation completed'));
+    }catch(err){
+      const seconds=duration(job);
+      out.replaceChildren(
+        resultHeader(kind,false,seconds,'Generation failed'),
+        (()=>{const p=document.createElement('p');p.className='ai-error-description';p.textContent=getError(err);return p;})()
+      );
+    }finally{
+      job.active=false;
+      window.clearInterval(ticker);
+      aiJobs.delete(kind);
+      button.disabled=false;button.classList.remove('is-generating');button.removeAttribute('aria-busy');
+      drawTray();
+    }
+  }
+  $('#puter-test').addEventListener('click', async () => {
+    const button=$('#puter-test'),status=$('#puter-auth-message');
+    button.disabled=true;
+    status.textContent='Testing Puter with a short AI request (may use credits)…';
     try {
-      out.textContent = 'Generating answer through Puter…';
-      out.textContent = chatText(await aiReady().ai.chat(prompt)) || 'No response returned.';
-    } catch (err) { out.textContent = 'Cannot generate: ' + getError(err); }
+      const result=await aiReady().ai.chat('Reply with the single word READY.');
+      status.textContent='AI request successful: '+chatText(result).slice(0,160);
+    } catch(err){
+      status.textContent='AI request failed: '+getError(err);
+    }finally{button.disabled=false;}
   });
-
-  bind('#generate-ai-image', async () => {
-    const prompt = $('#image-prompt').value.trim();
-    const out = $('#image-result');
-    if (!prompt) { out.textContent = 'Describe an image first.'; return; }
-    try {
-      out.textContent = 'Generating image through Puter…';
-      const result = await aiReady().ai.txt2img(prompt);
-      out.replaceChildren();
-      if (result instanceof HTMLImageElement) {
-        result.alt = 'AI-generated image';
-        out.append(result);
-      } else if (typeof result === 'string' && /^(https:\/\/|data:image\/)/.test(result)) {
-        const img = new Image(); img.alt = 'AI-generated image'; img.src = result; out.append(img);
-      } else if (result && typeof result.url === 'string') {
-        const img = new Image(); img.alt = 'AI-generated image'; img.src = result.url; out.append(img);
-      } else throw new Error('Unexpected image response format.');
-    } catch (err) { out.textContent = 'Cannot generate image: ' + getError(err); }
+  $('#ask-ai').addEventListener('click',() => {
+    const prompt=$('#chat-prompt').value.trim(),out=$('#chat-result');
+    if(!prompt){out.textContent='Enter a question first.';return;}
+    generate('chat','#ask-ai','#chat-result',
+      (sdk) => sdk.ai.chat(prompt),
+      async (target,result) => {
+        const p=document.createElement('div');
+        p.textContent=chatText(result)||'The model returned no text.';
+        target.replaceChildren(p);
+        return 'AI answer ready';
+      });
   });
-
-  bind('#generate-ai-video', async () => {
-    const prompt = $('#video-prompt').value.trim();
-    const out = $('#video-result');
-    if (!prompt) { out.textContent = 'Describe a video first.'; return; }
-    try {
-      out.textContent = 'Generating video through Puter (availability and credits vary)…';
-      const sdk = aiReady();
-      if (typeof sdk.ai.txt2vid !== 'function') throw new Error('Video generation is not supported by this Puter SDK.');
-      const result = await sdk.ai.txt2vid(prompt);
-      out.replaceChildren();
-      if (result instanceof HTMLVideoElement) { result.controls = true; out.append(result); }
-      else {
-        const url = typeof result === 'string' ? result : result && result.url;
-        if (!url || !/^https:\/\//.test(url)) throw new Error('Video response format is unavailable.');
-        const video = document.createElement('video');video.controls=true;video.playsInline=true;
-        video.src=url;video.style.maxWidth='100%';out.append(video);
-      }
-    } catch (err) { out.textContent = 'Cannot generate video: ' + getError(err); }
+  $('#generate-ai-image').addEventListener('click',() => {
+    const prompt=$('#image-prompt').value.trim(),out=$('#image-result');
+    if(!prompt){out.textContent='Describe an image first.';return;}
+    generate('image','#generate-ai-image','#image-result',
+      (sdk)=>sdk.ai.txt2img(prompt),
+      async (target,result)=>{
+        let image;
+        if(result instanceof HTMLImageElement)image=result;
+        else{
+          const src=typeof result==='string'?result:result&&result.url;
+          if(!src || !/^(https:\/\/|blob:|data:image\/)/.test(src))
+            throw new Error('Puter returned an unsupported image format.');
+          image=new Image();image.src=src;
+        }
+        image.alt='AI-generated image';
+        image.classList.add('ai-media-output');
+        image.loading='eager';
+        target.replaceChildren(image);
+        return 'Image generated';
+      });
   });
-
-  bind('#generate-caption', async () => {
-    const topic = $('#caption-topic').value.trim();
-    const out = $('#caption-result');
-    if (!topic) { out.textContent = 'Describe your post first.'; return; }
-    try {
-      out.textContent = 'Writing a caption through Puter…';
-      out.textContent = chatText(await aiReady().ai.chat(
-        'Write a useful original social-media caption with a clear call to action and no invented discount for: ' + topic));
-    } catch (err) { out.textContent = 'Cannot generate caption: ' + getError(err); }
+  $('#generate-ai-video').addEventListener('click',() => {
+    const prompt=$('#video-prompt').value.trim(),out=$('#video-result');
+    if(!prompt){out.textContent='Describe a video first.';return;}
+    const test=$('#video-test-mode')&&$('#video-test-mode').checked;
+    generate('video','#generate-ai-video','#video-result',
+      (sdk)=>{
+        if(typeof sdk.ai.txt2vid!=='function')
+          throw new Error('Video generation is not supported by the active Puter SDK.');
+        return sdk.ai.txt2vid(prompt,test?true:undefined);
+      },
+      async (target,result)=>{
+        let video;
+        if(result instanceof HTMLVideoElement)video=result;
+        else{
+          const src=typeof result==='string'?result:result&&result.url;
+          if(!src || !/^(https:\/\/|blob:|data:video\/)/.test(src))
+            throw new Error('Puter returned an unsupported video format.');
+          video=document.createElement('video');video.src=src;
+        }
+        video.controls=true;
+        video.playsInline=true;
+        video.preload='metadata';
+        video.classList.add('ai-media-output');
+        target.replaceChildren(video);
+        const note=document.createElement('small');
+        note.className='ai-media-note';
+        note.textContent=test?
+          'Puter test-mode sample returned. This is not a newly generated video.' :
+          'Puter returned a video. Press Play; preview buffering depends on your connection.';
+        target.append(note);
+        video.addEventListener('error',()=>{
+          note.textContent='Video returned, but your browser could not load/play it. Check connectivity and media permissions.';
+        },{once:true});
+        return test?'Video test sample ready':'Video generated — preview ready';
+      });
+  });
+  $('#generate-caption').addEventListener('click',() => {
+    const topic=$('#caption-topic').value.trim(),out=$('#caption-result');
+    if(!topic){out.textContent='Describe your post first.';return;}
+    generate('caption','#generate-caption','#caption-result',
+      (sdk)=>sdk.ai.chat('Write a useful original social-media caption with a clear call to action and no invented discount for: '+topic),
+      async (target,result)=>{
+        const p=document.createElement('div');p.textContent=chatText(result)||'The model returned no text.';
+        target.replaceChildren(p);
+        return 'Caption ready';
+      });
   });
 
   $('#puter-signin').addEventListener('click', () => signIn(false));
