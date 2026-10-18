@@ -5,8 +5,9 @@
 <meta name="theme-color" content="#0d1117"><meta name="description" content="VWEB.DEV Connect — free digital tools, AI Studio, curated deals, community guides and digital services.">
 <title>VWEB.DEV Connect — Discover. Create. Connect.</title>
 <link rel="manifest" href="/manifest.webmanifest"><link rel="apple-touch-icon" href="/assets/connect-icon.svg"><link rel="icon" type="image/svg+xml" href="/assets/connect-icon.svg">
-<link rel="preconnect" href="https://i.ibb.co"><link rel="stylesheet" href="/assets/style.css">
-<script src="/assets/app.js" defer></script>
+<link rel="preconnect" href="https://i.ibb.co"><link rel="stylesheet" href="/assets/style.css?v=fix-20261018-3">
+<script src="/assets/app.js?v=fix-20261018-3" defer></script>
+<script src="/assets/puter-ai.js?v=fix-20261018-3" defer></script>
 </head>
 <body>
 <a class="skip" href="#main">Skip to content</a>
@@ -87,12 +88,13 @@
 <section class="puter-auth" aria-label="Puter AI account connection">
 <div class="puter-auth-copy">
 <div class="overline">CONNECT YOUR AI ACCOUNT</div>
-<strong id="puter-auth-label">Preparing Puter…</strong>
+<strong id="puter-auth-label">AI account check starting…</strong>
 <p id="puter-auth-message" role="status" aria-live="polite">Loading the secure Puter sign-in system. This is separate from your VWEB.DEV Connect account.</p>
 </div>
 <div class="puter-auth-buttons">
 <button type="button" id="puter-signin" class="button primary" disabled>Connect Puter Account ↗</button>
 <button type="button" id="puter-switch" class="button secondary" hidden>Switch account</button>
+<button type="button" id="puter-test" class="button secondary" hidden>Test AI connection</button>
 <button type="button" id="puter-signout" class="button secondary" hidden>Sign out</button>
 <button type="button" id="puter-retry" class="button secondary" hidden>Retry connection</button>
 </div>
