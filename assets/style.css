@@ -708,3 +708,60 @@ body.drawer-open{overflow:hidden}
  outline:2px solid #efca87;outline-offset:4px;border-radius:2px
 }
 .hub-learning-card:focus-visible{outline:2px solid #edc37e;outline-offset:3px}
+
+
+/* Quick Utilities 3.0 — editorial hero, keyboard-accessible tabs and tool search. */
+#page-tools .hub-tools-hero{
+ display:grid;grid-template-columns:minmax(0,1.65fr) minmax(225px,.85fr);gap:24px;align-items:stretch;
+ padding:clamp(22px,3.5vw,38px);border:1px solid #6b573b;border-radius:20px;overflow:hidden;
+ background:radial-gradient(circle at 18% 10%,#5b472e73,transparent 53%),linear-gradient(125deg,#222b30,#131f2c 83%);
+ margin-bottom:28px
+}
+.hub-tools-hero-main{min-width:0;display:flex;flex-direction:column;justify-content:center}
+.hub-tools-hero h1{font-family:Outfit,system-ui,sans-serif;font-size:clamp(33px,4.3vw,57px);letter-spacing:-.04em;line-height:1.12;margin:10px 0 16px}
+.hub-tools-hero-main>p{font-size:13px;line-height:1.9;color:#c7d1d3;max-width:690px;margin:0}
+.hub-tools-points{display:flex;flex-wrap:wrap;gap:9px;margin-top:24px}
+.hub-tools-points span{font-size:10px;color:#e9d1a5;background:#3e35284a;border:1px solid #776041;border-radius:999px;padding:8px 11px;font-weight:700}
+.hub-tools-hero-side{min-width:0;padding:23px;border:1px solid #5e5647;border-radius:15px;background:#101b24a6;display:flex;flex-direction:column;justify-content:center}
+.hub-tools-hero-side>span{font-size:10px;letter-spacing:.12em;color:#d6b780;font-weight:750}
+.hub-tools-hero-side strong{font-family:Outfit,system-ui,sans-serif;font-size:clamp(17px,2.1vw,25px);line-height:1.25;margin:12px 0}
+.hub-tools-hero-side p{font-size:11px;line-height:1.8;color:#b9c6cb;margin:0 0 15px}
+.hub-tools-hero-side a{font-size:12px;font-weight:800;color:#f0cc8b;text-decoration:none}
+.hub-tools-hero-side a:hover,.hub-tools-hero-side a:focus-visible{text-decoration:underline}
+.hub-tools-controls[hidden],.hub-tools-tabpanel[hidden],.hub-tools-no-results[hidden],#page-tools .tool-card[hidden]{display:none!important}
+.hub-tools-controls{margin-bottom:20px}
+.hub-tools-tabs-head{display:flex;justify-content:space-between;align-items:end;gap:15px;margin:0 0 16px}
+.hub-tools-tabs-head h2{font-family:Outfit,system-ui,sans-serif;font-size:24px;letter-spacing:-.03em;margin:5px 0 0}
+.hub-tools-total{font-size:11px;color:#b8c4ca;border:1px solid #445361;border-radius:999px;padding:7px 11px;white-space:nowrap}
+.hub-tools-tabs{display:flex;align-items:stretch;gap:7px;border-bottom:1px solid #46505a;overflow-x:auto;scrollbar-width:thin;padding-bottom:1px;-webkit-overflow-scrolling:touch}
+.hub-tools-tabs button{appearance:none;flex:0 0 auto;white-space:nowrap;display:flex;align-items:center;gap:9px;background:transparent;color:#c4cbd3;border:1px solid transparent;border-bottom:3px solid transparent;padding:13px 16px 11px;margin-bottom:-1px;border-radius:11px 11px 0 0;font:750 12px Outfit,system-ui,sans-serif;cursor:pointer;transition:background .16s,color .16s}
+.hub-tools-tabs button:hover{background:#26333c;color:#fff}
+.hub-tools-tabs button[aria-selected=true]{background:#2a302c;border-color:#6f6048;border-bottom-color:#edbc73;color:#ffe0aa}
+.hub-tools-tabs button:focus-visible{outline:2px solid #eac381;outline-offset:-3px}
+.hub-tools-tabs button small{font-size:10px;color:#c2cbd0;background:#38444c;border-radius:7px;padding:3px 7px}
+.hub-tools-tabs button[aria-selected=true] small{background:#605039;color:#ffe1b0}
+.hub-tools-search-row{display:flex;align-items:center;gap:12px;margin:16px 0 19px;flex-wrap:wrap}
+.hub-tools-search-field{min-width:205px;flex:1 1 290px;display:flex;align-items:center;gap:9px;border:1px solid #4a5965;border-radius:11px;background:#111b24;padding:0 12px;color:#e9c788}
+.hub-tools-search-field:focus-within{border-color:#dbb77f;box-shadow:0 0 0 2px #d8b07125}
+#page-tools .hub-tools-search-field input{border:0;outline:0;background:transparent;color:#fff;width:100%;height:45px;min-width:0;font-size:12px;padding:0}
+#page-tools .hub-tools-search-field input::placeholder{color:#899ba6}
+.hub-tools-clear{border:1px solid #6e5b3f;border-radius:9px;color:#f0d1a0;background:#302b25;padding:10px 14px;font-size:11px;font-weight:700;cursor:pointer}
+.hub-tools-search-status{font-size:11px;color:#abbcc5;margin-left:auto}
+#page-tools .hub-tools-tabpanel>.tools-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));align-items:start;gap:16px}
+#page-tools .hub-tools-tabpanel>.tools-grid>.tool-card{min-width:0;border:1px solid #3e4b55;border-radius:17px;background:linear-gradient(150deg,#1c2933,#141d27);padding:23px}
+#page-tools .hub-tools-tabpanel .card-heading{margin-bottom:18px;align-items:start}
+#page-tools .hub-tools-tabpanel .card-heading h2{font-family:Outfit,system-ui,sans-serif;font-size:20px;font-weight:750;line-height:1.3}
+#page-tools .hub-tools-tabpanel .card-heading p{line-height:1.65;font-size:11px}
+#page-tools .hub-tools-tabpanel .tool-card:focus-within{border-color:#927449}
+#page-tools .hub-tools-tabpanel .tool-card textarea{min-height:85px}
+#page-tools .hub-tools-tabpanel .tool-card .actions{flex-wrap:wrap}
+#page-tools .hub-tools-extra .small-status{color:#aebec4}
+#page-tools .hub-tools-extra textarea[readonly]{background:#101820;border-color:#52606b;color:#e8d2ac;font-family:ui-monospace,SFMono-Regular,Consolas,monospace;font-size:11px;overflow-wrap:anywhere}
+.hub-tools-no-results{border:1px dashed #766044;border-radius:15px;padding:35px 20px;text-align:center;color:#eed3a2;background:#272821}
+.hub-tools-no-results p{font-size:12px;color:#b6c3c9}
+#page-tools .page-header:after{display:none}
+@media(max-width:1100px){#page-tools .hub-tools-hero{grid-template-columns:1fr}.hub-tools-hero-side{max-width:none}}
+@media(max-width:800px){#page-tools .hub-tools-tabpanel>.tools-grid{grid-template-columns:1fr 1fr}}
+@media(max-width:680px){#page-tools .hub-tools-tabpanel>.tools-grid{grid-template-columns:1fr}.hub-tools-tabs button{padding:12px 13px;font-size:11px}.hub-tools-search-status{margin:0;width:100%}.hub-tools-hero-side{padding:17px}}
+@media(max-width:420px){#page-tools .hub-tools-hero{padding:19px}.hub-tools-tabs-head h2{font-size:21px}.hub-tools-total{font-size:9px}#page-tools .hub-tools-tabpanel>.tools-grid>.tool-card{padding:18px}.hub-tools-hero h1{font-size:36px}}
+@media(prefers-reduced-motion:reduce){.hub-tools-tabs button{transition:none}}

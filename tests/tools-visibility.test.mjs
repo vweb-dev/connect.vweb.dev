@@ -50,3 +50,20 @@ test('search shortcuts cannot abort tools catalog initialization',()=>{
  assert.doesNotMatch(hub,/(^|\n)\s*\$\([^\n]*\)\.forEach\(/);
  assert.match(hub,/\bboot\(\);\s*\}\)\(\);/);
 });
+
+test('quick utility categories, keyboard tabs and local developer tools',()=>{
+ for(const key of ['all','everyday','developer','creative']){
+  assert.match(html,new RegExp('id="hub-tools-tab-'+key+'"'));
+  assert.match(html,new RegExp('id="hub-tools-panel-'+key+'"'));
+ }
+ for(const id of ['hub-tools-search','hub-tools-summary','hub-tools-no-results','hub-tools-source'])
+  assert.ok(html.includes('id="'+id+'"'),id);
+ assert.match(hub,/function initToolsTabs/);
+ assert.match(hub,/function addExtraUtilities/);
+ assert.match(hub,/for\(const init of \[addQR,addDeveloperUtilities,addExtraUtilities,initToolsTabs\]\)/);
+ assert.match(hub,/event\.key==='ArrowRight'/);
+ assert.match(hub,/crypto\.subtle\.digest\('SHA-256'/);
+ assert.match(hub,/crypto\.randomUUID/);
+ assert.match(hub,/new TextDecoder\('utf-8'/);
+ assert.match(css,/hub-tools-tabs button\[aria-selected=true\]/);
+});

@@ -855,6 +855,194 @@ function addDeveloperUtilities(){
  }
  render();
 }
+// Lightweight tools for developers and everyday security checks.
+function addExtraUtilities(){
+ const parent=$('#hub-tools-source');if(!parent)return;
+ function card(title,description,symbol,extraClass){
+  const node=el('article','tool-card hub-tools-extra '+extraClass);
+  const head=el('div','card-heading'),icon=el('div','tool-icon',symbol),info=el('div');
+  info.append(el('h2','',title),el('p','',description));head.append(icon,info);
+  node.append(head);parent.append(node);return node;
+ }
+ function control(tag,attributes,text){
+  const node=el(tag,'',text);
+  for(const [key,value] of Object.entries(attributes||{}))node[key]=value;
+  return node;
+ }
+ function notice(parent,message){const n=el('p','small-status',message);parent.append(n);return n;}
+ function copyText(value,target,status){
+  if(!value){status.textContent='Generate a result first.';return;}
+  if(navigator.clipboard&&navigator.clipboard.writeText){
+   navigator.clipboard.writeText(value).then(()=>status.textContent='Copied to clipboard.').catch(()=>{
+    target.focus();target.select();status.textContent='Select and copy the highlighted result.';
+   });
+  }else{target.focus();target.select();status.textContent='Select and copy the highlighted result.';}
+ }
+ const encode=card('Text Encoder & Decoder','Encode or decode URL and Unicode-safe Base64 text.','⇄','hub-encode-card');
+ const modeLabel=el('label','','Conversion');modeLabel.htmlFor='hub-encode-mode';
+ const mode=control('select',{id:'hub-encode-mode'});
+ for(const [id,label] of [['url-encode','URL encode'],['url-decode','URL decode'],['base64-encode','Base64 encode'],['base64-decode','Base64 decode']]){
+  const option=control('option',{value:id},label);mode.append(option);
+ }
+ const inputLabel=el('label','','Input text');inputLabel.htmlFor='hub-encode-input';
+ const input=control('textarea',{id:'hub-encode-input',rows:4,placeholder:'Enter or paste text…'});
+ const outputLabel=el('label','','Result');outputLabel.htmlFor='hub-encode-output';
+ const output=control('textarea',{id:'hub-encode-output',rows:4,readOnly:true,placeholder:'Output appears here…'});
+ const encodeActions=el('div','actions wrap'),convert=control('button',{type:'button'},'Convert'),copy=control('button',{type:'button'},'Copy result');
+ convert.className='button primary';copy.className='button secondary';
+ encodeActions.append(convert,copy);encode.append(modeLabel,mode,inputLabel,input,encodeActions,outputLabel,output);
+ const encodeStatus=notice(encode,'Uses the browser only. Nothing is sent to our server.');
+ function toBase64(value){
+  const bytes=new TextEncoder().encode(value);let binary='';
+  for(let i=0;i<bytes.length;i+=8192)binary+=String.fromCharCode(...bytes.subarray(i,i+8192));
+  return btoa(binary);
+ }
+ function fromBase64(value){
+  const binary=atob(value.trim());const bytes=Uint8Array.from(binary,char=>char.charCodeAt(0));
+  return new TextDecoder('utf-8',{fatal:true}).decode(bytes);
+ }
+ convert.addEventListener('click',()=>{
+  try{
+   if(input.value.length>100000)throw Error('Please use 100,000 characters or fewer.');
+   const choice=mode.value;
+   output.value=choice==='url-encode'?encodeURIComponent(input.value):
+    choice==='url-decode'?decodeURIComponent(input.value):
+    choice==='base64-encode'?toBase64(input.value):fromBase64(input.value);
+   encodeStatus.textContent='Conversion complete · '+output.value.length+' characters.';
+  }catch(error){output.value='';encodeStatus.textContent='Could not convert: '+error.message;}
+ });
+ copy.addEventListener('click',()=>copyText(output.value,output,encodeStatus));
+ const hash=card('SHA-256 Hash Generator','Create a one-way fingerprint for text using Web Crypto.','⌁','hub-hash-card');
+ const hashLabel=el('label','','Text to hash');hashLabel.htmlFor='hub-hash-input';
+ const hashInput=control('textarea',{id:'hub-hash-input',rows:4,placeholder:'Text to fingerprint…'});
+ const hashOutputLabel=el('label','','SHA-256 fingerprint');hashOutputLabel.htmlFor='hub-hash-output';
+ const hashOut=control('textarea',{id:'hub-hash-output',rows:3,readOnly:true,placeholder:'64-character hexadecimal hash…'});
+ const hashActions=el('div','actions wrap');
+ const generate=control('button',{type:'button'},'Generate hash'),hashCopy=control('button',{type:'button'},'Copy hash');
+ generate.className='button primary';hashCopy.className='button secondary';
+ hashActions.append(generate,hashCopy);hash.append(hashLabel,hashInput,hashActions,hashOutputLabel,hashOut);
+ const hashStatus=notice(hash,'The input remains on your device. SHA-256 is not encryption.');
+ generate.addEventListener('click',async()=>{
+  if(!crypto?.subtle){hashStatus.textContent='Web Crypto is unavailable. Open this page over HTTPS.';return;}
+  if(hashInput.value.length>500000){hashStatus.textContent='Limit input to 500,000 characters.';return;}
+  try{
+   generate.disabled=true;
+   const digest=await crypto.subtle.digest('SHA-256',new TextEncoder().encode(hashInput.value));
+   hashOut.value=Array.from(new Uint8Array(digest),n=>n.toString(16).padStart(2,'0')).join('');
+   hashStatus.textContent='SHA-256 generated locally.';
+  }catch(err){hashStatus.textContent='Hash failed: '+err.message;}
+  finally{generate.disabled=false;}
+ });
+ hashCopy.addEventListener('click',()=>copyText(hashOut.value,hashOut,hashStatus));
+ const uuid=card('UUID Generator','Generate random identifiers for development and testing.','#','hub-uuid-card');
+ const countLabel=el('label','','How many UUIDs?');countLabel.htmlFor='hub-uuid-count';
+ const count=control('select',{id:'hub-uuid-count'});
+ for(const amount of [1,5,10,20])count.append(control('option',{value:String(amount)},String(amount)));
+ const uuidActions=el('div','actions wrap'),uuidGen=control('button',{type:'button'},'Generate UUIDs'),uuidCopy=control('button',{type:'button'},'Copy UUIDs');
+ uuidGen.className='button primary';uuidCopy.className='button secondary';uuidActions.append(uuidGen,uuidCopy);
+ const uuidLabel=el('label','','Generated UUIDs');uuidLabel.htmlFor='hub-uuid-output';
+ const uuidOut=control('textarea',{id:'hub-uuid-output',rows:5,readOnly:true,placeholder:'Random UUIDs appear here…'});
+ uuid.append(countLabel,count,uuidActions,uuidLabel,uuidOut);
+ const uuidStatus=notice(uuid,'Generated with the browser’s cryptographically secure random source.');
+ function randomUuid(){
+  if(crypto.randomUUID)return crypto.randomUUID();
+  const bytes=new Uint8Array(16);crypto.getRandomValues(bytes);
+  bytes[6]=(bytes[6]&15)|64;bytes[8]=(bytes[8]&63)|128;
+  const hex=Array.from(bytes,n=>n.toString(16).padStart(2,'0')).join('');
+  return [hex.slice(0,8),hex.slice(8,12),hex.slice(12,16),hex.slice(16,20),hex.slice(20)].join('-');
+ }
+ uuidGen.addEventListener('click',()=>{
+  try{
+   uuidOut.value=Array.from({length:Number(count.value)},randomUuid).join('\n');
+   uuidStatus.textContent='New random UUIDs generated locally.';
+  }catch(err){uuidStatus.textContent='Cannot generate UUIDs: '+err.message;}
+ });
+ uuidCopy.addEventListener('click',()=>copyText(uuidOut.value,uuidOut,uuidStatus));
+}
+// Progressive enhancement: if this script fails or is blocked, the original
+// quick utilities remain visible as ordinary cards.
+function initToolsTabs(){
+ const root=$('#page-tools'),source=$('#hub-tools-source'),controls=$('#hub-tools-controls');
+ if(!root||!source||!controls)return;
+ const buttons=$('#page-tools [data-tools-tab]');
+ const keys=['all','everyday','developer','creative'];
+ const panels=Object.fromEntries(keys.map(k=>[k,$('#hub-tools-panel-'+k)]));
+ if(buttons.length!==keys.length||keys.some(k=>!panels[k]))return;
+ const cardGroups=[
+  ['everyday','#password-output'],['everyday','#text-content'],['everyday','#conv-mode'],
+  ['developer','#csv-content'],['developer','#hub-json-input'],['developer','#hub-encode-input'],
+  ['developer','#hub-hash-input'],['developer','#hub-uuid-output'],
+  ['creative','.hub-qr-card'],['creative','.hub-contrast-card']
+ ];
+ const cards=[],seen=new Set();
+ function include(group,selector){
+  const target=source.querySelector(selector),card=target?.closest('.tool-card');
+  if(card&&!seen.has(card)){seen.add(card);card.dataset.toolsGroup=group;cards.push(card);}
+ }
+ for(const [group,selector] of cardGroups)include(group,selector);
+ const legacyContrast=source.querySelector('#contrast-fg')?.closest('.tool-card');
+ if(legacyContrast){
+  if(source.querySelector('.hub-contrast-card'))legacyContrast.hidden=true;
+  else include('creative','#contrast-fg');
+ }
+ // Keep obsolete duplicate markup in DOM for handlers already attached in app.js.
+ const obsolete=['#image-file','#json-content'].map(sel=>source.querySelector(sel)?.closest('.tool-card'));
+ for(const node of source.querySelectorAll('.tool-card')){
+  if(!seen.has(node)&&node!==legacyContrast&&!obsolete.includes(node)){
+   node.dataset.toolsGroup='everyday';seen.add(node);cards.push(node);
+  }
+ }
+ if(!cards.length)return;
+ const search=$('#hub-tools-search'),clearButton=$('#hub-tools-clear'),summary=$('#hub-tools-summary');
+ const empty=$('#hub-tools-no-results'),total=$('#hub-tools-total');
+ const grids=Object.fromEntries(keys.map(k=>[k,panels[k].querySelector('.tools-grid')]));
+ const counts={all:cards.length,everyday:0,developer:0,creative:0};
+ cards.forEach(c=>counts[c.dataset.toolsGroup]++);
+ keys.forEach(key=>{$('#hub-tool-count-'+key).textContent=String(counts[key]);});
+ total.textContent=cards.length+' browser tools';
+ let selected='all';
+ function activate(key,clearSearch=false){
+  if(!keys.includes(key))key='all';
+  if(clearSearch)search.value='';
+  selected=key;
+  buttons.forEach(button=>{
+   const active=button.dataset.toolsTab===key;
+   button.setAttribute('aria-selected',String(active));
+   button.tabIndex=active?0:-1;
+  });
+  keys.forEach(k=>{panels[k].hidden=k!==key;});
+  const query=search.value.toLocaleLowerCase().trim();
+  const eligible=cards.filter(c=>key==='all'||c.dataset.toolsGroup===key);
+  const target=grids[key];
+  let shown=0;
+  eligible.forEach(card=>{
+   target.append(card);
+   const haystack=(card.querySelector('h2')?.textContent||'')+' '+(card.querySelector('.card-heading p')?.textContent||'')+' '+card.dataset.toolsGroup;
+   card.hidden=!!query&&!haystack.toLocaleLowerCase().includes(query);
+   if(!card.hidden)shown++;
+  });
+  empty.hidden=shown>0;
+  clearButton.hidden=!query;
+  summary.textContent=query?shown+' matching '+(shown===1?'tool':'tools'):shown+' '+(shown===1?'tool':'tools')+' available';
+ }
+ buttons.forEach((button,index)=>{
+  button.addEventListener('click',()=>activate(button.dataset.toolsTab,true));
+  button.addEventListener('keydown',event=>{
+   let next;
+   if(event.key==='ArrowRight')next=(index+1)%buttons.length;
+   else if(event.key==='ArrowLeft')next=(index+buttons.length-1)%buttons.length;
+   else if(event.key==='Home')next=0;
+   else if(event.key==='End')next=buttons.length-1;
+   else return;
+   event.preventDefault();buttons[next].focus();activate(buttons[next].dataset.toolsTab,true);
+  });
+ });
+ search.addEventListener('input',()=>activate('all'));
+ clearButton.addEventListener('click',()=>{search.value='';activate('all');search.focus();});
+ controls.hidden=false;root.classList.add('hub-tools-enhanced');
+ activate('all');
+}
+
 // Critical Tool Studios and App Directory must never be empty because a
 // network request is slow, a service worker is stale or optional APIs are down.
 const fallbackCatalogNodes=new Map();
@@ -927,7 +1115,7 @@ async function refreshCatalog(){
 $('#hub-catalog-retry').addEventListener('click',()=>refreshCatalog());
 function boot(){
  // Local independent tools should continue working even if one fails.
- for(const init of [addQR,addDeveloperUtilities]){
+ for(const init of [addQR,addDeveloperUtilities,addExtraUtilities,initToolsTabs]){
   try{init();}catch(err){console.warn('Local tool did not initialize',err);}
  }
  try{
