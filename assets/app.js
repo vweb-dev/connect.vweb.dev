@@ -38,7 +38,7 @@ function renderContext(key){
  });
 }
 
-function route(){
+function route(focusHeading){
   var key=location.hash.replace('#','')||'home';
   if(key==='tv'||key==='listen'){key='watch';history.replaceState(null,'','#watch');}
   if(key==='internet'||key==='rewards'){key='dashboard';history.replaceState(null,'','#dashboard');}
@@ -47,9 +47,13 @@ function route(){
   $$('[data-nav]').forEach(function(el){var active=el.dataset.nav===key;el.classList.toggle('active',active);if(active){el.setAttribute('aria-current','page');}else{el.removeAttribute('aria-current');}});
   document.title=(key==='home'?'VWEB.DEV Connect':key.charAt(0).toUpperCase()+key.slice(1)+' | VWEB.DEV Connect');
   renderContext(key);
+  if(focusHeading){
+    var heading=$('#page-'+key+' h1');
+    if(heading){heading.setAttribute('tabindex','-1');heading.focus({preventScroll:true});}
+  }
   window.scrollTo(0,0);
 }
-window.addEventListener('hashchange',route);route();
+window.addEventListener('hashchange',function(){route(true);});route(false);
 var drawer=$('#mobile-drawer'),menuBtn=$('#mobile-more'),headMenu=$('#mobile-menu-toggle');
 function toggleDrawer(show){
  if(!drawer)return;drawer.hidden=!show;
