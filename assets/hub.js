@@ -961,85 +961,119 @@ function addExtraUtilities(){
 }
 // Progressive enhancement: if this script fails or is blocked, the original
 // quick utilities remain visible as ordinary cards.
+// Quick Utilities 4.0 — single-tool workbench and compact searchable launcher.
+// Move the original tool DOM node rather than cloning it: listeners and form state survive.
 function initToolsTabs(){
  const root=$('#page-tools'),source=$('#hub-tools-source'),controls=$('#hub-tools-controls');
- if(!root||!source||!controls)return;
+ const active=$('#qt-active-tool'),search=$('#hub-tools-search');
+ if(!root||!source||!controls||!active||!search)return;
  const buttons=$$('#page-tools [data-tools-tab]');
  const keys=['all','everyday','developer','creative'];
  const panels=Object.fromEntries(keys.map(k=>[k,$('#hub-tools-panel-'+k)]));
- if(buttons.length!==keys.length||keys.some(k=>!panels[k]))return;
- const cardGroups=[
-  ['everyday','#password-output'],['everyday','#text-content'],['everyday','#conv-mode'],
-  ['developer','#csv-content'],['developer','#hub-json-input'],['developer','#hub-encode-input'],
-  ['developer','#hub-hash-input'],['developer','#hub-uuid-output'],
-  ['creative','.hub-qr-card'],['creative','.hub-contrast-card']
+ const lists=Object.fromEntries(keys.map(k=>[k,$('#hub-tools-list-'+k)]));
+ if(buttons.length!==keys.length||keys.some(k=>!panels[k]||!lists[k]))return;
+ const inventory=[
+  {id:'password',category:'everyday',selector:'#password-output',icon:'✳',title:'Password Generator',detail:'Secure random passwords',keywords:'credentials symbols security'},
+  {id:'text',category:'everyday',selector:'#text-content',icon:'Aa',title:'Text Studio',detail:'Count, clean and change case',keywords:'word count uppercase writing'},
+  {id:'units',category:'everyday',selector:'#conv-mode',icon:'⇄',title:'Unit Converter',detail:'Distance, weight and temperature',keywords:'kilometer miles feet celsius'},
+  {id:'csv',category:'developer',selector:'#csv-content',icon:'▤',title:'CSV to JSON',detail:'Turn rows into structured data',keywords:'spreadsheet excel convert'},
+  {id:'json',category:'developer',selector:'#hub-json-input',icon:'{ }',title:'JSON Studio',detail:'Format, minify and validate',keywords:'developer formatter'},
+  {id:'encode',category:'developer',selector:'#hub-encode-input',icon:'↔',title:'Text Encoder',detail:'URL and Base64 encoding',keywords:'decode unicode base64'},
+  {id:'hash',category:'developer',selector:'#hub-hash-input',icon:'⌁',title:'SHA-256 Hash',detail:'Fingerprint your text',keywords:'crypto checksum sha'},
+  {id:'uuid',category:'developer',selector:'#hub-uuid-output',icon:'#',title:'UUID Generator',detail:'Create unique identifiers',keywords:'random guid identifier'},
+  {id:'qr',category:'creative',selector:'.hub-qr-card',icon:'▦',title:'QR Code Studio',detail:'Links, Wi-Fi and contacts',keywords:'whatsapp share scan'},
+  {id:'contrast',category:'creative',selector:'.hub-contrast-card',icon:'◐',title:'Color Contrast',detail:'Check WCAG readability',keywords:'design accessible color contrast checker'}
  ];
- const cards=[],seen=new Set();
- function include(group,selector){
-  const target=source.querySelector(selector),card=target?.closest('.tool-card');
-  if(card&&!seen.has(card)){seen.add(card);card.dataset.toolsGroup=group;cards.push(card);}
+ const tools=[];
+ for(const item of inventory){
+  const node=source.querySelector(item.selector)?.closest('.tool-card');
+  if(!node)continue;
+  tools.push({...item,node});
  }
- for(const [group,selector] of cardGroups)include(group,selector);
- const legacyContrast=source.querySelector('#contrast-fg')?.closest('.tool-card');
- if(legacyContrast){
-  if(source.querySelector('.hub-contrast-card'))legacyContrast.hidden=true;
-  else include('creative','#contrast-fg');
- }
- // Keep obsolete duplicate markup in DOM for handlers already attached in app.js.
- const obsolete=['#image-file','#json-content'].map(sel=>source.querySelector(sel)?.closest('.tool-card'));
- for(const node of source.querySelectorAll('.tool-card')){
-  if(!seen.has(node)&&node!==legacyContrast&&!obsolete.includes(node)){
-   node.dataset.toolsGroup='everyday';seen.add(node);cards.push(node);
+ if(!tools.length)return;
+ // Legacy static tools remain mounted for earlier script handlers, but are not offered twice.
+ const counts={all:tools.length,everyday:0,developer:0,creative:0};
+ tools.forEach(item=>{counts[item.category]++;item.node.dataset.toolsId=item.id;});
+ keys.forEach(k=>{$('#hub-tool-count-'+k).textContent=String(counts[k]);});
+ const clearButton=$('#hub-tools-clear'),summary=$('#hub-tools-summary'),empty=$('#hub-tools-no-results');
+ const categoryLabel={all:'All tools',everyday:'Everyday',developer:'Developer',creative:'Design & Share'};
+ let currentTab='all',current=null;
+ const entries=new Map();
+ function choose(item,{focusPanel=false}={}){
+  if(!item||current===item)return;
+  if(current)source.append(current.node);
+  current=item;active.replaceChildren(item.node);
+  $('#qt-active-title').textContent=item.title;
+  $('#qt-active-description').textContent=item.detail;
+  $('#qt-active-category').textContent=categoryLabel[item.category].toUpperCase()+' / WORKSPACE';
+  entries.forEach((button,id)=>{
+   const chosen=id===item.id;button.classList.toggle('active',chosen);
+   button.setAttribute('aria-pressed',String(chosen));
+   if(chosen&&focusPanel)button.scrollIntoView({block:'nearest',inline:'nearest'});
+  });
+  if(focusPanel&&matchMedia('(max-width: 700px)').matches){
+   $('#qt-active-title').scrollIntoView({behavior:'smooth',block:'start'});
   }
  }
- if(!cards.length)return;
- const search=$('#hub-tools-search'),clearButton=$('#hub-tools-clear'),summary=$('#hub-tools-summary');
- const empty=$('#hub-tools-no-results'),total=$('#hub-tools-total');
- const grids=Object.fromEntries(keys.map(k=>[k,panels[k].querySelector('.tools-grid')]));
- const counts={all:cards.length,everyday:0,developer:0,creative:0};
- cards.forEach(c=>counts[c.dataset.toolsGroup]++);
- keys.forEach(key=>{$('#hub-tool-count-'+key).textContent=String(counts[key]);});
- total.textContent=cards.length+' browser tools';
- let selected='all';
- function activate(key,clearSearch=false){
+ function matches(item,q){
+  return !q||[item.title,item.detail,item.keywords,item.category].join(' ').toLowerCase().includes(q);
+ }
+ for(const item of tools){
+  const button=el('button','qt-tool-choice');button.type='button';
+  button.dataset.toolId=item.id;
+  const icon=el('span','qt-tool-symbol',item.icon);
+  const label=el('span','qt-tool-copy');
+  label.append(el('strong','',item.title),el('small','',item.detail));
+  const arrow=el('span','qt-tool-arrow','↗');arrow.setAttribute('aria-hidden','true');
+  button.append(icon,label,arrow);
+  button.addEventListener('click',()=>choose(item,{focusPanel:true}));
+  entries.set(item.id,button);
+ }
+ function render(){
+  const q=search.value.trim().toLowerCase();
+  const candidates=tools.filter(item=>(currentTab==='all'||item.category===currentTab)&&matches(item,q));
+  const list=lists[currentTab];list.replaceChildren();
+  for(const item of candidates)list.append(entries.get(item.id));
+  empty.hidden=candidates.length!==0;
+  clearButton.hidden=q.length===0;
+  summary.textContent=candidates.length+' '+(candidates.length===1?'tool':'tools');
+  if(candidates.length&&(!current||!candidates.some(item=>item.id===current.id)))choose(candidates[0]);
+  // Do not replace an existing active tool with a blank state on no search results.
+ }
+ function activate(key,{focus=false,resetSearch=false}={}){
   if(!keys.includes(key))key='all';
-  if(clearSearch)search.value='';
-  selected=key;
+  currentTab=key;
+  if(resetSearch)search.value='';
   buttons.forEach(button=>{
-   const active=button.dataset.toolsTab===key;
-   button.setAttribute('aria-selected',String(active));
-   button.tabIndex=active?0:-1;
+   const selected=button.dataset.toolsTab===key;
+   button.setAttribute('aria-selected',String(selected));
+   button.tabIndex=selected?0:-1;
   });
   keys.forEach(k=>{panels[k].hidden=k!==key;});
-  const query=search.value.toLocaleLowerCase().trim();
-  const eligible=cards.filter(c=>key==='all'||c.dataset.toolsGroup===key);
-  const target=grids[key];
-  let shown=0;
-  eligible.forEach(card=>{
-   target.append(card);
-   const haystack=(card.querySelector('h2')?.textContent||'')+' '+(card.querySelector('.card-heading p')?.textContent||'')+' '+card.dataset.toolsGroup;
-   card.hidden=!!query&&!haystack.toLocaleLowerCase().includes(query);
-   if(!card.hidden)shown++;
-  });
-  empty.hidden=shown>0;
-  clearButton.hidden=!query;
-  summary.textContent=query?shown+' matching '+(shown===1?'tool':'tools'):shown+' '+(shown===1?'tool':'tools')+' available';
+  render();
+  if(focus)buttons.find(button=>button.dataset.toolsTab===key)?.focus();
  }
  buttons.forEach((button,index)=>{
-  button.addEventListener('click',()=>activate(button.dataset.toolsTab,true));
+  button.addEventListener('click',()=>activate(button.dataset.toolsTab,{resetSearch:true}));
   button.addEventListener('keydown',event=>{
-   let next;
+   let next=null;
    if(event.key==='ArrowRight')next=(index+1)%buttons.length;
    else if(event.key==='ArrowLeft')next=(index+buttons.length-1)%buttons.length;
    else if(event.key==='Home')next=0;
    else if(event.key==='End')next=buttons.length-1;
-   else return;
-   event.preventDefault();buttons[next].focus();activate(buttons[next].dataset.toolsTab,true);
+   if(next===null)return;
+   event.preventDefault();activate(buttons[next].dataset.toolsTab,{focus:true,resetSearch:true});
   });
  });
  search.addEventListener('input',()=>activate('all'));
- clearButton.addEventListener('click',()=>{search.value='';activate('all');search.focus();});
- controls.hidden=false;root.classList.add('hub-tools-enhanced');
+ clearButton.addEventListener('click',()=>{
+  search.value='';activate('all');search.focus();
+ });
+ // Expose the new interface only when the entire launcher is initialized.
+ choose(tools[0]);
+ source.hidden=true;
+ controls.hidden=false;
+ root.classList.add('qt-enhanced');
  activate('all');
 }
 

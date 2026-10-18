@@ -65,7 +65,7 @@ test('quick utility categories, keyboard tabs and local developer tools',()=>{
  assert.match(hub,/crypto\.subtle\.digest\('SHA-256'/);
  assert.match(hub,/crypto\.randomUUID/);
  assert.match(hub,/new TextDecoder\('utf-8'/);
- assert.match(css,/hub-tools-tabs button\[aria-selected=true\]/);
+ assert.match(css,/#page-tools \.qt-tabs button\[aria-selected=true\]/);
 });
 
 // Regression: a single-element query returns Element/null, not a collection.
@@ -75,4 +75,18 @@ test('utility tabs use multi-element selector and avoid duplicate contrast widge
  assert.doesNotMatch(hub,/const buttons=\$\('#page-tools \[data-tools-tab\]'\);/);
  assert.match(css,/#page-tools \.tool-card:has\(#contrast-fg\)\{display:none!important\}/);
  assert.match(html,/hub\.js\?v=tools-tabs-/);
+});
+
+test('single-tool utility workbench keeps original handler IDs and hides the legacy vault',()=>{
+ for(const id of ['qt-active-tool','hub-tools-search','hub-tools-list-all','hub-tools-list-developer','hub-tools-source'])
+  assert.ok(html.includes('id="'+id+'"'),id);
+ assert.match(hub,/function choose\(item,\{focusPanel=false\}=\{\}\)/);
+ assert.match(hub,/source\.append\(current\.node\)/);
+ assert.match(hub,/active\.replaceChildren\(item\.node\)/);
+ assert.match(hub,/source\.hidden=true/);
+ assert.match(hub,/controls\.hidden=false/);
+ assert.match(css,/\.qt-layout\{display:grid/);
+ assert.match(css,/\.qt-tool-choice\.active/);
+ assert.match(html,/id="hub-tools-controls" class="qt-controls" hidden/);
+ assert.match(html,/hub\.js\?v=tools-tabs-20261018e/);
 });
