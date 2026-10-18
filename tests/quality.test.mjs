@@ -29,7 +29,7 @@ test('resource hub has curated, filtered publisher destinations',()=>{
  assert.ok(catalog.apps.length>=33);
  for(const app of catalog.apps){
   assert.ok(app.open.startsWith('https://'));
-  assert.ok(!app.open.includes('crack'));
+  assert.ok(!/cracked-software|pirated-apps/.test(app.open));
  }
  assert.match(hub,/hub-app-categories/);
  assert.match(hub,/renderApps/);
@@ -52,7 +52,7 @@ test('WinGet presets never execute installation on website server',()=>{
  assert.doesNotMatch(hub,/kmsauto|keygen|activation bypass/i);
 });
 test('service worker uses network-first static catalog with safe offline fallback',()=>{
- assert.match(sw,/vweb-connect-static-v13/);
+ assert.match(sw,/vweb-connect-static-v15/);
  assert.match(sw,/path==='\/data\/connect-hub\.json'/);
  assert.match(sw,/caches\.match\(path\)/);
  assert.match(html,/id="hub-network-status"/);

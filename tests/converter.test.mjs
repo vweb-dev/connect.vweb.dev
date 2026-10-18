@@ -48,14 +48,13 @@ test('audio and video processing stays browser-side',()=>{
 });
 test('PWA caches self-hosted converter file with fresh asset revision',()=>{
  assert.match(html,/converter\.js\?v=(convert-lab-|connect20-)/);
- assert.match(sw,/vweb-connect-static-v(11|12|13)/);
+ assert.match(sw,/vweb-connect-static-v(11|12|13|14|15)/);
  assert.match(sw,/assets\/converter\.js/);
  assert.match(css,/convert-dropzone/);
 });
-test('TV and radio retain broadcaster fallback links',()=>{
- const media=read('assets/entertainment.js');
- assert.match(html,/id="tv-official-link"/);
- assert.match(html,/id="radio-official-fallback"/);
- assert.match(media,/radioOfficialFallback/);
- assert.match(html,/radio\.gov\.pk\/live-streaming/);
+test('retired TV and radio removed; Watch remains',()=>{
+ assert.ok(!html.includes('id="page-tv"'));
+ assert.ok(!html.includes('id="page-listen"'));
+ assert.ok(!read('assets/entertainment.js').includes('radio-browser.info'));
+ assert.ok(html.includes('id="page-watch"'));
 });

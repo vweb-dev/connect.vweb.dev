@@ -6,7 +6,7 @@ try {
   $db=connect_db();
   $stmt=$db->query("SELECT id,kind,provider,title,summary,category,country,language,
      source_name,source_url,external_id,poster_style,permission,badge
-     FROM entertainment_items WHERE status='published' AND checked_at IS NOT NULL
+     FROM entertainment_items WHERE status='published' AND kind IN ('watch','podcast','discover') AND checked_at IS NOT NULL
      ORDER BY display_order DESC, updated_at DESC LIMIT 100");
   $items=[];
   foreach($stmt->fetchAll() as $row){

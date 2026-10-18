@@ -53,7 +53,17 @@ function appCard(item){
  const meta=el('div','hub-app-meta');
  meta.append(pill(item.category),pill(item.kind));
  const footer=el('div','hub-app-footer');
- footer.append(link(item.kind==='Windows App'?'Official download ↗':'Open official app ↗',safeUrl(item.open)||'#apps','hub-card-link',true),favButton(item.id));
+ footer.append(link(item.kind==='Windows App'?'Official download ↗':'Open official app ↗',safeUrl(item.open)||'#apps','hub-card-link',true));
+ if(item.winget && /^[-.\w+]+$/.test(item.winget)){
+  const cmd=el('button','hub-app-winget','⌘ WinGet');cmd.type='button';
+  cmd.title='Copy official package command for '+item.name;
+  cmd.addEventListener('click',async()=>{
+   try{await navigator.clipboard.writeText('winget install --id '+item.winget+' --exact --source winget');
+    cmd.textContent='Copied ✓';setTimeout(()=>cmd.textContent='⌘ WinGet',1800);
+   }catch(_){cmd.title='Clipboard unavailable. Open Windows Hub to copy commands.';}
+  });footer.append(cmd);
+ }
+ footer.append(favButton(item.id));
  c.append(mark,title,d,meta,footer);
  return c;
 }
@@ -80,7 +90,7 @@ function renderHome(){
  const root=$('#hub-home-studios');clear(root);
  data.studios.slice(0,4).forEach(item=>root.append(studioCard(item)));
  const apps=$('#hub-home-apps');clear(apps);
- ['vert','excalidraw','7zip','vscode'].forEach(id=>{
+ ['powertoys','brave','7zip','vscode'].forEach(id=>{
   const item=data.apps.find(x=>x.id===id);if(item)apps.append(appCard(item));
  });
  const study=$('#hub-home-courses');clear(study);
@@ -407,26 +417,80 @@ function renderGuides(){
   row.append(el('small','',item.description));root.append(row);
  });
 }
+// WinGet builder is a curated, client-side generator. It does not install apps.
+const winGetKinds={
+ 'Browser':['firefox','chrome','brave'],
+ 'Everyday':['7zip','vlc','libreoffice','sumatrapdf','everything','powertoys','terminal'],
+ 'Creator':['gimp','inkscape','blender','audacity','obs','handbrake','sharex'],
+ 'Development':['vscode','git','github-desktop','nodejs','python','docker','filezilla','winscp','putty','notepadpp'],
+ 'Security':['keepassxc','brave','thunderbird'],
+ 'Communication':['telegram','discord'],
+ 'Entertainment':['steam','vlc','obsidian']
+};
+const selectedWinget=new Set();
+let wingetSearch='',wingetCategory='All';
+function packageKind(item){
+ const category=Object.entries(winGetKinds).find(([,ids])=>ids.includes(item.id));
+ return category?category[0]:'Other';
+}
 function renderWinGet(){
- const root=$('#hub-winget-options');clear(root);
- const selected=new Set($$('#hub-winget-options input:checked').map(n=>n.value));
- data.apps.filter(a=>a.winget).forEach(item=>{
-  const label=el('label','hub-winget-option');
-  const input=document.createElement('input');input.type='checkbox';input.value=item.winget;input.checked=selected.has(item.winget);
-  const content=el('span','');content.append(el('strong','',item.name),el('small','',item.winget));
-  input.addEventListener('change',updateWinGet);label.append(input,content);root.append(label);
+ const list=$('#hub-winget-options');list.replaceChildren();
+ const apps=data.apps.filter(a=>a.winget && /^[-.\w+]+$/.test(a.winget));
+ const categories=['All',...new Set(apps.map(packageKind))].sort((a,b)=>a==='All'?-1:b==='All'?1:a.localeCompare(b));
+ const selector=$('#hub-winget-category');
+ selector.replaceChildren();
+ categories.forEach(category=>{
+  const opt=el('option','',category==='All'?'All categories':category);opt.value=category;
+  selector.append(opt);
  });
+ selector.value=wingetCategory;
+ const display=apps.filter(item=>{
+  if(wingetCategory!=='All'&&packageKind(item)!==wingetCategory)return false;
+  return [item.name,item.desc,item.winget].join(' ').toLowerCase().includes(wingetSearch);
+ });
+ display.forEach(item=>{
+  const label=el('label','hub-winget-option');
+  const input=document.createElement('input');input.type='checkbox';input.value=item.winget;
+  input.checked=selectedWinget.has(item.winget);
+  const content=el('span');content.append(el('strong','',item.name),el('small','',item.winget));
+  input.addEventListener('change',()=>{
+    if(input.checked)selectedWinget.add(item.winget);
+    else selectedWinget.delete(item.winget);
+    updateWinGet();
+  });
+  label.append(input,content);list.append(label);
+ });
+ $('#hub-winget-visible-count').textContent=display.length+' of '+apps.length+' installable packages displayed';
+ if(!display.length)list.append(el('p','hub-muted','No matching packages. Clear the search or change the category.'));
  updateWinGet();
 }
-const softwarePacks={
- essential:['Mozilla.Firefox','7zip.7zip','VideoLAN.VLC','TheDocumentFoundation.LibreOffice'],
- creator:['VideoLAN.VLC','OBSProject.OBSStudio','Google.Chrome'],
- developer:['Git.Git','Microsoft.VisualStudioCode','Notepad++.Notepad++','Mozilla.Firefox']
-};
-$('[data-pack]').forEach(button=>button.addEventListener('click',()=>{
- const allow=new Set(softwarePacks[button.dataset.pack]||[]);
- $('#hub-winget-options input').forEach(input=>input.checked=allow.has(input.value));
+$('#hub-winget-search').addEventListener('input',event=>{
+ wingetSearch=event.target.value.trim().toLowerCase();renderWinGet();
+});
+$('#hub-winget-category').addEventListener('change',event=>{
+ wingetCategory=event.target.value;renderWinGet();
+});
+$('#hub-winget-select-visible').addEventListener('click',()=>{
+ $$('#hub-winget-options input').forEach(i=>{i.checked=true;selectedWinget.add(i.value);});
  updateWinGet();
+});
+$('#hub-winget-clear').addEventListener('click',()=>{
+ selectedWinget.clear();renderWinGet();
+});
+const softwarePacks={
+ essential:['Mozilla.Firefox','7zip.7zip','VideoLAN.VLC','TheDocumentFoundation.LibreOffice','Microsoft.PowerToys','voidtools.Everything'],
+ creator:['VideoLAN.VLC','OBSProject.OBSStudio','Google.Chrome','GIMP.GIMP','ShareX.ShareX'],
+ developer:['Git.Git','Microsoft.VisualStudioCode','Notepad++.Notepad++','Mozilla.Firefox','Microsoft.WindowsTerminal','OpenJS.NodeJS.LTS'],
+ creative:['BlenderFoundation.Blender','Inkscape.Inkscape','GIMP.GIMP','Audacity.Audacity','HandBrake.HandBrake'],
+ privacy:['KeePassXCTeam.KeePassXC','Brave.Brave','Mozilla.Thunderbird','7zip.7zip'],
+ media:['VideoLAN.VLC','HandBrake.HandBrake','OBSProject.OBSStudio','Audacity.Audacity']
+};
+$$('[data-pack]').forEach(button=>button.addEventListener('click',()=>{
+ const allowed=new Set(data.apps.map(i=>i.winget).filter(Boolean));
+ selectedWinget.clear();
+ (softwarePacks[button.dataset.pack]||[]).filter(id=>allowed.has(id)).forEach(id=>selectedWinget.add(id));
+ renderWinGet();
+ $('#hub-winget-message').textContent=button.dataset.pack==='clear'?'Selection cleared.':'Software pack selected. Review each installer before use.';
 }));
 function downloadText(name,type,contents){
  const url=URL.createObjectURL(new Blob([contents],{type}));
@@ -435,17 +499,33 @@ function downloadText(name,type,contents){
  setTimeout(()=>URL.revokeObjectURL(url),1500);
 }
 function selectedWinGet(){
- const approved=new Set(data.apps.map(i=>i.winget).filter(Boolean));
- return $('#hub-winget-options input:checked').map(i=>i.value).filter(id=>approved.has(id));
+ const allow=new Set(data.apps.map(i=>i.winget).filter(id=>id&&/^[-.\w+]+$/.test(id)));
+ return [...selectedWinget].filter(id=>allow.has(id)).sort();
+}
+function wingetCommand(id){return 'winget install --id '+id+' --exact --source winget';}
+function wingetLines(){return selectedWinGet().map(wingetCommand);}
+function updateWinGet(){
+ $$('#hub-winget-options input').forEach(el=>el.checked=selectedWinget.has(el.value));
+ const lines=wingetLines();
+ $('#hub-winget-output').value=lines.join('\n');
+ $('#hub-winget-count').textContent=lines.length+' app'+(lines.length===1?'':'s')+' selected';
 }
 $('#hub-winget-download').addEventListener('click',()=>{
- const selected=selectedWinGet();
- if(!selected.length){$('#hub-winget-message').textContent='Select at least one application.';return;}
- const contents=['# VWEB.DEV Connect Windows software pack',
-  '# Generated locally. Review each official package before running.','# Requires WinGet on Windows 10/11.',
-  ...selected.map(id=>'winget install --id '+id+' --exact --source winget'),''].join('\r\n');
- downloadText('vweb-software-pack.ps1','text/plain;charset=utf-8',contents);
- $('#hub-winget-message').textContent='PowerShell file created locally. Inspect it before execution.';
+ const commands=wingetLines();
+ if(!commands.length){$('#hub-winget-message').textContent='Select applications first.';return;}
+ const lines=['# VWEB.DEV Connect · WinGet software setup','# Generated locally; review package details before running.',
+  '# Run winget show --id <ID> --exact to inspect a package.',...commands,''];
+ downloadText('vweb-software-pack.ps1','text/plain;charset=utf-8',lines.join('\r\n'));
+ $('#hub-winget-message').textContent='PowerShell file downloaded. Read and run it only if you trust every package.';
+});
+$('#hub-winget-cmd-download').addEventListener('click',()=>{
+ const commands=wingetLines();
+ if(!commands.length){$('#hub-winget-message').textContent='Select applications first.';return;}
+ const lines=['@echo off','REM VWEB.DEV Connect software setup','REM Review and verify each package before running.',
+  'where winget >nul 2>&1 || (echo WinGet is not available. & pause & exit /b 1)',
+  ...commands,'echo Completed. Review installation results.','pause',''];
+ downloadText('vweb-software-pack.cmd','text/plain;charset=utf-8',lines.join('\r\n'));
+ $('#hub-winget-message').textContent='CMD batch file downloaded. Inspect it before executing on your PC.';
 });
 $('#hub-winget-json').addEventListener('click',()=>{
  const selected=selectedWinGet();
@@ -453,18 +533,24 @@ $('#hub-winget-json').addEventListener('click',()=>{
  const manifest={format:'vweb-software-pack',version:1,
   items:selected.map(id=>({packageId:id,source:'winget'}))};
  downloadText('vweb-software-pack.json','application/json',JSON.stringify(manifest,null,2));
- $('#hub-winget-message').textContent='Package IDs exported as VWEB JSON (not a WinGet import manifest).';
+ $('#hub-winget-message').textContent='Package list exported as VWEB JSON (not an importable WinGet manifest).';
 });
-function updateWinGet(){
- const selections=selectedWinGet();
- // IDs come from a curated static allowlist, never user-provided shell text.
- const lines=selections.map(id=>'winget install --id '+id+' --exact --source winget');
- $('#hub-winget-output').value=lines.join('\n');
- $('#hub-winget-count').textContent=lines.length+' app'+(lines.length===1?'':'s')+' selected';
-}
 $('#hub-winget-copy').addEventListener('click',()=>{
- if(!$('#hub-winget-output').value)return $('#hub-winget-message').textContent='Select apps before copying.';
+ if(!$('#hub-winget-output').value){$('#hub-winget-message').textContent='Select apps before copying.';return;}
  copy($('#hub-winget-output').value,'#hub-winget-message','');
+});
+// Legitimate Microsoft CMD diagnostics and licensed activation workflow.
+let activationCmd='slmgr /xpr';
+$$('[data-act-cmd]').forEach(button=>button.addEventListener('click',()=>{
+ activationCmd=button.dataset.actCmd;$('#hub-act-cmd-text').textContent=activationCmd;
+ $$('[data-act-cmd]').forEach(x=>x.classList.toggle('active',x===button));
+}));
+$('#hub-act-cmd-copy').addEventListener('click',()=>copy(activationCmd,'#hub-act-cmd-copy','Copy CMD'));
+$('#hub-act-check-download').addEventListener('click',()=>{
+ const script=['@echo off','title Windows activation status - read only',
+ 'echo Windows activation status report','cscript //nologo "%windir%\\system32\\slmgr.vbs" /xpr',
+ 'echo.','echo This tool never activates or alters a license.','pause',''];
+ downloadText('windows-activation-status.cmd','text/plain;charset=utf-8',script.join('\r\n'));
 });
 async function copy(value,selector,defaultText){
  const target=$(selector);
@@ -479,8 +565,7 @@ async function copy(value,selector,defaultText){
 }
 // Dashboard, privacy and recent use
 const pageNames={home:'Overview',studios:'Tool Studios',academy:'Video Academy',pc:'Windows Help',apps:'App Directory',
- dashboard:'My Workspace',convert:'Convert Studio',tools:'Quick Utilities',ai:'AI Studio',tv:'TV Channels',
- listen:'Radio',play:'Games',watch:'Watch',offers:'Deals',community:'Local & Learn',discover:'Discover'};
+ dashboard:'My Workspace',convert:'Convert Studio',tools:'Quick Utilities',ai:'AI Studio',play:'Games',watch:'Watch',offers:'Deals',community:'Local & Learn',discover:'Discover'};
 function trackVisit(){
  const route=(location.hash||'#home').slice(1)||'home';
  if(!pageNames[route])return;

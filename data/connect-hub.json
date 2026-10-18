@@ -1,5 +1,5 @@
 {
-  "schema": 2,
+  "schema": 3,
   "updated": "2026-10-18",
   "courses": [
     {
@@ -838,7 +838,8 @@
         "photoshop",
         "design"
       ],
-      "initial": "▣"
+      "initial": "▣",
+      "winget": "GIMP.GIMP"
     },
     {
       "id": "inkscape",
@@ -852,7 +853,8 @@
         "svg",
         "logo"
       ],
-      "initial": "✎"
+      "initial": "✎",
+      "winget": "Inkscape.Inkscape"
     },
     {
       "id": "blender",
@@ -866,7 +868,8 @@
         "design",
         "video"
       ],
-      "initial": "⬡"
+      "initial": "⬡",
+      "winget": "BlenderFoundation.Blender"
     },
     {
       "id": "audacity",
@@ -879,7 +882,8 @@
         "audio",
         "editing"
       ],
-      "initial": "♫"
+      "initial": "♫",
+      "winget": "Audacity.Audacity"
     },
     {
       "id": "keepassxc",
@@ -892,7 +896,693 @@
         "password",
         "security"
       ],
-      "initial": "◆"
+      "initial": "◆",
+      "winget": "KeePassXCTeam.KeePassXC"
+    },
+    {
+      "id": "powertoys",
+      "name": "Microsoft PowerToys",
+      "category": "PC Software",
+      "kind": "Windows App",
+      "open": "https://learn.microsoft.com/en-us/windows/powertoys/",
+      "desc": "Microsoft's productivity utilities for Windows.",
+      "tags": [
+        "microsoft",
+        "powertoys",
+        "productivity",
+        "utilities",
+        "for",
+        "windows"
+      ],
+      "initial": "⌘",
+      "winget": "Microsoft.PowerToys"
+    },
+    {
+      "id": "terminal",
+      "name": "Windows Terminal",
+      "category": "PC Software",
+      "kind": "Windows App",
+      "open": "https://github.com/microsoft/terminal/releases",
+      "desc": "Modern Windows terminal with tabs and shells.",
+      "tags": [
+        "windows",
+        "terminal",
+        "modern",
+        "with",
+        "tabs",
+        "and",
+        "shells"
+      ],
+      "initial": "▣",
+      "winget": "Microsoft.WindowsTerminal"
+    },
+    {
+      "id": "sharex",
+      "name": "ShareX",
+      "category": "PC Software",
+      "kind": "Windows App",
+      "open": "https://getsharex.com/",
+      "desc": "Screenshots and recordings with export tools.",
+      "tags": [
+        "sharex",
+        "screenshots",
+        "and",
+        "recordings",
+        "with",
+        "export",
+        "tools"
+      ],
+      "initial": "▣",
+      "winget": "ShareX.ShareX"
+    },
+    {
+      "id": "everything",
+      "name": "Everything Search",
+      "category": "PC Software",
+      "kind": "Windows App",
+      "open": "https://www.voidtools.com/",
+      "desc": "Instant filename search on Windows.",
+      "tags": [
+        "everything",
+        "search",
+        "instant",
+        "filename",
+        "windows"
+      ],
+      "initial": "⌕",
+      "winget": "voidtools.Everything"
+    },
+    {
+      "id": "sumatrapdf",
+      "name": "SumatraPDF",
+      "category": "PC Software",
+      "kind": "Windows App",
+      "open": "https://www.sumatrapdfreader.org/free-pdf-reader",
+      "desc": "Lightweight PDF and ebook reader.",
+      "tags": [
+        "sumatrapdf",
+        "lightweight",
+        "pdf",
+        "and",
+        "ebook",
+        "reader"
+      ],
+      "initial": "▤",
+      "winget": "SumatraPDF.SumatraPDF"
+    },
+    {
+      "id": "brave",
+      "name": "Brave Browser",
+      "category": "PC Software",
+      "kind": "Windows App",
+      "open": "https://brave.com/download/",
+      "desc": "Privacy-oriented desktop web browser.",
+      "tags": [
+        "brave",
+        "browser",
+        "privacy",
+        "oriented",
+        "desktop",
+        "web"
+      ],
+      "initial": "◉",
+      "winget": "Brave.Brave"
+    },
+    {
+      "id": "thunderbird",
+      "name": "Thunderbird",
+      "category": "PC Software",
+      "kind": "Windows App",
+      "open": "https://www.thunderbird.net/",
+      "desc": "Open-source email and calendar client.",
+      "tags": [
+        "thunderbird",
+        "open",
+        "source",
+        "email",
+        "and",
+        "calendar",
+        "client"
+      ],
+      "initial": "✉",
+      "winget": "Mozilla.Thunderbird"
+    },
+    {
+      "id": "handbrake",
+      "name": "HandBrake",
+      "category": "PC Software",
+      "kind": "Windows App",
+      "open": "https://handbrake.fr/downloads.php",
+      "desc": "Video conversion on your own PC.",
+      "tags": [
+        "handbrake",
+        "video",
+        "conversion",
+        "your",
+        "own"
+      ],
+      "initial": "▶",
+      "winget": "HandBrake.HandBrake"
+    },
+    {
+      "id": "filezilla",
+      "name": "FileZilla",
+      "category": "PC Software",
+      "kind": "Windows App",
+      "open": "https://filezilla-project.org/download.php?type=client",
+      "desc": "FTP/SFTP file transfers.",
+      "tags": [
+        "filezilla",
+        "ftp",
+        "sftp",
+        "file",
+        "transfers"
+      ],
+      "initial": "⇄",
+      "winget": "FileZilla.Client"
+    },
+    {
+      "id": "qbittorrent",
+      "name": "qBittorrent",
+      "category": "PC Software",
+      "kind": "Windows App",
+      "open": "https://www.qbittorrent.org/download",
+      "desc": "BitTorrent client for authorized downloads.",
+      "tags": [
+        "qbittorrent",
+        "bittorrent",
+        "client",
+        "for",
+        "authorized",
+        "downloads"
+      ],
+      "initial": "◈",
+      "winget": "qBittorrent.qBittorrent"
+    },
+    {
+      "id": "docker",
+      "name": "Docker Desktop",
+      "category": "PC Software",
+      "kind": "Windows App",
+      "open": "https://www.docker.com/products/docker-desktop/",
+      "desc": "Desktop containers; hardware and licensing vary.",
+      "tags": [
+        "docker",
+        "desktop",
+        "containers",
+        "hardware",
+        "and",
+        "licensing",
+        "vary"
+      ],
+      "initial": "⬢",
+      "winget": "Docker.DockerDesktop"
+    },
+    {
+      "id": "github-desktop",
+      "name": "GitHub Desktop",
+      "category": "PC Software",
+      "kind": "Windows App",
+      "open": "https://desktop.github.com/download/",
+      "desc": "Visual Git desktop client.",
+      "tags": [
+        "github",
+        "desktop",
+        "visual",
+        "git",
+        "client"
+      ],
+      "initial": "◉",
+      "winget": "GitHub.GitHubDesktop"
+    },
+    {
+      "id": "nodejs",
+      "name": "Node.js LTS",
+      "category": "PC Software",
+      "kind": "Windows App",
+      "open": "https://nodejs.org/en/download",
+      "desc": "JavaScript runtime for developers.",
+      "tags": [
+        "node",
+        "lts",
+        "javascript",
+        "runtime",
+        "for",
+        "developers"
+      ],
+      "initial": "JS",
+      "winget": "OpenJS.NodeJS.LTS"
+    },
+    {
+      "id": "python",
+      "name": "Python",
+      "category": "PC Software",
+      "kind": "Windows App",
+      "open": "https://www.python.org/downloads/windows/",
+      "desc": "Python programming interpreter.",
+      "tags": [
+        "python",
+        "programming",
+        "interpreter"
+      ],
+      "initial": "Py",
+      "winget": "Python.Python.3.13"
+    },
+    {
+      "id": "obsidian",
+      "name": "Obsidian",
+      "category": "PC Software",
+      "kind": "Windows App",
+      "open": "https://obsidian.md/download",
+      "desc": "Local Markdown knowledge notes.",
+      "tags": [
+        "obsidian",
+        "local",
+        "markdown",
+        "knowledge",
+        "notes"
+      ],
+      "initial": "◇",
+      "winget": "Obsidian.Obsidian"
+    },
+    {
+      "id": "winscp",
+      "name": "WinSCP",
+      "category": "PC Software",
+      "kind": "Windows App",
+      "open": "https://winscp.net/eng/download.php",
+      "desc": "SFTP/SCP transfer and sync.",
+      "tags": [
+        "winscp",
+        "sftp",
+        "scp",
+        "transfer",
+        "and",
+        "sync"
+      ],
+      "initial": "⇄",
+      "winget": "WinSCP.WinSCP"
+    },
+    {
+      "id": "putty",
+      "name": "PuTTY",
+      "category": "PC Software",
+      "kind": "Windows App",
+      "open": "https://www.chiark.greenend.org.uk/~sgtatham/putty/latest.html",
+      "desc": "SSH terminal client.",
+      "tags": [
+        "putty",
+        "ssh",
+        "terminal",
+        "client"
+      ],
+      "initial": "▤",
+      "winget": "PuTTY.PuTTY"
+    },
+    {
+      "id": "telegram",
+      "name": "Telegram Desktop",
+      "category": "PC Software",
+      "kind": "Windows App",
+      "open": "https://desktop.telegram.org/",
+      "desc": "Desktop messenger.",
+      "tags": [
+        "telegram",
+        "desktop",
+        "messenger"
+      ],
+      "initial": "✉",
+      "winget": "Telegram.TelegramDesktop"
+    },
+    {
+      "id": "discord",
+      "name": "Discord",
+      "category": "PC Software",
+      "kind": "Windows App",
+      "open": "https://discord.com/download",
+      "desc": "Gaming and community chat.",
+      "tags": [
+        "discord",
+        "gaming",
+        "and",
+        "community",
+        "chat"
+      ],
+      "initial": "♫",
+      "winget": "Discord.Discord"
+    },
+    {
+      "id": "steam",
+      "name": "Steam",
+      "category": "PC Software",
+      "kind": "Windows App",
+      "open": "https://store.steampowered.com/about/",
+      "desc": "Official PC game storefront/client.",
+      "tags": [
+        "steam",
+        "official",
+        "game",
+        "storefront",
+        "client"
+      ],
+      "initial": "◆",
+      "winget": "Valve.Steam"
+    },
+    {
+      "id": "localsend-win",
+      "name": "LocalSend Windows",
+      "category": "PC Software",
+      "kind": "Windows App",
+      "open": "https://localsend.org/download",
+      "desc": "Open-source device-to-device file transfer.",
+      "tags": [
+        "localsend",
+        "windows",
+        "open",
+        "source",
+        "device",
+        "file",
+        "transfer"
+      ],
+      "initial": "⇄"
+    },
+    {
+      "id": "rufus",
+      "name": "Rufus",
+      "category": "PC Software",
+      "kind": "Windows App",
+      "open": "https://rufus.ie/",
+      "desc": "Create bootable USB installers.",
+      "tags": [
+        "rufus",
+        "create",
+        "bootable",
+        "usb",
+        "installers"
+      ],
+      "initial": "▣"
+    },
+    {
+      "id": "ventoy",
+      "name": "Ventoy",
+      "category": "PC Software",
+      "kind": "Windows App",
+      "open": "https://www.ventoy.net/en/download.html",
+      "desc": "Multi-ISO bootable USB toolkit.",
+      "tags": [
+        "ventoy",
+        "multi",
+        "iso",
+        "bootable",
+        "usb",
+        "toolkit"
+      ],
+      "initial": "▤"
+    },
+    {
+      "id": "paintnet",
+      "name": "Paint.NET",
+      "category": "PC Software",
+      "kind": "Windows App",
+      "open": "https://www.getpaint.net/download.html",
+      "desc": "Windows photo editor.",
+      "tags": [
+        "paint",
+        "net",
+        "windows",
+        "photo",
+        "editor"
+      ],
+      "initial": "▣"
+    },
+    {
+      "id": "kdenlive",
+      "name": "Kdenlive",
+      "category": "PC Software",
+      "kind": "Windows App",
+      "open": "https://kdenlive.org/en/download/",
+      "desc": "Open-source desktop video editor.",
+      "tags": [
+        "kdenlive",
+        "open",
+        "source",
+        "desktop",
+        "video",
+        "editor"
+      ],
+      "initial": "▶"
+    },
+    {
+      "id": "shotcut",
+      "name": "Shotcut",
+      "category": "PC Software",
+      "kind": "Windows App",
+      "open": "https://shotcut.org/download/",
+      "desc": "Video editor and encoder.",
+      "tags": [
+        "shotcut",
+        "video",
+        "editor",
+        "and",
+        "encoder"
+      ],
+      "initial": "▶"
+    },
+    {
+      "id": "calibre",
+      "name": "calibre",
+      "category": "PC Software",
+      "kind": "Windows App",
+      "open": "https://calibre-ebook.com/download_windows",
+      "desc": "Ebook management and conversion.",
+      "tags": [
+        "calibre",
+        "ebook",
+        "management",
+        "and",
+        "conversion"
+      ],
+      "initial": "▤"
+    },
+    {
+      "id": "krita",
+      "name": "Krita",
+      "category": "PC Software",
+      "kind": "Windows App",
+      "open": "https://krita.org/en/download/",
+      "desc": "Digital illustration and painting.",
+      "tags": [
+        "krita",
+        "digital",
+        "illustration",
+        "and",
+        "painting"
+      ],
+      "initial": "✎"
+    },
+    {
+      "id": "pdf24-desktop",
+      "name": "PDF24 Creator",
+      "category": "PC Software",
+      "kind": "Windows App",
+      "open": "https://tools.pdf24.org/en/creator",
+      "desc": "Free PDF desktop suite.",
+      "tags": [
+        "pdf",
+        "creator",
+        "free",
+        "desktop",
+        "suite"
+      ],
+      "initial": "▤"
+    },
+    {
+      "id": "tldraw",
+      "name": "tldraw",
+      "category": "Design",
+      "kind": "Web App",
+      "open": "https://www.tldraw.com/",
+      "desc": "Browser whiteboard and diagrams.",
+      "tags": [
+        "tldraw",
+        "browser",
+        "whiteboard",
+        "and",
+        "diagrams"
+      ],
+      "initial": "✎"
+    },
+    {
+      "id": "cryptpad",
+      "name": "CryptPad",
+      "category": "Productivity",
+      "kind": "Web App",
+      "open": "https://cryptpad.fr/",
+      "desc": "Encrypted hosted collaboration and docs.",
+      "tags": [
+        "cryptpad",
+        "encrypted",
+        "hosted",
+        "collaboration",
+        "and",
+        "docs"
+      ],
+      "initial": "▤"
+    },
+    {
+      "id": "desmos",
+      "name": "Desmos Calculator",
+      "category": "Learning",
+      "kind": "Web App",
+      "open": "https://www.desmos.com/calculator",
+      "desc": "Interactive graphing calculator.",
+      "tags": [
+        "desmos",
+        "calculator",
+        "interactive",
+        "graphing"
+      ],
+      "initial": "∑"
+    },
+    {
+      "id": "geogebra",
+      "name": "GeoGebra",
+      "category": "Learning",
+      "kind": "Web App",
+      "open": "https://www.geogebra.org/calculator",
+      "desc": "Math and geometry explorations.",
+      "tags": [
+        "geogebra",
+        "math",
+        "and",
+        "geometry",
+        "explorations"
+      ],
+      "initial": "∠"
+    },
+    {
+      "id": "mdn",
+      "name": "MDN Web Docs",
+      "category": "Developer",
+      "kind": "Web App",
+      "open": "https://developer.mozilla.org/",
+      "desc": "Web standards and programming guides.",
+      "tags": [
+        "mdn",
+        "web",
+        "docs",
+        "standards",
+        "and",
+        "programming",
+        "guides"
+      ],
+      "initial": "⌘"
+    },
+    {
+      "id": "jsoncrack",
+      "name": "JSON Crack",
+      "category": "Developer",
+      "kind": "Web App",
+      "open": "https://jsoncrack.com/editor",
+      "desc": "Visualize JSON structures using provider's app.",
+      "tags": [
+        "json",
+        "crack",
+        "visualize",
+        "structures",
+        "using",
+        "provider",
+        "app"
+      ],
+      "initial": "{}"
+    },
+    {
+      "id": "hoppscotch",
+      "name": "Hoppscotch",
+      "category": "Developer",
+      "kind": "Web App",
+      "open": "https://hoppscotch.io/",
+      "desc": "API development and HTTP testing.",
+      "tags": [
+        "hoppscotch",
+        "api",
+        "development",
+        "and",
+        "http",
+        "testing"
+      ],
+      "initial": "⇄"
+    },
+    {
+      "id": "googlefonts",
+      "name": "Google Fonts",
+      "category": "Design",
+      "kind": "Web App",
+      "open": "https://fonts.google.com/",
+      "desc": "Browse and download fonts.",
+      "tags": [
+        "google",
+        "fonts",
+        "browse",
+        "and",
+        "download"
+      ],
+      "initial": "Aa"
+    },
+    {
+      "id": "webdev",
+      "name": "web.dev",
+      "category": "Learning",
+      "kind": "Web App",
+      "open": "https://web.dev/learn",
+      "desc": "Learn CSS, HTML, performance and accessibility.",
+      "tags": [
+        "web",
+        "dev",
+        "learn",
+        "css",
+        "html",
+        "performance",
+        "and",
+        "accessibility"
+      ],
+      "initial": "⌘"
+    },
+    {
+      "id": "pixlr",
+      "name": "Pixlr",
+      "category": "Design",
+      "kind": "Web App",
+      "open": "https://pixlr.com/",
+      "desc": "Hosted image editor; free/paid features.",
+      "tags": [
+        "pixlr",
+        "hosted",
+        "image",
+        "editor",
+        "free",
+        "paid",
+        "features"
+      ],
+      "initial": "◧"
+    },
+    {
+      "id": "google-earth",
+      "name": "Google Earth",
+      "category": "Learning",
+      "kind": "Web App",
+      "open": "https://earth.google.com/web/",
+      "desc": "Geography and satellite map exploration.",
+      "tags": [
+        "google",
+        "earth",
+        "geography",
+        "and",
+        "satellite",
+        "map",
+        "exploration"
+      ],
+      "initial": "◎"
     }
   ],
   "studios": [

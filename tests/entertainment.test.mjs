@@ -1,54 +1,55 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {readFileSync} from 'node:fs';
-const text=(p)=>readFileSync(new URL('../'+p,import.meta.url),'utf8');
-const page=text('index.html'),runtime=text('assets/entertainment.js'),
-  app=text('assets/app.js'),sw=text('sw.js'),css=text('assets/style.css');
-const data=JSON.parse(text('data/entertainment.json'));
-test('each entertainment route has its own accessible page',()=>{
- for(const name of ['tv','watch','listen','play','discover']){
-  assert.ok(page.includes('id="page-'+name+'"'));
-  assert.ok(app.includes("'"+name+"'"));
- }
- assert.match(page,/id="mobile-drawer"/);
+const read=(p)=>readFileSync(new URL('../'+p,import.meta.url),'utf8');
+const page=read('index.html'),runtime=read('assets/entertainment.js'),
+ app=read('assets/app.js'),sw=read('sw.js'),css=read('assets/style.css');
+const catalog=JSON.parse(read('data/entertainment.json'));
+test('retired live radio and television are completely removed',()=>{
+ assert.ok(!page.includes('id="page-tv"'));
+ assert.ok(!page.includes('id="page-listen"'));
+ assert.ok(!page.includes('href="#tv"'));
+ assert.ok(!page.includes('href="#listen"'));
+ assert.ok(!app.includes("'ai','tv','watch'"));
+ assert.ok(!runtime.includes('radio-browser.info'));
+ assert.ok(!runtime.includes('const radioHosts'));
+ assert.ok(!runtime.includes('hls.js'));
+ assert.ok(catalog.items.every(x=>x.kind!=='tv'));
 });
-test('media directory has valid rights metadata',()=>{
- assert.ok(data.items.length>=10);
- const seen=new Set();
- for(const entry of data.items){
-  assert.ok(!seen.has(entry.id));seen.add(entry.id);
-  assert.ok(['tv','watch','podcast','discover'].includes(entry.kind));
-  assert.ok(['official_embed','official_link','licensed_stream'].includes(entry.permission));
-  assert.ok(entry.source_url.startsWith('https://'));
-  if(entry.provider==='youtube')assert.match(entry.external_id,/^[\w-]{11}$/);
-  if(entry.provider==='spotify')assert.match(entry.external_id,/^[a-zA-Z0-9]{22}$/);
+test('watch collections, podcasts, games and books remain accessible',()=>{
+ for(const route of ['watch','play','discover']){
+  assert.ok(page.includes('id="page-'+route+'"'));
+  assert.ok(app.includes("'"+route+"'"));
  }
-});
-test('single-source, browser-only streaming and games',()=>{
- assert.match(runtime,/youtube-nocookie\.com\/embed/);
- assert.match(runtime,/api\.radio-browser\.info/);
- assert.match(runtime,/open\.spotify\.com\/embed/);
+ for(const id of ['watch-list','podcast-list','podcast-player','discover-list','book-form']){
+  assert.ok(page.includes('id="'+id+'"'));
+ }
+ assert.match(runtime,/open\.spotify\.com\/embed\/show/);
  assert.match(runtime,/opentdb\.com\/api\.php/);
  assert.match(runtime,/openlibrary\.org\/search\.json/);
- assert.match(runtime,/stopRadio\(\)/);
- assert.match(runtime,/clearTv\(\)/);
- assert.match(runtime,/clearPodcast\(\)/);
- for(const kind of ['quiz','memory','number','flags','word','sudoku']){
-  assert.ok(page.includes('id="game-'+kind+'"'));
+ for(const game of ['quiz','memory','number','flags','word','sudoku']){
+  assert.ok(page.includes('id="game-'+game+'"'));
  }
 });
-test('PWA caches static directory; loads JS network first',()=>{
+test('editorial directory retains safe official URLs',()=>{
+ const ids=new Set();
+ for(const item of catalog.items){
+  assert.ok(!ids.has(item.id));ids.add(item.id);
+  assert.ok(['watch','discover','podcast'].includes(item.kind));
+  assert.ok(item.source_url.startsWith('https://'));
+  assert.ok(['official_embed','official_link','licensed_stream'].includes(item.permission));
+ }
+});
+test('PWA caches simplified discovery engine and catalog',()=>{
  assert.match(sw,/data\/entertainment\.json/);
  assert.match(sw,/path==='\/assets\/entertainment\.js'/);
- assert.ok(page.includes('entertainment.js?v='));
+ assert.match(sw,/vweb-connect-static-v15/);
+ assert.match(page,/entertainment\.js\?v=/);
 });
-test('first-party advertising is clearly labelled and outside player',()=>{
- assert.ok(page.includes('data-ent-sponsor="tv"'));
- assert.match(runtime,/SPONSORED/);
- assert.ok(!runtime.includes('document.write('));
-});
-test('responsive small-screen rendering exists',()=>{
- assert.ok(css.includes('mobile-drawer'));
+test('sponsored discovery placement and mobile cards remain',()=>{
+ assert.ok(page.includes('data-ent-sponsor="watch"'));
+ assert.ok(page.includes('data-ent-sponsor="play"'));
+ assert.ok(!page.includes('data-ent-sponsor="tv"'));
  assert.ok(css.includes('ent-catalog'));
- assert.ok(css.includes('ent-radio-dock'));
+ assert.ok(!runtime.includes('document.write('));
 });

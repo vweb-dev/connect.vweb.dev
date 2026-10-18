@@ -67,7 +67,7 @@ if($_SERVER['REQUEST_METHOD']==='POST'){
     $status=(string)($_POST['status']??'draft');
     $order=(int)($_POST['display_order']??0);
     $confirmed=($_POST['rights_confirmed']??'')==='yes';
-    if(!in_array($kind,['tv','watch','podcast','discover'],true) ||
+    if(!in_array($kind,['watch','podcast','discover'],true) ||
        !in_array($provider,['youtube','spotify','external','twitch','hls'],true) ||
        !in_array($poster,['news','space','culture','learning','entertainment'],true) ||
        !in_array($permission,['official_link','official_embed','licensed_stream'],true) ||
@@ -127,7 +127,7 @@ function media_field(?array $edit,string $key,string $default=''):string {
 <!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <meta name="robots" content="noindex,nofollow"><title>Entertainment CMS | VWEB.DEV Connect</title><link rel="stylesheet" href="/admin/style.css"></head><body>
 <header><div><strong>VWEB.DEV CONNECT</strong><br><small>ENTERTAINMENT CATALOG MANAGER</small></div><div><a class="btn secondary" href="/admin/">← Ads & Content</a> <a class="btn secondary" href="/">Public PWA ↗</a></div></header>
-<main><div class="intro"><h1>Curate your media.</h1><p>Only publish independently verified official embeds, official links or licensed streams. The app never hosts the media files.</p></div>
+<main><div class="intro"><h1>Curate your media.</h1><p>Curate on-demand watch collections, podcasts, and learning links. Live TV and radio have been retired. The app never hosts media files.</p></div>
 <?php if($error):?><div class="error" role="alert"><?=$esc($error)?></div><?php endif;?>
 <?php if(isset($_GET['saved'])):?><div class="notice">Catalog item saved.</div><?php endif;?>
 <?php if(isset($_GET['installed'])):?><div class="notice">Entertainment table created. Publish your first verified listing.</div><?php endif;?>
@@ -138,7 +138,7 @@ function media_field(?array $edit,string $key,string $default=''):string {
 <div class="grid">
 <section class="panel"><h2><?=$edit?'Edit item #'.$esc($edit['id']):'Add verified content'?></h2><form method="post" class="form-grid">
 <input type="hidden" name="csrf" value="<?=$esc(connect_csrf())?>"><input type="hidden" name="action" value="save"><input type="hidden" name="id" value="<?=media_field($edit,'id','0')?>">
-<div><label for="mkind">Section</label><select id="mkind" name="kind"><?php foreach(['tv'=>'TV','watch'=>'Watch','podcast'=>'Podcast','discover'=>'Discover'] as $key=>$label):?><option value="<?=$esc($key)?>" <?=($edit['kind']??'tv')===$key?'selected':''?>><?=$esc($label)?></option><?php endforeach;?></select></div>
+<div><label for="mkind">Section</label><select id="mkind" name="kind"><?php foreach(['watch'=>'Watch','podcast'=>'Podcast','discover'=>'Discover'] as $key=>$label):?><option value="<?=$esc($key)?>" <?=($edit['kind']??'watch')===$key?'selected':''?>><?=$esc($label)?></option><?php endforeach;?></select></div>
 <div><label for="mprov">Provider</label><select id="mprov" name="provider"><?php foreach(['external'=>'Official external link','youtube'=>'YouTube official embed','spotify'=>'Spotify show embed','twitch'=>'Twitch channel embed','hls'=>'Licensed HLS (browser-native)'] as $key=>$label):?><option value="<?=$esc($key)?>" <?=($edit['provider']??'external')===$key?'selected':''?>><?=$esc($label)?></option><?php endforeach;?></select></div>
 <div class="full"><label for="mtitle">Display title</label><input id="mtitle" name="title" maxlength="160" required value="<?=media_field($edit,'title')?>"></div>
 <div class="full"><label for="msummary">Original summary</label><textarea id="msummary" name="summary" maxlength="450" rows="3" required><?=media_field($edit,'summary')?></textarea></div>

@@ -2,9 +2,11 @@
 (function () {
 var $ = function (s) { return document.querySelector(s); };
 var $$ = function (s) { return Array.from(document.querySelectorAll(s)); };
-var routes=['home','studios','academy','pc','apps','dashboard','convert','tools','ai','tv','watch','listen','play','discover','offers','community','internet','rewards','account'];
+var routes=['home','studios','academy','pc','apps','dashboard','convert','tools','ai','watch','play','discover','offers','community','internet','rewards','account'];
 function route(){
-  var key=location.hash.replace('#','')||'home';if(routes.indexOf(key)<0)key='home';
+  var key=location.hash.replace('#','')||'home';
+  if(key==='tv'||key==='listen'){key='watch';history.replaceState(null,'','#watch');}
+  if(routes.indexOf(key)<0)key='home';
   $$('.page').forEach(function(el){el.hidden=el.id!=='page-'+key;});
   $$('[data-nav]').forEach(function(el){var active=el.dataset.nav===key;el.classList.toggle('active',active);if(active){el.setAttribute('aria-current','page');}else{el.removeAttribute('aria-current');}});
   document.title=(key==='home'?'VWEB.DEV Connect':key.charAt(0).toUpperCase()+key.slice(1)+' | VWEB.DEV Connect');

@@ -651,3 +651,31 @@ body.drawer-open{overflow:hidden}
 .hub-command-item:focus-visible{outline:2px solid #e4bc78;outline-offset:-3px}
 @media(max-width:640px){.hub-learning-card{padding:13px;gap:11px}.hub-learning-poster{width:92px;height:65px}.hub-learning-card strong{font-size:14px}.hub-course-choice{min-height:67px}.hub-course-poster{width:67px;height:50px}}
 @media(max-width:420px){.hub-learning-poster{width:82px;height:60px}.hub-command-foot span:nth-child(4){display:none}}
+
+/* Windows Hub: licensed activation diagnostics + transparent GitHub source */
+.hub-activation-scripts{margin:16px 0}
+.hub-activation-scripts h2{font-size:24px;margin:7px 0}
+.hub-activation-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px;margin:17px 0 0}
+.hub-act-option{background:#1e2a33;border:1px solid #4b5c64;border-radius:13px;padding:20px;min-width:0}
+.hub-act-option h3{font-size:21px;margin:10px 0}
+.hub-act-option p{font-size:12px;line-height:1.85;color:#b7c3c8}
+.hub-act-overline{font-size:10px;letter-spacing:.12em;color:#e6c88c;font-weight:800}
+.hub-act-unofficial{background:linear-gradient(140deg,#30291d,#192631);border-color:#9b8251}
+.hub-cmd-block{display:flex;gap:10px;align-items:center;justify-content:space-between;background:#101820;border:1px solid #475564;padding:9px 11px;border-radius:10px;margin:15px 0}
+.hub-cmd-block code{font-size:13px;color:#f3d49f;overflow-wrap:anywhere}
+.hub-cmd-block .button{white-space:nowrap}
+.hub-cmd-choices{display:flex;gap:6px;flex-wrap:wrap;margin:10px 0 16px}
+.hub-cmd-choices button{background:#263541;border:1px solid #586573;border-radius:8px;color:#cbd9de;font-size:11px;padding:9px 10px}
+.hub-cmd-choices button.active,.hub-cmd-choices button:hover{background:#393323;border-color:#be9b60;color:#f4d59e}
+.hub-act-option .hub-action-row{margin:12px 0}.hub-act-option .button{font-size:11px;white-space:normal}
+.hub-winget-filters{display:flex;gap:10px;flex-wrap:wrap;margin:18px 0 14px}
+.hub-winget-filters input,.hub-winget-filters select{background:#101a23;border:1px solid #52616c;color:#fff;border-radius:9px;padding:12px;min-height:43px}
+.hub-winget-filters input{min-width:210px;flex:2}.hub-winget-filters select{min-width:165px;flex:1}
+.hub-winget-foot{display:flex;align-items:center;flex-wrap:wrap;gap:11px;margin:10px 0 18px}
+.hub-winget-foot span{font-size:11px;color:#bac7c5;flex:1}
+.hub-winget-foot button{font-size:10px;min-height:35px}
+.hub-app-footer{flex-wrap:wrap;gap:10px}
+.hub-app-winget{border:1px solid #726248;color:#e7c687;background:#272b28;padding:6px 9px;border-radius:9px;font-size:10px;font-weight:750}
+.hub-app-card .hub-app-meta{min-height:25px}
+@media(max-width:1100px){.hub-activation-grid{grid-template-columns:1fr}}
+@media(max-width:590px){.hub-act-option{padding:14px}.hub-cmd-block{flex-wrap:wrap}.hub-winget-filters{flex-direction:column}.hub-winget-filters input,.hub-winget-filters select{width:100%;min-width:0}.hub-app-footer .hub-card-link{max-width:100%}}

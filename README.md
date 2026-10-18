@@ -131,3 +131,11 @@ Deploy newest main to Hostinger, invalidate PWA v12 cache, test main routes on m
 
 Legacy single-image compressor remains in the DOM for JS compatibility but is visually consolidated into Convert Studio's richer Image Lab. The existing data/text utilities remain accessible under Quick Utilities.
 NaN
+
+## Windows Software Hub and retirement of unstable streaming (October 18, 2026)
+
+- 73 curated software/web apps and publisher links. 34 packages have WinGet IDs; package availability can change and should be verified with `winget show --id PACKAGE_ID --exact` prior to installation.
+- WinGet Builder: search/filter package cards without losing selection, choose Essentials/Creator/Developer/Creative/Privacy/Media presets, copy commands, export inspectable .cmd/.ps1 files, or export a VWEB-format JSON catalog. Scripts contain only user-selected WinGet commands and run **only when the user chooses to execute them on Windows**.
+- Windows Activation: genuine Microsoft methods and read-only `slmgr /xpr` .cmd status checker. Separate, explicitly *unofficial* GitHub link to Microsoft Activation Scripts (MAS) and its traditional CMD/BAT documentation; Connect does not embed, host, mirror or auto-run third-party activation scripts or claim a Microsoft endorsement. A valid license remains the supported path.
+- Retired broken Live TV/Radio: removed pages, menu links, community radio fetcher/HLS code, TV listings, and new TV publishing in admin/public media API. Old hash links redirect to Watch. On-demand documentaries, podcasts, games and Open Library remain.
+- All downloads and media are served by official publishers; Hostinger only serves small code and JSON. No database migration required.

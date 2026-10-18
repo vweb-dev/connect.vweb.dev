@@ -293,3 +293,12 @@ QA: home search, route navigation, Academy chapters/playlist, manual progress/no
 NaN
 
 Static delivery note: the root .htaccess now sends short public cache hints for JS/CSS/fonts/images and catalog JSON, and forces revalidation for the app HTML and SW. These are limited to files; session-aware API and admin responses remain governed by their own PHP headers. Cloudflare should respect asset query strings and avoid public caching of api/, admin/ or authenticated responses. Static catalogs fetch with `cache: no-cache` online so changes can revalidate, with the service worker handling offline fallback. Core QR/JSON/contrast tools bootstrap independently of the catalog.
+
+
+## Windows activation / software refresh (Oct 18, 2026)
+
+Activation CMD tools: `slmgr /xpr`, `slmgr /dlv`, `slmgr /ato` (attempt for an already legitimate key), `start ms-settings:activation`. The downloaded status CMD is read-only. The separate GitHub MAS link is provided as third-party project information, NOT Microsoft's official method, not executed, mirrored or integrated. Warn users about untrusted executable/script risk, license permission and source verification. Official Windows activation and Microsoft recovery instructions remain first-party references.
+
+App library: 73 entries including Windows software, official web apps and PWA destinations. Filter/like links stay client-side; external sites own installer/CDN bandwidth. WinGet: 34 package identifiers exposed for user-generated commands, with user verification encouraged. The .cmd or .ps1 generated locally only installs when manually launched on Windows. App costs/licenses vary; some are freeware or freemium rather than open-source.
+
+TV/Radio: these modules have been retired due to unreliable public stream/player compatibility. Live TV and radio routes removed; historical URL hashes redirect to Watch. Discovery retains only on-demand publisher links, podcasts and six browser games, and media API filters archived TV entries. Existing DB enum and legacy sponsor placements are retained for compatibility, but admin no longer permits publishing new TV entries. No destructive migration required. Service worker v15.

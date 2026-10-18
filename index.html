@@ -11,12 +11,12 @@
 <meta property="og:description" content="Browser-first file tools, trusted software links, genuine Windows help and organized free YouTube courses in one lightweight digital hub.">
 <meta name="twitter:card" content="summary">
 <link rel="manifest" href="/manifest.webmanifest"><link rel="apple-touch-icon" href="/assets/connect-icon.svg"><link rel="icon" type="image/svg+xml" href="/assets/connect-icon.svg">
-<link rel="preconnect" href="https://i.ibb.co"><link rel="stylesheet" href="/assets/style.css?v=connect20-polish-20261018-b">
-<script src="/assets/app.js?v=connect20-polish-20261018-b" defer></script>
-<script src="/assets/puter-ai.js?v=connect20-polish-20261018-b" defer></script>
-<script src="/assets/entertainment.js?v=connect20-polish-20261018-b" defer></script>
-<script src="/assets/converter.js?v=connect20-polish-20261018-b" defer></script>
-<script src="/assets/hub.js?v=connect20-polish-20261018-b" defer></script>
+<link rel="preconnect" href="https://i.ibb.co"><link rel="stylesheet" href="/assets/style.css?v=connect20-software-20261018">
+<script src="/assets/app.js?v=connect20-software-20261018" defer></script>
+<script src="/assets/puter-ai.js?v=connect20-software-20261018" defer></script>
+<script src="/assets/entertainment.js?v=connect20-software-20261018" defer></script>
+<script src="/assets/converter.js?v=connect20-software-20261018" defer></script>
+<script src="/assets/hub.js?v=connect20-software-20261018" defer></script>
 </head>
 <body>
 <a class="skip" href="#main">Skip to content</a>
@@ -36,8 +36,6 @@
 <a href="#convert" data-nav="convert">▤ <span>Convert Studio</span></a>
 <a href="#tools" data-nav="tools">⌘ <span>Quick Utilities</span></a>
 <a href="#play" data-nav="play">◆ <span>Games & Quizzes</span></a>
-<a href="#listen" data-nav="listen">♫ <span>Radio & Podcasts</span></a>
-<a href="#tv" data-nav="tv">▣ <span>Live TV Links</span></a>
 <a href="#offers" data-nav="offers">◈ <span>Deals</span></a>
 <a href="#watch" data-nav="watch">▷ <span>Watch & Discover</span></a>
 <a href="#discover" data-nav="discover">✧ <span>Discover</span></a>
@@ -286,53 +284,14 @@
 </div></div>
 </section>
 
-<section class="page ent-page" id="page-tv" hidden>
-  <div class="ent-page-intro"><div><div class="overline">WATCH THE WORLD</div><h1>VWEB TV<span class="accent">.</span></h1><p>Discover official broadcaster streams. Playback starts only when you select a channel. Availability depends on the publisher.</p></div><a class="button secondary" href="#watch">Explore on-demand ↗</a></div>
-  <div class="ent-player-layout">
-    <div class="ent-main-player">
-      <div id="tv-player" class="ent-video-stage" aria-label="Video playback area">
-        <div class="ent-player-idle"><div class="ent-play-mark">▶</div><h2>Choose something to watch.</h2><p>Authorized official players will appear here after you select Play.</p></div>
-      </div>
-      <div id="tv-now-playing" class="ent-now-playing"><div><small>NOW SELECTED</small><strong>No channel selected</strong><p>Click a title below to load its official player or open its provider's website.</p></div><div class="ent-player-actions"><a id="tv-official-link" class="button secondary small" href="https://www.nasa.gov/live/" target="_blank" rel="noopener noreferrer" hidden>Watch on official site ↗</a><button type="button" id="tv-stop" class="button secondary small" hidden>Stop playback</button></div></div>
-    </div>
-    <aside class="ent-tips"><span class="ent-tips-icon">◉</span><strong>Light on your server.</strong><p>VWEB.DEV only serves the directory. YouTube and approved stream providers deliver the actual video to your device.</p><div class="ent-tip-separator"></div><strong>No fake live indicators</strong><p>Listings describe the source. Streaming/live status is not guaranteed without broadcaster verification.</p></aside>
-  </div>
-  <div class="ent-section-heading"><div><div class="overline">CURATED DIRECTORY</div><h2>Browse channels</h2></div><span id="tv-count" class="ent-count"></span></div>
-  <div class="ent-controls"><label class="visually-hidden" for="tv-search">Search channels</label><input id="tv-search" type="search" placeholder="Search channels, country or category…" autocomplete="off"><div id="tv-categories" class="ent-pills" aria-label="TV categories"></div><button id="tv-show-favorites" type="button" class="ent-chip">♡ Favorites</button></div>
-  <div class="ent-sponsored" data-ent-sponsor="tv" hidden></div>
-  <div id="tv-list" class="ent-catalog" aria-live="polite"><div class="ent-empty">Loading channel directory…</div></div>
-  <p class="ent-disclaimer">VWEB.DEV is an independent content directory, not a broadcaster. Official provider rules, geo-restrictions, embedding availability and viewer data usage apply.</p>
-</section>
-
 <section class="page ent-page" id="page-watch" hidden>
  <div class="ent-page-intro"><div><div class="overline">ON-DEMAND & EXPLORATION</div><h1>Watch & Discover<span class="accent">.</span></h1><p>Free official documentaries, education and streaming destinations. No unauthorized movie library.</p></div></div>
  <div class="ent-feature-watch"><div class="overline">EDITOR'S PICK</div><h2>Explore the universe.<br><span>Without a subscription.</span></h2><p>NASA+ offers free original programs, mission coverage and science stories on NASA's official platform.</p><a class="button primary" href="https://plus.nasa.gov/" target="_blank" rel="noopener noreferrer">Explore NASA+ ↗</a><div class="ent-feature-planet" aria-hidden="true">✧</div></div>
  <div class="ent-section-heading"><div><div class="overline">OFFICIAL SOURCES</div><h2>Featured collections</h2></div></div>
  <div class="ent-sponsored" data-ent-sponsor="watch" hidden></div>
  <div id="watch-list" class="ent-catalog"></div>
-</section>
-
-<section class="page ent-page" id="page-listen" hidden>
- <div class="ent-page-intro"><div><div class="overline">SOUNDS FROM EVERYWHERE</div><h1>Radio & Podcasts<span class="accent">.</span></h1><p>Stream radio directly from stations around the world, and listen to podcasts through official provider players.</p></div></div>
- <div class="ent-listen-tabs" role="tablist" aria-label="Listening collections">
-   <button id="listen-tab-radio" role="tab" aria-controls="listen-panel-radio" aria-selected="true" class="ent-listen-tab active" type="button">◉ Live Radio</button>
-   <button id="listen-tab-podcasts" role="tab" aria-controls="listen-panel-podcasts" aria-selected="false" class="ent-listen-tab" type="button">♫ Podcasts</button>
- </div>
- <section id="listen-panel-radio" role="tabpanel" aria-labelledby="listen-tab-radio">
- <div class="ent-radio-controls"><label for="radio-search">Find a station</label><div class="ent-radio-inputs"><input type="search" id="radio-search" placeholder="Station or music type (e.g. Jazz, News)…" autocomplete="off"><select id="radio-country" aria-label="Select country"><option value="PK">Pakistan</option><option value="IN">India</option><option value="GB">United Kingdom</option><option value="US">United States</option><option value="AE">United Arab Emirates</option><option value="DE">Germany</option><option value="">Worldwide</option></select><button id="radio-find" type="button" class="button primary">Search stations ↗</button><button id="radio-favorites" type="button" class="button secondary" aria-pressed="false">♡ Saved</button></div><p class="ent-helper">Uses the community Radio Browser directory. Stream availability and rights vary by station; HTTPS feeds are preferred.</p></div>
- <div class="ent-sponsored" data-ent-sponsor="listen" hidden></div>
- <div id="radio-feedback" class="ent-feedback" role="status" aria-live="polite"></div>
-<div id="radio-official-fallback" class="ent-radio-fallback" hidden><div class="overline">OFFICIAL LISTENING DESTINATIONS</div><h3>Stream not working?</h3>
-<p>Some radio stations block third-party players. Listen on the broadcaster's official website instead.</p>
-<div class="ent-official-links"><a href="https://www.radio.gov.pk/live-streaming" target="_blank" rel="noopener noreferrer">Radio Pakistan Live ↗</a>
-<a href="https://www.bbc.com/audio" target="_blank" rel="noopener noreferrer">BBC Audio ↗</a>
-<a href="https://www.radio-browser.info/" target="_blank" rel="noopener noreferrer">Radio Browser ↗</a></div></div>
- <div id="radio-list" class="ent-radio-grid"></div>
- </section>
- <section id="listen-panel-podcasts" role="tabpanel" aria-labelledby="listen-tab-podcasts" hidden>
- <div class="ent-podcast-intro"><div><h2>Listen to something worth your time.</h2><p>Official Spotify podcast/player embeds load only after selection. Playback and availability depend on the provider.</p></div><a href="https://open.spotify.com/genre/podcasts-web" target="_blank" rel="noopener noreferrer" class="button secondary">Browse Spotify ↗</a></div>
+ <div class="ent-section-heading"><div><div class="overline">ON-DEMAND AUDIO</div><h2>Podcasts & listening</h2></div><a class="button secondary" href="https://open.spotify.com/genre/podcasts-web" target="_blank" rel="noopener noreferrer">Browse provider ↗</a></div>
  <div id="podcast-list" class="ent-catalog"></div><div id="podcast-player" class="ent-podcast-player" hidden></div>
- </section>
 </section>
 
 <section class="page ent-page" id="page-play" hidden>
@@ -394,12 +353,35 @@
   <section class="hub-panel"><div class="hub-pane-heading"><strong>Find an activation fix</strong></div><label for="hub-activation-case">Which problem are you seeing?</label><select id="hub-activation-case"><option value="digital">Digital license not activated</option><option value="hardware">Activation lost after hardware changes</option><option value="edition">Wrong Windows edition or key</option><option value="no-key">No valid product key</option></select><div id="hub-activation-advice" class="hub-fix-advice"></div><button id="hub-activation-copy" class="button secondary" type="button">Copy safe status-check command</button><p class="hub-small-note">Only checks status; cannot activate an unlicensed copy.</p></section>
   <section class="hub-panel"><div class="hub-pane-heading"><strong>Official downloads & tutorials</strong></div><div id="hub-pc-guides" class="hub-guide-links"></div></section>
  </div>
+ 
+ <section class="hub-panel hub-activation-scripts">
+  <div class="hub-pane-heading"><div><span class="overline">WINDOWS LICENSE & SCRIPT RESOURCES</span><h2>Activation CMD / BAT Guide</h2></div><span class="hub-mini-pill">Windows 10 / 11</span></div>
+  <div class="hub-activation-grid">
+   <div class="hub-act-option">
+    <span class="hub-act-overline">MICROSOFT SUPPORTED</span>
+    <h3>Genuine activation & CMD checks</h3>
+    <p>Already own a valid license? Open Windows activation settings, inspect activation status, or request activation with your existing licensed key. These commands do not bypass licensing.</p>
+    <div class="hub-cmd-block"><code id="hub-act-cmd-text">slmgr /xpr</code><button id="hub-act-cmd-copy" type="button" class="button secondary">Copy CMD</button></div>
+    <div class="hub-cmd-choices"><button type="button" data-act-cmd="slmgr /xpr">Check expiry</button><button type="button" data-act-cmd="slmgr /dlv">License details</button><button type="button" data-act-cmd="slmgr /ato">Activate licensed copy</button><button type="button" data-act-cmd="start ms-settings:activation">Open activation settings</button></div>
+    <div class="hub-action-row"><button id="hub-act-check-download" class="button secondary" type="button">Download safe status .cmd ↓</button><a class="button secondary" href="https://support.microsoft.com/en-us/windows/activation/activate-windows-online-or-offline-using-installation-and-confirmation-id" target="_blank" rel="noopener noreferrer">Microsoft CMD guide ↗</a></div>
+   </div>
+   <div class="hub-act-option hub-act-unofficial">
+    <span class="hub-act-overline">THIRD-PARTY GITHUB PROJECT · NOT MICROSOFT</span>
+    <h3>Microsoft Activation Scripts (MAS)</h3>
+    <p>Open-source project publishing its own Windows/Office BAT/CMD and PowerShell scripts. It is not an official Microsoft activation method. Some options may alter licensing state or breach applicable license terms. Review the source and your license before running anything.</p>
+    <div class="hub-action-row"><a class="button primary" href="https://github.com/massgravel/Microsoft-Activation-Scripts" target="_blank" rel="noopener noreferrer">View original GitHub repository ↗</a><a class="button secondary" href="https://github.com/massgravel/Microsoft-Activation-Scripts#method-2---traditional-windows-vista-and-later" target="_blank" rel="noopener noreferrer">Read BAT/CMD method ↗</a></div>
+    <p class="hub-small-note">Connect does not host or auto-run these scripts, change your license, collect product keys, or provide activation-bypass commands. Run third-party scripts only after verifying provenance, code and permission.</p>
+   </div>
+  </div>
+ </section>
  <section class="hub-panel hub-winget"><div class="hub-pane-heading"><div><span class="overline">NO EXECUTABLE UPLOADS OR HOSTING</span><h2>Windows Software Pack Builder</h2></div><span class="hub-mini-pill">WinGet</span></div>
- <p>Select trusted packages. Generate official Windows Package Manager commands and review each package before running them yourself.</p>
+ <p>Select individual software or ready-made packs, then copy installation commands or download a Windows CMD/PowerShell installer file. No installer is hosted by Connect. Verify each package with <code>winget show --id PACKAGE_ID --exact</code> before running.</p>
  <div class="hub-pack-presets" role="group" aria-label="Software pack presets">
-<button type="button" data-pack="essential">◈ Essentials</button><button type="button" data-pack="creator">✦ Creator</button><button type="button" data-pack="developer">⌘ Developer</button><button type="button" data-pack="clear">Clear selection</button></div>
-<div id="hub-winget-options" class="hub-winget-grid"></div><div class="hub-winget-results"><div><strong id="hub-winget-count">0 apps selected</strong><small>Commands run on your Windows PC, not on our server.</small></div><button id="hub-winget-copy" type="button" class="button primary">Copy install commands</button></div>
- <div class="hub-setup-actions"><button id="hub-winget-download" class="button secondary" type="button">Download .ps1 ↓</button><button id="hub-winget-json" class="button secondary" type="button">Export package list ↓</button></div>
+<button type="button" data-pack="essential">◈ Essentials</button><button type="button" data-pack="creator">✦ Creator</button><button type="button" data-pack="developer">⌘ Developer</button><button type="button" data-pack="creative">✎ Creative</button><button type="button" data-pack="privacy">◆ Privacy & Security</button><button type="button" data-pack="media">▶ Media</button><button type="button" data-pack="clear">Clear selection</button></div>
+<div class="hub-winget-filters"><label class="visually-hidden" for="hub-winget-search">Find WinGet packages</label><input id="hub-winget-search" type="search" placeholder="Find applications or package IDs…" autocomplete="off"><label class="visually-hidden" for="hub-winget-category">Filter category</label><select id="hub-winget-category"><option value="All">All categories</option></select></div>
+ <div id="hub-winget-options" class="hub-winget-grid"></div>
+ <div class="hub-winget-foot"><span id="hub-winget-visible-count">Select trusted publisher packages.</span><button id="hub-winget-select-visible" type="button" class="button secondary">Select visible</button><button id="hub-winget-clear" type="button" class="button secondary">Clear all</button></div><div class="hub-winget-results"><div><strong id="hub-winget-count">0 apps selected</strong><small>Commands run on your Windows PC, not on our server.</small></div><button id="hub-winget-copy" type="button" class="button primary">Copy install commands</button></div>
+ <div class="hub-setup-actions"><button id="hub-winget-download" class="button secondary" type="button">Download .ps1 ↓</button><button id="hub-winget-cmd-download" class="button secondary" type="button">Download .cmd ↓</button><button id="hub-winget-json" class="button secondary" type="button">Export package list ↓</button></div>
 <label for="hub-winget-output">Generated PowerShell commands</label><textarea id="hub-winget-output" rows="6" spellcheck="false" readonly placeholder="Select apps above…"></textarea><p id="hub-winget-message" class="hub-small-note" role="status"></p></section>
 </section>
 <section class="page hub-page" id="page-apps" hidden>
@@ -426,6 +408,5 @@
 <nav class="mobile-nav" aria-label="Mobile quick navigation"><a href="#home" data-nav="home">⌂<small>Home</small></a><a href="#studios" data-nav="studios">⇄<small>Tools</small></a><a href="#academy" data-nav="academy">▶<small>Learn</small></a><a href="#apps" data-nav="apps">◧<small>Apps</small></a><button id="mobile-more" type="button" aria-label="Show all sections" aria-expanded="false">☰<small>More</small></button></nav>
 <div id="mobile-drawer" class="mobile-drawer" hidden><div class="mobile-drawer-panel"><div class="mobile-drawer-head"><strong>EXPLORE CONNECT</strong><button id="mobile-drawer-close" type="button" aria-label="Close navigation">✕</button></div><nav aria-label="All pages">
 <a href="#home">⌂ Overview</a><a href="#studios">⇄ Tool Studios</a><a href="#academy">▶ Video Academy</a><a href="#pc">▦ PC Help / WinGet</a><a href="#apps">◧ App Directory</a><a href="#dashboard">◇ My Workspace</a>
-<a href="#convert">▤ Converter</a><a href="#tools">⌘ Quick Utilities</a><a href="#ai">✦ AI Studio</a><a href="#play">◆ Play & Learn</a><a href="#tv">▣ TV</a><a href="#listen">♫ Radio</a><a href="#watch">▶ Watch & Discover</a><a href="#discover">✧ Discover</a><a href="#offers">◇ Deals</a><a href="#community">◎ Local & Learn</a><a href="#internet">◉ My Internet</a><a href="#rewards">✳ Rewards</a><a href="#account">◉ My Account</a></nav></div></div>
-</div>
+<a href="#convert">▤ Converter</a><a href="#tools">⌘ Quick Utilities</a><a href="#ai">✦ AI Studio</a><a href="#play">◆ Play & Learn</a><a href="#watch">▶ Watch & Podcasts</a><a href="#discover">✧ Discover</a><a href="#offers">◇ Deals</a><a href="#community">◎ Local & Learn</a><a href="#internet">◉ My Internet</a><a href="#rewards">✳ Rewards</a><a href="#account">◉ My Account</a></nav></div></div></div>
 </body></html>

@@ -1,346 +1,80 @@
 'use strict';
-/** VWEB.DEV Entertainment: browser-first approved embeds, radio, games and local favorites. */
-(function () {
+/* VWEB.DEV Connect Discovery: editorial publisher links and browser games. */
+(function(){
 const $=(s)=>document.querySelector(s);
 const $$=(s)=>Array.from(document.querySelectorAll(s));
-const safeUrl=(value)=>{
-  try{const u=new URL(String(value));return u.protocol==='https:'?u.href:null;}catch(_){return null;}
-};
-const favoriteKey='vweb.entertainment.favorites.v1',radioFavoriteKey='vweb.radio.favorites.v1';
-function loadSaved(key,defaultValue){
-  try{const v=JSON.parse(localStorage.getItem(key)||'null');return v===null?defaultValue:v;}catch(_){return defaultValue;}
+const safeUrl=value=>{try{const u=new URL(String(value));return u.protocol==='https:'?u.href:null;}catch(_){return null;}};
+function textNode(tag,value,cls=''){const e=document.createElement(tag);e.textContent=value;if(cls)e.className=cls;return e;}
+function empty(root,message){if(!root)return;root.replaceChildren(textNode('div',message,'ent-empty'));}
+function externalLink(url,title='Official source ↗'){
+ const a=textNode('a',title,'button secondary');a.href=url;a.target='_blank';a.rel='noopener noreferrer';return a;
 }
-function save(key,val){try{localStorage.setItem(key,JSON.stringify(val));}catch(_){}}
-let media=[],tvFilter='All',tvSearch='',favoriteOnly=false,selectedTv=null,radioStations=[],
-  radioResults=null,radioFilterMode='radio',currentRadio=null,radioPlaying=false;
-let tvPlayer=null,podcastIframe=null,hlsInstance=null,hlsSDK=null;
-let tvFavorites=loadSaved(favoriteKey,[]);
-if(!Array.isArray(tvFavorites))tvFavorites=[];
-let radioFavorites=loadSaved(radioFavoriteKey,[]);
-if(!Array.isArray(radioFavorites))radioFavorites=[];
-const audio=new Audio();audio.preload='none';audio.setAttribute('aria-label','Radio stream');
-const radioDock=document.createElement('div');radioDock.className='ent-radio-dock';radioDock.hidden=true;
-const dockIcon=document.createElement('span');dockIcon.className='ent-radio-logo';dockIcon.textContent='♫';
-const dockName=document.createElement('strong');dockName.textContent='Radio player';
-const dockPlay=document.createElement('button');dockPlay.type='button';dockPlay.textContent='Pause';
-const dockClose=document.createElement('button');dockClose.type='button';dockClose.textContent='✕';dockClose.setAttribute('aria-label','Stop radio');
-radioDock.append(dockIcon,dockName,dockPlay,dockClose);document.body.append(radioDock);
-
-function empty(parent,msg){parent.replaceChildren();const el=document.createElement('div');el.className='ent-empty';el.textContent=msg;parent.append(el);}
-function textNode(tag,text,cls){const el=document.createElement(tag);el.textContent=text;if(cls)el.className=cls;return el;}
-function clearTv(){
-  if(hlsInstance){hlsInstance.destroy();hlsInstance=null;}
-  const stage=$('#tv-player');if(!stage)return;
-  stage.replaceChildren();
-  const holder=textNode('div','','ent-player-idle');
-  holder.append(textNode('div','▶','ent-play-mark'),textNode('h2','Choose something to watch.'),textNode('p','Select an authorized official stream below.'));
-  stage.append(holder);tvPlayer=null;
-  $('#tv-stop').hidden=true;
-  $('#tv-official-link').hidden=true;
+let podcastEmbed=null;
+function clearPodcast(){
+ const player=$('#podcast-player');if(!player)return;
+ player.replaceChildren();player.hidden=true;podcastEmbed=null;
 }
-function clearPodcast(){const p=$('#podcast-player');p.replaceChildren();p.hidden=true;podcastIframe=null;}
-function stopRadio(){
-  audio.pause();audio.removeAttribute('src');audio.load();radioPlaying=false;currentRadio=null;radioDock.hidden=true;dockPlay.textContent='Pause';
+function mediaItem(raw){
+ if(!raw||typeof raw!=='object'||!['watch','discover','podcast'].includes(raw.kind))return null;
+ const url=safeUrl(raw.source_url);
+ if(!url)return null;
+ return {id:String(raw.id||'').slice(0,90),kind:raw.kind,title:String(raw.title||'Resource').slice(0,160),
+ summary:String(raw.summary||'').slice(0,450),category:String(raw.category||'General').slice(0,70),
+ provider:String(raw.provider||'external'),source_url:url,source_name:String(raw.source_name||'Publisher').slice(0,90),
+ badge:String(raw.badge||'Official resource').slice(0,70),external_id:String(raw.external_id||''),
+ poster_style:['news','space','culture','learning','entertainment'].includes(raw.poster_style)?raw.poster_style:'learning'};
 }
-function externalLink(url,label='Open official source ↗'){
-  const a=document.createElement('a');a.className='button secondary';a.textContent=label;
-  a.href=url;a.target='_blank';a.rel='noopener noreferrer';return a;
-}
-function setNow(item,message){
-  const root=$('#tv-now-playing');const title=root.querySelector('strong'),note=root.querySelector('p');
-  title.textContent=item?item.title:'No channel selected';note.textContent=message;
-}
-function getHLS(){
- if(window.Hls)return Promise.resolve(window.Hls);
- if(hlsSDK)return hlsSDK;
- hlsSDK=new Promise((resolve,reject)=>{
-  const script=document.createElement('script');
-  script.src='https://cdn.jsdelivr.net/npm/hls.js@1.7.3/dist/hls.min.js';
-  script.async=true;
-  const timeout=setTimeout(()=>{script.remove();reject(Error('HLS library did not load.'));hlsSDK=null;},13000);
-  script.onload=()=>{clearTimeout(timeout);window.Hls?resolve(window.Hls):reject(Error('HLS library unavailable.'));};
-  script.onerror=()=>{clearTimeout(timeout);hlsSDK=null;reject(Error('HLS library unavailable.'));};
-  document.head.append(script);
- });
- return hlsSDK;
-}
-async function loadLicensedHLS(url,video,item){
- if(tvPlayer!==video)return;
- if(video.canPlayType('application/vnd.apple.mpegurl')){
-  video.src=url;
-  return;
- }
- const Hls=await getHLS();
- if(tvPlayer!==video)return;
- if(!Hls.isSupported())throw Error('Browser does not support native HLS or MediaSource HLS.');
- const controller=new Hls({enableWorker:true});
- hlsInstance=controller;
- controller.on(Hls.Events.ERROR,(_,detail)=>{
-  if(detail.fatal&&tvPlayer===video)setNow(item,'HLS stream error from source or CORS policy. Please open the official licensed stream.');
- });
- controller.loadSource(url);
- controller.attachMedia(video);
-}
-
-function playTv(item){
-  const link=safeUrl(item.source_url);
-  if(!link)return;
-  if(!item.permission || !['official_embed','licensed_stream','official_link'].includes(item.permission))return;
-  if(item.provider==='external'){$('#tv-official-link').href=link;$('#tv-official-link').hidden=false;
-    window.open(link,'_blank','noopener,noreferrer');
-    setNow(item,'Opens at the publisher site because an official third-party embed is not confirmed.');return;}
-  if(item.permission==='official_link'){$('#tv-official-link').href=link;$('#tv-official-link').hidden=false;
-    window.open(link,'_blank','noopener,noreferrer');
-    setNow(item,'This content plays on its official site.');return;}
-  clearPodcast();stopRadio();clearTv();
-  $('#tv-official-link').href=link;$('#tv-official-link').hidden=false;
-  const stage=$('#tv-player');
-  let video=null;
-  if(item.provider==='youtube'&&/^[A-Za-z0-9_-]{11}$/.test(item.external_id)){
-    video=document.createElement('iframe');
-    video.src='https://www.youtube-nocookie.com/embed/'+item.external_id+'?autoplay=1&rel=0&playsinline=1';
-    video.allow='accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; fullscreen';
-    video.allowFullscreen=true;video.referrerPolicy='strict-origin-when-cross-origin';
-    video.title=item.title+' — official YouTube player';
-  }else if(item.provider==='twitch'&&/^[A-Za-z0-9_]{1,40}$/.test(item.external_id)){
-    video=document.createElement('iframe');
-    video.src='https://player.twitch.tv/?channel='+encodeURIComponent(item.external_id)+'&parent='+encodeURIComponent(location.hostname)+'&autoplay=true';
-    video.allow='autoplay; fullscreen';video.allowFullscreen=true;video.title=item.title+' — Twitch';
-  }else if(item.provider==='hls'&&item.permission==='licensed_stream'){
-    // No silent proxy or arbitrary IPTV playlist; native playback only
-    // until an explicit licensed HLS host/codec is vetted.
-    video=document.createElement('video');video.controls=true;video.playsInline=true;video.preload='none';
-    video.addEventListener('error',()=>setNow(item,'This stream could not play in the browser. Open the licensed source instead.'));
-  }
-  if(!video){stage.append(textNode('div','Provider embed unavailable. Please open the official source.','ent-empty'));return;}
-  tvPlayer=video;selectedTv=item;
-  stage.append(video);$('#tv-stop').hidden=false;
-  if(item.provider==='hls'){
-    loadLicensedHLS(link,video,item).catch((error)=>{
-      if(tvPlayer!==video)return;
-      setNow(item,'Licensed HLS stream unavailable in this browser. Use the official source button below.');
-    });
-  }
-  setNow(item,'Publisher-controlled player. If it is blank, unavailable or blocked, use Watch on official site.');
-  // The player is never proxied through Hostinger.
-}
-$('#tv-stop').addEventListener('click',()=>{clearTv();setNow(null,'Video player stopped.');});
-function safeMedia(item){
- if(!item||typeof item!=='object')return null;
- const kind=String(item.kind||''),provider=String(item.provider||'');
- if(!['tv','watch','podcast','discover'].includes(kind)||!['youtube','spotify','external','twitch','hls'].includes(provider))return null;
- const link=safeUrl(item.source_url);
- if(!link)return null;
- if(provider==='youtube'&&!/^[A-Za-z0-9_-]{11}$/.test(String(item.external_id||'')))return null;
- if(provider==='spotify'&&!/^[A-Za-z0-9]{22}$/.test(String(item.external_id||'')))return null;
- if(provider==='twitch'&&!/^[A-Za-z0-9_]{1,40}$/.test(String(item.external_id||'')))return null;
- if(provider==='hls'&&item.permission!=='licensed_stream')return null;
- if(!['official_embed','official_link','licensed_stream'].includes(item.permission))return null;
- return {id:String(item.id||'').slice(0,100),kind,provider,external_id:String(item.external_id||''),
-  title:String(item.title||'Untitled').slice(0,160),summary:String(item.summary||'').slice(0,450),
-  category:String(item.category||'General').slice(0,70),country:String(item.country||'').slice(0,10),
-  language:String(item.language||'').slice(0,40),source_url:link,source_name:String(item.source_name||'Official source').slice(0,90),
-  poster_style:['news','space','culture','learning','entertainment'].includes(item.poster_style)?item.poster_style:'learning',
-  permission:item.permission,badge:String(item.badge||'Official source').slice(0,70)};
-}
-async function loadCatalog(){
- let local=[];
- try{
-  const r=await fetch('/data/entertainment.json',{cache:'no-cache'});
-  if(r.ok){const d=await r.json();local=(d.items||[]).map(safeMedia).filter(Boolean);}
- }catch(_){}
- if(!local.length){empty($('#tv-list'),'Catalog unavailable offline until first successful load.');return;}
- media=local;
- try{
-  const controller=new AbortController();const timeout=setTimeout(()=>controller.abort(),6000);
-  const r=await fetch('/api/media.php',{signal:controller.signal,cache:'no-store'});
-  clearTimeout(timeout);
-  if(r.ok){const d=await r.json();if(d.ok&&Array.isArray(d.items)){
-    const additions=d.items.map(safeMedia).filter(Boolean);
-    const map=new Map(media.map((i)=>[i.id,i]));
-    additions.forEach(i=>map.set(i.id,i));
-    media=[...map.values()];
-  }}
- }catch(_){/* CMS is optional: static curated official sources remain. */}
- tvCategoryButtons();renderTv();renderWatch();renderPodcasts();renderDiscover();
-}
-function makeMediaCard(item,mode){
+function makeMediaCard(item){
  const article=document.createElement('article');article.className='ent-item';
  const poster=document.createElement('div');poster.className='ent-poster p-'+item.poster_style;
  const symbols={news:'◉',space:'✧',learning:'✦',culture:'◈',entertainment:'▶'};
- poster.append(textNode('span',symbols[item.poster_style]||'▶','ent-poster-symbol'),textNode('span',item.badge||item.category,'ent-poster-label'));
+ poster.append(textNode('span',symbols[item.poster_style]||'▶','ent-poster-symbol'),textNode('span',item.badge,'ent-poster-label'));
  const body=document.createElement('div');body.className='ent-item-body';
- const meta=textNode('div',[item.source_name,item.category].filter(Boolean).join(' · '),'ent-item-meta');
- const title=textNode('h3',item.title);
- const desc=textNode('p',item.summary);
+ body.append(textNode('div',[item.source_name,item.category].filter(Boolean).join(' · '),'ent-item-meta'),
+   textNode('h3',item.title),textNode('p',item.summary));
  const actions=document.createElement('div');actions.className='ent-item-actions';
- if(mode==='tv'&&item.provider!=='external'&&item.permission!=='official_link'){
-  const play=document.createElement('button');play.className='button primary';play.type='button';play.textContent='▶ Play channel';
-  play.addEventListener('click',()=>{playTv(item);$('#tv-player').scrollIntoView({behavior:matchMedia('(prefers-reduced-motion:reduce)').matches?'auto':'smooth',block:'center'});});
-  actions.append(play);
- }
- if(mode==='podcast'&&item.provider==='spotify'){
-  const play=document.createElement('button');play.className='button primary';play.type='button';play.textContent='▶ Listen here';
-  play.addEventListener('click',()=>{stopRadio();clearTv();clearPodcast();
-    const player=$('#podcast-player');player.hidden=false;
-    const embed=document.createElement('iframe');embed.src='https://open.spotify.com/embed/show/'+item.external_id;
-    embed.title=item.title+' — Spotify podcast';embed.allow='autoplay; encrypted-media; fullscreen; picture-in-picture';embed.loading='lazy';
-    podcastIframe=embed;player.append(embed);player.scrollIntoView({behavior:'smooth',block:'center'});
+ if(item.kind==='podcast'&&item.provider==='spotify'&&/^[a-zA-Z0-9]{22}$/.test(item.external_id)){
+  const play=textNode('button','▶ Listen in page','button primary');play.type='button';
+  play.addEventListener('click',()=>{
+   clearPodcast();
+   const frame=document.createElement('iframe');
+   frame.src='https://open.spotify.com/embed/show/'+item.external_id;
+   frame.title=item.title+' — Spotify';frame.loading='lazy';
+   frame.allow='autoplay; encrypted-media; fullscreen; picture-in-picture';
+   const root=$('#podcast-player');root.hidden=false;root.append(frame);podcastEmbed=frame;
+   root.scrollIntoView({block:'center',behavior:'smooth'});
   });actions.append(play);
  }
- const link=externalLink(item.source_url,mode==='tv'?'Watch official site ↗':item.provider==='external'?'Open official site ↗':'Official source ↗');
- actions.append(link);
- if(mode==='tv'){
-  const fav=document.createElement('button');fav.className='ent-heart';fav.type='button';
-  const liked=tvFavorites.includes(item.id);fav.textContent=liked?'♥':'♡';fav.setAttribute('aria-label',(liked?'Remove':'Save')+' '+item.title);
-  fav.setAttribute('aria-pressed',String(liked));
-  fav.addEventListener('click',()=>{
-    tvFavorites=tvFavorites.includes(item.id)?tvFavorites.filter(i=>i!==item.id):tvFavorites.concat(item.id);
-    save(favoriteKey,tvFavorites);renderTv();
-  });actions.append(fav);
- }
- body.append(meta,title,desc,actions);article.append(poster,body);return article;
+ actions.append(externalLink(item.source_url,'Open publisher ↗'));
+ body.append(actions);article.append(poster,body);return article;
 }
-function renderTv(){
- const list=$('#tv-list');list.replaceChildren();
- const items=media.filter(i=>i.kind==='tv'&&(!favoriteOnly||tvFavorites.includes(i.id))&&
-   (tvFilter==='All'||i.category===tvFilter)&&[i.title,i.summary,i.category,i.country].join(' ').toLowerCase().includes(tvSearch));
- $('#tv-count').textContent=items.length+' approved listings';
- if(!items.length){empty(list,'No channels match this selection. Try All or clear your search.');return;}
- items.forEach(i=>list.append(makeMediaCard(i,'tv')));
-}
-function tvCategoryButtons(){
- const root=$('#tv-categories');root.replaceChildren();
- ['All',...new Set(media.filter(i=>i.kind==='tv').map(i=>i.category))].forEach(cat=>{
-  const b=document.createElement('button');b.type='button';b.textContent=cat;b.className='ent-chip'+(cat===tvFilter?' active':'');
-  b.addEventListener('click',()=>{tvFilter=cat;tvCategoryButtons();renderTv();});root.append(b);
- });
-}
-$('#tv-search').addEventListener('input',(e)=>{tvSearch=e.target.value.toLowerCase().trim();renderTv();});
-$('#tv-show-favorites').addEventListener('click',function(){favoriteOnly=!favoriteOnly;this.classList.toggle('active',favoriteOnly);this.setAttribute('aria-pressed',String(favoriteOnly));renderTv();});
-function renderWatch(){const el=$('#watch-list');el.replaceChildren();media.filter(i=>i.kind==='watch').forEach(i=>el.append(makeMediaCard(i,'watch')));}
-function renderDiscover(){const el=$('#discover-list');el.replaceChildren();media.filter(i=>i.kind==='discover').forEach(i=>el.append(makeMediaCard(i,'discover')));}
-function renderPodcasts(){const el=$('#podcast-list');el.replaceChildren();media.filter(i=>i.kind==='podcast').forEach(i=>el.append(makeMediaCard(i,'podcast')));}
-loadCatalog();
-
-
-// Approved first-party sponsorship cards from the existing CMS.
-// No third-party ad network, click incentivization, impression claims or overlay on players.
-async function renderEntSponsors(){
+async function loadCatalog(){
+ let items=[];
  try{
-  const r=await fetch('/api/public.php',{cache:'no-store'});
-  if(!r.ok)return;
-  const data=await r.json();
-  if(!data.ok||!Array.isArray(data.ads))return;
-  for(const item of data.ads){
-    const placement=String(item.placement||'');
-    const host=$('[data-ent-sponsor="'+placement+'"]');
-    if(!host || !Number.isInteger(Number(item.id)) || !safeUrl(item.url))continue;
-    if(!host.hidden)continue; // one approved sponsor per section
-    const label=textNode('small','SPONSORED · '+String(item.brand||'VWEB partner').slice(0,70));
-    const title=textNode('strong',String(item.title||'').slice(0,130));
-    const detail=textNode('p',String(item.summary||'').slice(0,300));
-    const cta=externalLink('/api/go.php?id='+Number(item.id),'Explore sponsor ↗');
-    // Internal first-party redirect should remain same-origin; no URL interpolation in HTML.
-    cta.href='/api/go.php?id='+Number(item.id);
-    host.replaceChildren(label,title,detail,cta);host.hidden=false;
-  }
+  const r=await fetch('/data/entertainment.json',{cache:'no-cache'});
+  if(r.ok){const d=await r.json();items=(d.items||[]).map(mediaItem).filter(Boolean);}
  }catch(_){}
-}
-renderEntSponsors();
-
-function radioOfficialFallback(show=true){const el=$('#radio-official-fallback');if(el)el.hidden=!show;}
-// Browser-direct public radio directory. Stations/streams may disappear and
-// may have separate licensing terms. Never proxy audio through Hostinger.
-const radioHosts=['https://de1.api.radio-browser.info','https://nl1.api.radio-browser.info','https://at1.api.radio-browser.info','https://all.api.radio-browser.info'];
-async function fetchStations(){
- const query=$('#radio-search').value.trim().slice(0,80),country=$('#radio-country').value;
- const params=new URLSearchParams({hidebroken:'true',order:'votes',reverse:'true',limit:'28'});
- if(country)params.set('countrycode',country);
- if(query)params.set('name',query);
- $('#radio-feedback').textContent='Searching the independent Radio Browser directory…';
- const list=$('#radio-list');empty(list,'Searching stations…');
- let stations=null,error=null;
- for(const host of radioHosts){
-  const ctrl=new AbortController();const timeout=setTimeout(()=>ctrl.abort(),9000);
-  try{
-   const response=await fetch(host+'/json/stations/search?'+params.toString(),{signal:ctrl.signal,mode:'cors',headers:{Accept:'application/json'}});
-   if(!response.ok)throw Error('Directory HTTP '+response.status);
-   stations=await response.json();if(!Array.isArray(stations))throw Error('Invalid station response');
-   clearTimeout(timeout);break;
-  }catch(err){error=err;clearTimeout(timeout);}
+ // Optional CMS: only publish on-demand media. Live TV and radio are retired.
+ try{
+  const controller=new AbortController();const timeout=setTimeout(()=>controller.abort(),3000);
+  const response=await fetch('/api/media.php',{signal:controller.signal,cache:'no-store'});
+  clearTimeout(timeout);
+  if(response.ok){const json=await response.json();if(json.ok&&Array.isArray(json.items)){
+   const map=new Map(items.map(item=>[item.id,item]));
+   json.items.map(mediaItem).filter(Boolean).forEach(item=>map.set(item.id,item));
+   items=[...map.values()];
+  }}
+ }catch(_){}
+ for(const [kind,selector] of [['watch','#watch-list'],['podcast','#podcast-list'],['discover','#discover-list']]){
+  const root=$(selector);if(!root)continue;root.replaceChildren();
+  const relevant=items.filter(i=>i.kind===kind);
+  if(!relevant.length){empty(root,'No resources available yet. Check again when online.');continue;}
+  relevant.forEach(item=>root.append(makeMediaCard(item)));
  }
- if(!stations){$('#radio-feedback').textContent='Radio directory unavailable here. Please use a verified official broadcaster site below.';empty(list,'Directory unavailable. Try an official radio destination.');radioOfficialFallback(true);return;}
- radioStations=stations.filter(s=>s&&s.stationuuid&&s.name).slice(0,28).map(s=>({
-  uuid:String(s.stationuuid),name:String(s.name).slice(0,100),country:String(s.countrycode||''),
-  codec:String(s.codec||''),bitrate:Number(s.bitrate||0),stream:s.url_resolved||s.url||'',
-  homepage:safeUrl(s.homepage||'')||'',tags:String(s.tags||'').slice(0,120)}));
- radioResults=radioStations;renderRadio();radioOfficialFallback(!radioStations.length);
- $('#radio-feedback').textContent=radioStations.length+' directory entries found. Playback availability is not guaranteed.';
 }
-function renderRadio(){
- const root=$('#radio-list');root.replaceChildren();
- const list=radioFilterMode==='favorites'?radioFavorites:radioStations;
- if(!list.length){empty(root,radioFilterMode==='favorites'?'No saved stations yet. Save a station from your search results.':'No stations matched your search.');return;}
- list.forEach(station=>{
-  const row=document.createElement('article');row.className='ent-radio-card';
-  row.append(textNode('div','♫','ent-radio-logo'));
-  const detail=document.createElement('div');detail.className='ent-radio-detail';
-  detail.append(textNode('strong',station.name),textNode('small',[station.country,station.codec,station.bitrate?station.bitrate+' kbps':''].filter(Boolean).join(' · ')));
-  const play=document.createElement('button');play.type='button';play.className='ent-radio-play';play.textContent='▶ Play';
-  play.addEventListener('click',()=>startRadio(station));
-  const fav=document.createElement('button');fav.type='button';fav.className='ent-heart';
-  const liked=radioFavorites.some(i=>i.uuid===station.uuid);fav.textContent=liked?'♥':'♡';fav.setAttribute('aria-pressed',String(liked));
-  fav.setAttribute('aria-label',(liked?'Remove favorite ':'Favorite ')+station.name);
-  fav.addEventListener('click',()=>{
-    radioFavorites=liked?radioFavorites.filter(i=>i.uuid!==station.uuid):radioFavorites.concat(station).slice(-80);
-    save(radioFavoriteKey,radioFavorites);renderRadio();
-  });
-  const website=safeUrl(station.homepage);
-  if(website){const site=document.createElement('a');site.href=website;site.target='_blank';site.rel='noopener noreferrer';
-    site.className='ent-radio-official';site.textContent='Site ↗';site.setAttribute('aria-label','Open '+station.name+' official website');
-    row.append(detail,play,site,fav);
-  }else row.append(detail,play,fav);
-  root.append(row);
- });
-}
-async function startRadio(station){
- const stream=safeUrl(station.stream);
- if(!stream){$('#radio-feedback').textContent='This station uses an insecure/unsupported stream. Open its official site instead.';radioOfficialFallback(true);return;}
- clearTv();clearPodcast();stopRadio();
- currentRadio=station;audio.src=stream;dockName.textContent=station.name;radioDock.hidden=false;
- $('#radio-feedback').textContent='Opening '+station.name+' directly from the broadcaster…';
- try{await audio.play();radioPlaying=true;dockPlay.textContent='Pause';$('#radio-feedback').textContent='Listening to '+station.name+'. Stream is supplied by the station.';}
- catch(err){$('#radio-feedback').textContent='Station playback failed or is blocked. Use Site ↗ or the official broadcasters below.';radioOfficialFallback(true);dockPlay.textContent='Retry';}
-}
-dockPlay.addEventListener('click',async ()=>{
- if(!currentRadio)return;
- if(!audio.paused){audio.pause();radioPlaying=false;dockPlay.textContent='Play';}
- else{try{await audio.play();radioPlaying=true;dockPlay.textContent='Pause';}catch(_){dockPlay.textContent='Retry';}}
-});
-dockClose.addEventListener('click',stopRadio);
-audio.addEventListener('error',()=>{$('#radio-feedback').textContent='Station stream failed. Use Site ↗ or select another.';radioOfficialFallback(true);dockPlay.textContent='Retry';});
-$('#radio-find').addEventListener('click',()=>{radioFilterMode='radio';$('#radio-favorites').setAttribute('aria-pressed','false');fetchStations();});
-$('#radio-favorites').addEventListener('click',function(){
- radioFilterMode=radioFilterMode==='favorites'?'radio':'favorites';
- this.setAttribute('aria-pressed',String(radioFilterMode==='favorites'));
- this.textContent=radioFilterMode==='favorites'?'♥ Saved':'♡ Saved';
- renderRadio();
-});
-$('#radio-search').addEventListener('keydown',e=>{if(e.key==='Enter'){e.preventDefault();radioFilterMode='radio';fetchStations();}});
-let radioInitialized=false;
-function setListenTab(which){
- const onRadio=which==='radio';
- $('#listen-panel-radio').hidden=!onRadio;$('#listen-panel-podcasts').hidden=onRadio;
- $('#listen-tab-radio').classList.toggle('active',onRadio);$('#listen-tab-podcasts').classList.toggle('active',!onRadio);
- $('#listen-tab-radio').setAttribute('aria-selected',String(onRadio));$('#listen-tab-podcasts').setAttribute('aria-selected',String(!onRadio));
- if(onRadio&&!radioInitialized){radioInitialized=true;fetchStations();}
- if(!onRadio&&currentRadio){stopRadio();}
- if(onRadio&&podcastIframe)clearPodcast();
-}
-$('#listen-tab-radio').addEventListener('click',()=>setListenTab('radio'));
-$('#listen-tab-podcasts').addEventListener('click',()=>setListenTab('podcasts'));
-
+loadCatalog();
+window.addEventListener('hashchange',()=>{if(location.hash!=='#watch'&&podcastEmbed)clearPodcast();});
+// Browser-local games and educational search are initialized below.
 // Open Trivia DB: questions are CC BY-SA 4.0; client fetch, no backend burden.
 const fallbackQuiz=[
  {q:'Which planet is known as the Red Planet?',answers:['Mars','Venus','Neptune','Jupiter'],correct:'Mars'},
@@ -545,12 +279,5 @@ $('#book-form').addEventListener('submit',async(e)=>{
  finally{clearTimeout(timeout);}
 });
 
-window.addEventListener('hashchange',()=>{
- const dest=(location.hash||'#home').slice(1);
- if(dest!=='tv'&&tvPlayer){clearTv();setNow(null,'Playback stopped after leaving VWEB TV.');}
- if(dest==='listen'&&!radioInitialized){radioInitialized=true;fetchStations();}
- if(dest!=='listen'&&podcastIframe)clearPodcast();
-});
-// Load radio only once the section is visited.
-if(location.hash==='#listen'){radioInitialized=true;fetchStations();}
+
 })();
