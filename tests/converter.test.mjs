@@ -52,9 +52,9 @@ test('PWA caches self-hosted converter file with fresh asset revision',()=>{
  assert.match(sw,/assets\/converter\.js/);
  assert.match(css,/convert-dropzone/);
 });
-test('retired TV and radio removed; Watch remains',()=>{
- assert.ok(!html.includes('id="page-tv"'));
- assert.ok(!html.includes('id="page-listen"'));
+test('Watch and Discover are retired but games remain',()=>{
+ for(const route of ['tv','listen','watch','discover'])
+  assert.ok(!html.includes('id="page-'+route+'"'),route);
  assert.ok(!read('assets/entertainment.js').includes('radio-browser.info'));
- assert.ok(html.includes('id="page-watch"'));
+ assert.ok(html.includes('id="page-play"'));
 });
