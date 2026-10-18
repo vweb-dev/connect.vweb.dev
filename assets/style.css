@@ -20,25 +20,15 @@
 
 /* Auth, ISP and rewards — no false live subscriber metrics */
 .account-form{max-width:none}.account-form .button{margin-top:13px}
-.reward-banner{display:flex;justify-content:space-between;align-items:center;gap:20px;background:linear-gradient(105deg,#30271b,#191f26);border:1px solid #705738;border-radius:18px;padding:29px;margin:5px 0 28px}
-.reward-banner h2{font-size:clamp(23px,3vw,38px);margin:10px 0}.reward-banner p{margin:0;font-size:12px;max-width:480px}
-.reward-emblem{font-size:75px;color:var(--gold);opacity:.65}
+.hub-profile-banner{display:flex;justify-content:space-between;align-items:center;gap:20px;background:linear-gradient(105deg,#30271b,#191f26);border:1px solid #705738;border-radius:18px;padding:29px;margin:5px 0 28px}
+.hub-profile-banner h2{font-size:clamp(23px,3vw,38px);margin:10px 0}.hub-profile-banner p{margin:0;font-size:12px;max-width:480px}
 .subheading{margin:36px 0 18px}.account-form{margin-bottom:22px}
 .account-form input[type=email],.account-form input[type=url],.account-form input[type=password]{width:100%;background:#0e131a;border:1px solid #3b4450;color:#fff;padding:12px;border-radius:9px}
-.isp-account-list{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:15px;margin:25px 0}
-.isp-card{background:#17202a;border:1px solid #343f4d;border-radius:16px;padding:22px;overflow-wrap:anywhere}
-.isp-card h3{font-size:22px;margin:10px 0}.isp-card dl{display:grid;grid-template-columns:1fr 1fr;gap:10px 15px;font-size:12px}
-.isp-card dt{color:var(--muted)}.isp-card dd{margin:0;text-align:right}
-.isp-pill{border:1px solid #5b5440;border-radius:20px;padding:5px 10px;font-size:10px;color:var(--gold);display:inline-block}
-.isp-pill.online{color:#95d1aa;border-color:#476652}
-.reward-task{display:flex;flex-direction:column;gap:9px}
-.reward-task label{font-size:12px;color:var(--muted)}.reward-task input{width:100%;padding:10px;border:1px solid #45505e;border-radius:8px;background:#111922;color:#f6f0e6}
-.reward-task button:disabled,.account-form button:disabled{opacity:.55;cursor:not-allowed}
 .push-row{display:flex;gap:8px;flex-wrap:wrap;margin-top:20px}
 .compact.unavailable{min-height:240px;margin:0;padding:30px}
 #member-tickets{font-size:12px;color:var(--muted)}
 #member-tickets div{padding:8px 0;border-bottom:1px solid var(--line)}
-@media(max-width:800px){.isp-account-list{grid-template-columns:1fr}}
+
 
 /* Puter account flow: explicit popup trigger, clear status, distinct identity. */
 .puter-auth{display:flex;justify-content:space-between;align-items:center;gap:20px;border:1px solid #816943;
@@ -679,3 +669,30 @@ body.drawer-open{overflow:hidden}
 .hub-app-card .hub-app-meta{min-height:25px}
 @media(max-width:1100px){.hub-activation-grid{grid-template-columns:1fr}}
 @media(max-width:590px){.hub-act-option{padding:14px}.hub-cmd-block{flex-wrap:wrap}.hub-winget-filters{flex-direction:column}.hub-winget-filters input,.hub-winget-filters select{width:100%;min-width:0}.hub-app-footer .hub-card-link{max-width:100%}}
+
+/* Connect focus release — utility-first, minimal and responsive */
+.hub-search-suggestions{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin-top:17px}
+.hub-search-suggestions>span{font-size:10px;color:#cfc4aa}
+.hub-search-suggestions button{border:1px solid #655944;border-radius:999px;color:#e2c28b;background:#352e25;padding:7px 11px;font-size:11px}
+.hub-search-suggestions button:hover,.hub-search-suggestions button:focus-visible{border-color:#dbb16e;background:#453a2a}
+.hub-home-banner{display:flex;align-items:center;gap:22px;flex-wrap:wrap;margin-top:19px;border:1px solid #66543a;border-radius:17px;padding:22px 25px;background:linear-gradient(125deg,#2b2a23,#182631 80%)}
+.hub-home-banner>div{min-width:230px;flex:1}.hub-home-banner h2{font-size:clamp(18px,2.4vw,25px);margin:6px 0}.hub-home-banner p{font-size:11px;color:#b8c1c3;line-height:1.75;max-width:590px}
+.hub-home-banner .button{font-size:12px;white-space:normal}
+.hub-banner-icon{width:60px;height:60px;flex:none;display:grid;place-items:center;font-size:39px;color:#d6af73;border-radius:12px;background:#4b402e}
+.hub-app-controls{margin-bottom:10px;align-items:stretch}
+.hub-app-controls input{max-width:none;min-width:185px}
+.hub-app-controls select{background:#121d26;border:1px solid #596775;color:#eee8df;border-radius:9px;min-height:44px;padding:10px 12px;max-width:225px;font-size:11px}
+.hub-app-filter-row{display:flex;gap:7px;flex-wrap:wrap;margin:11px 0 17px}
+.hub-directory-heading{display:flex;gap:12px;align-items:center;justify-content:space-between;margin-bottom:15px}
+.hub-directory-heading .hub-results-count{margin:0}
+.hub-app-reset{border:0;background:none;color:#e2c28c;font-size:11px;padding:9px;font-weight:700}
+.hub-app-reset:hover{text-decoration:underline}
+.hub-app-pagination{display:flex;justify-content:center;padding:24px 0 12px}
+.hub-app-pagination .button{min-width:170px;font-size:12px}
+.hub-app-mark{width:51px;height:51px;font-size:24px}
+.hub-app-card{min-height:235px}
+.hub-member-links{background:linear-gradient(150deg,#1e2b34,#2e2b24)}
+/* Retain old utility markup because legacy handlers depend on it; do not show duplicate widgets. */
+#page-tools .tool-card:has(#json-content){display:none!important}
+@media(max-width:760px){.hub-app-controls select{flex:1;max-width:none}.hub-home-banner{padding:18px}.hub-banner-icon{display:none}}
+@media(max-width:590px){.hub-app-controls{display:grid;grid-template-columns:1fr 1fr}.hub-app-controls input{grid-column:1/-1;width:100%}.hub-app-controls select{width:100%;min-width:0}.hub-home-banner{gap:12px}.hub-directory-heading{align-items:flex-start;flex-wrap:wrap}}

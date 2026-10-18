@@ -60,17 +60,6 @@ try {
         $db->prepare('UPDATE app_users SET marketing_opt_in=? WHERE id=?')->execute([$optin,$id]);
         connect_json(['ok'=>true,'user'=>member_user($db,$id)]);
     }
-    if ($action==='link_isp') {
-        $username=trim((string)($data['pppoe_username']??''));
-        if (!preg_match('/^[A-Za-z0-9@._:-]{3,190}$/D',$username))
-            connect_json(['ok'=>false,'message'=>'Enter a valid PPPoE username. Do not enter its password.'],422);
-        $stmt=$db->prepare('SELECT COUNT(*) FROM isp_account_links WHERE user_id=? AND status=?');$stmt->execute([$id,'pending']);
-        if ((int)$stmt->fetchColumn()>=2)connect_json(['ok'=>false,'message'=>'You have pending account requests.'],429);
-        // A username claim NEVER discloses traffic until ISP staff verify ownership independently.
-        $stmt=$db->prepare("INSERT INTO isp_account_links(user_id,pppoe_username,status) VALUES(?,?,'pending')
-          ON DUPLICATE KEY UPDATE status=IF(status='approved','approved','pending'),reviewer_note=IF(status='approved',reviewer_note,'')");
-        $stmt->execute([$id,$username]);connect_json(['ok'=>true,'message'=>'Verification request submitted. ISP staff must confirm account ownership.']);
-    }
     if ($action==='merchant') {
         $name=trim((string)($data['business_name']??''));$title=trim((string)($data['offer_title']??''));
         $description=trim((string)($data['description']??''));$url=trim((string)($data['website']??''));

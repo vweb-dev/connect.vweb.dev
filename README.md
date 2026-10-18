@@ -1,3 +1,14 @@
+## Current release — Focused Tools & Learning (2026-10-18)
+
+The Free Internet / ISP dashboard, PPPoE linking, learning reward points, hotspot voucher redemption and network gateway features are retired. Old routes redirect to My Workspace. Retired APIs return HTTP 410 without opening MySQL. Historical tables and data were NOT dropped. Follow local retention obligations before any deletion.
+
+Anonymous homepage visits no longer fetch member, rewards, ISP, public CMS or on-demand media CMS APIs. The optional member API loads after the user visits #account; public offers/community CMS loads after visiting those sections; media CMS is fetched after visiting #watch or #discover. The static JSON catalog and browser-first tools remain available.
+
+App Directory: web/Windows formats, categories, sorting, search, saved apps and 12-at-a-time pagination; prominent software pack CTA on the homepage. Community administration handles merchant moderation, support tickets and opt-in notifications. Fresh installations can use db/community.sql to create only account/community tables. Existing deployments should NOT drop legacy database records.
+
+Support requests are fetched from an authenticated member-tickets.php endpoint instead of the retired ISP dashboard. Service worker cache v16.
+
+**Deployment action:** Disable any previously scheduled ISP agents such as ops/radius_agent.py or ops/gateway_agent.py in your actual hosting/router environment. Updating GitHub alone does not stop external cron tasks or clear live legacy data.
 # VWEB.DEV Connect — Phase 1
 
 Official project repo: https://github.com/vweb-dev/connect.vweb.dev

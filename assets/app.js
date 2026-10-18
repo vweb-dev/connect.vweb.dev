@@ -2,10 +2,11 @@
 (function () {
 var $ = function (s) { return document.querySelector(s); };
 var $$ = function (s) { return Array.from(document.querySelectorAll(s)); };
-var routes=['home','studios','academy','pc','apps','dashboard','convert','tools','ai','watch','play','discover','offers','community','internet','rewards','account'];
+var routes=['home','studios','academy','pc','apps','dashboard','convert','tools','ai','watch','play','discover','offers','community','account'];
 function route(){
   var key=location.hash.replace('#','')||'home';
   if(key==='tv'||key==='listen'){key='watch';history.replaceState(null,'','#watch');}
+  if(key==='internet'||key==='rewards'){key='dashboard';history.replaceState(null,'','#dashboard');}
   if(routes.indexOf(key)<0)key='home';
   $$('.page').forEach(function(el){el.hidden=el.id!=='page-'+key;});
   $$('[data-nav]').forEach(function(el){var active=el.dataset.nav===key;el.classList.toggle('active',active);if(active){el.setAttribute('aria-current','page');}else{el.removeAttribute('aria-current');}});
@@ -158,7 +159,16 @@ async function loadPublishedContent(){
   if(location.hostname==='localhost')console.info('CMS not connected:',e.message);
  }
 }
-loadPublishedContent();
+// Optional CMS: only visit PHP when browsing offers or community.
+var publishedContentRequested=false;
+function loadPublishedWhenNeeded(){
+ var section=(location.hash||'#home').slice(1);
+ if(!publishedContentRequested&&(section==='offers'||section==='community')){
+  publishedContentRequested=true;loadPublishedContent();
+ }
+}
+window.addEventListener('hashchange',loadPublishedWhenNeeded);
+loadPublishedWhenNeeded();
 
 
 // Local learning resources: source-linked, evergreen and not represented as live news.
@@ -207,135 +217,56 @@ function jsonAction(minify){try{var parsed=JSON.parse($('#json-content').value);
 $('#json-format').addEventListener('click',function(){jsonAction(false);});$('#json-minify').addEventListener('click',function(){jsonAction(true);});
 $('#json-copy').addEventListener('click',function(){copy($('#json-content').value,$('#json-status'));});
 
-// ACCOUNT, RADIUS CUSTOMER VIEW AND REWARDS MODULES
-// All private data remains on the same Hostinger origin, behind a server session.
-var connectState={csrf:null,user:null,gatewayEnabled:false};
+// Optional member accounts; anonymous pages never request member/ISP data.
+var connectState={csrf:null,user:null};
 async function connectGet(path){
- var r=await fetch('/api/'+path,{credentials:'same-origin',cache:'no-store',headers:{'Accept':'application/json'}});
- var json=await r.json();if(!r.ok||!json.ok)throw Error(json.message||'Service is currently unavailable.');
- return json;
+ var response=await fetch('/api/'+path,{credentials:'same-origin',cache:'no-store',headers:{Accept:'application/json'}});
+ var body=await response.json();if(!response.ok||!body.ok)throw Error(body.message||'Account service unavailable.');
+ return body;
 }
 async function connectPost(path,data){
- if(!connectState.csrf)throw Error('Accounts are not configured. Ask VWEB.DEV to finish Hostinger database setup.');
- var r=await fetch('/api/'+path,{method:'POST',credentials:'same-origin',cache:'no-store',
-  headers:{'Content-Type':'application/json','X-CSRF-Token':connectState.csrf},
-  body:JSON.stringify(data)});
- var json=await r.json();if(!r.ok||!json.ok)throw Error(json.message||'Request could not be completed.');
- return json;
+ if(!connectState.csrf)throw Error('Account service unavailable. Open My Account and try again.');
+ var response=await fetch('/api/'+path,{method:'POST',credentials:'same-origin',cache:'no-store',
+ headers:{'Content-Type':'application/json','X-CSRF-Token':connectState.csrf},
+ body:JSON.stringify(data)});
+ var body=await response.json();if(!response.ok||!body.ok)throw Error(body.message||'Request was not completed.');
+ return body;
 }
-function connectText(id,text){var el=$(id);if(el)el.textContent=text;}
-function connectMb(bytes){
- if(bytes===null||bytes===undefined||bytes==='')return 'Not available';
- var num=Number(bytes);
- if(!Number.isFinite(num)||num<0)return 'Not available';
- return num>=1073741824?(num/1073741824).toFixed(2)+' GB':(num/1048576).toFixed(1)+' MB';
-}
-function connectDate(value){if(!value)return 'Not available';var d=new Date(String(value).replace(' ','T')+(String(value).includes('Z')?'':'Z'));return isNaN(d)?'Not available':d.toLocaleString();}
+function connectText(selector,value){var el=$(selector);if(el)el.textContent=value;}
 function memberUI(){
  var signed=!!connectState.user;
- $('#member-guest').hidden=signed;$('#member-profile').hidden=!signed;
+ $('#member-guest').hidden=signed;
+ $('#member-profile').hidden=!signed;
  if(signed){
   connectText('#member-name','Hello, '+connectState.user.name);
   connectText('#member-email',connectState.user.email);
   $('#member-marketing').checked=!!Number(connectState.user.marketing_opt_in);
- }else{
-  connectText('#internet-summary h2','Sign in to view your internet accounts.');
-  $('#internet-summary').hidden=false;$('#pppoe-link-form').hidden=true;
-  $('#isp-links').replaceChildren();
-  connectText('#rewards-total','Sign in to view points');
  }
+}
+async function loadSupportTickets(){
+ if(!connectState.user)return;
+ var tickets=$('#member-tickets');tickets.replaceChildren();
+ try{
+  var payload=await connectGet('member-tickets.php');
+  var list=Array.isArray(payload.tickets)?payload.tickets:[];
+  if(!list.length){tickets.textContent='No support requests yet.';return;}
+  list.forEach(function(item){
+   var entry=document.createElement('p');entry.textContent=item.subject+' — '+item.status;
+   tickets.append(entry);
+  });
+ }catch(err){tickets.textContent='Recent requests are unavailable. '+err.message;}
 }
 async function refreshMember(){
  try{
-  var result=await connectGet('member.php');connectState.csrf=result.csrf;
-  connectState.user=result.user||null;
+  var info=await connectGet('member.php');
+  connectState.csrf=info.csrf;connectState.user=info.user||null;
   memberUI();
-  if(result.user){await loadDashboard();}
-  await loadRewards();
-  await updatePushAvailability();
- }catch(e){
+  if(connectState.user){await loadSupportTickets();await updatePushAvailability();}
+  else{$('#enable-push').disabled=true;$('#disable-push').disabled=true;}
+ }catch(err){
   connectState.csrf=null;connectState.user=null;memberUI();
-  connectText('#login-feedback','Account service not configured yet: '+e.message);
-  connectText('#register-feedback','Sign-up will work once the Hostinger app database is activated.');
-  connectText('#reward-tasks','Learning rewards will appear after backend activation.');
-  connectText('#redeem-info','Wi-Fi quota redemption requires an ISP-authorized guest gateway.');
+  connectText('#login-feedback','Account service unavailable: '+err.message);
  }
-}
-async function loadDashboard(){
- if(!connectState.user)return;
- try{
-  var data=await connectGet('dashboard.php');
-  $('#internet-summary').hidden=true;$('#pppoe-link-form').hidden=false;
-  var list=$('#isp-links');list.replaceChildren();
-  if(!data.links.length){var p=document.createElement('div');p.className='informative';p.textContent='No ISP account linked. Submit your PPPoE username below for independent ISP ownership verification.';list.append(p);}
-  data.links.forEach(function(acc){
-   var box=document.createElement('article');box.className='isp-card';
-   var flag=document.createElement('span');flag.className='isp-pill'+(acc.is_online===1||acc.is_online==='1'?' online':'');
-   var status=acc.status==='approved'?(acc.data_status==='recent'?(Number(acc.is_online)?'Online':'Offline'):'Not live'):'Verification '+acc.status;
-   flag.textContent=status;
-   var title=document.createElement('h3');title.textContent=acc.pppoe_username;
-   var note=document.createElement('p');note.textContent=acc.status==='approved'?
-      (acc.data_status==='recent'?'Recently synchronized from the ISP.':'Waiting for fresh ISP accounting data; online status is not verified.'):
-      'Private usage remains hidden until ISP staff verify account ownership.';
-   box.append(flag,title,note);
-   if(acc.status==='approved'){
-    var dl=document.createElement('dl');
-    [
-     ['Package',acc.plan_name||'Not available'],
-     ['Session uptime',acc.session_uptime_seconds==null?'Not available':Math.round(Number(acc.session_uptime_seconds)/3600)+' hours'],
-     ['Current session download',connectMb(acc.session_download_bytes)],
-     ['Current session upload',connectMb(acc.session_upload_bytes)],
-     ['Reported download',connectMb(acc.reported_download_bytes)],
-     ['Reported upload',connectMb(acc.reported_upload_bytes)],
-     ['Usage period',acc.reported_period||'Not available'],
-     ['Source accuracy',acc.reported_basis==='session_start_estimate'?'Estimate (session start)':'As reported by ISP'],
-     ['Subscription renewal',acc.renewal_date||'Not supplied'],
-     ['Last sync',acc.collected_at?connectDate(acc.collected_at):'Not available']
-    ].forEach(function(pair){var dt=document.createElement('dt');dt.textContent=pair[0];var dd=document.createElement('dd');dd.textContent=pair[1];dl.append(dt,dd);});
-    box.append(dl);
-   }
-   list.append(box);
-  });
-  var tickets=$('#member-tickets');tickets.replaceChildren();
-  if(!data.tickets.length)tickets.textContent='No support requests yet.';
-  data.tickets.forEach(function(t){var div=document.createElement('div');div.textContent=t.subject+' — '+t.status;tickets.append(div);});
- }catch(e){connectText('#internet-summary h2','Internet dashboard unavailable.');$('#internet-summary').hidden=false;}
-}
-async function loadRewards(){
- try{
-  var result=await connectGet('rewards.php');
-  connectState.gatewayEnabled=!!result.gateway_enabled;
-  connectText('#rewards-total',connectState.user?String(result.points)+' points':'Sign in to earn points');
-  connectText('#redeem-info',connectState.gatewayEnabled?'Exchange 100 points for a 100 MB hotspot voucher. Only confirmed provisioning becomes usable.':'Internet vouchers are not yet active. Learning points can be earned; they are not MB.');
-  $('#redeem-points').disabled=!connectState.user||!connectState.gatewayEnabled||Number(result.points)<100;
-  var wrap=$('#reward-tasks');wrap.replaceChildren();
-  if(!result.tasks.length)wrap.textContent='Learning challenges will be published soon.';
-  result.tasks.forEach(function(task){
-   var article=document.createElement('article');article.className='tile reward-task';
-   var title=document.createElement('h3');title.textContent=task.title;
-   var desc=document.createElement('p');desc.textContent=task.description;
-   var question=document.createElement('label');question.textContent=task.question;
-   var input=document.createElement('input');input.type='text';input.maxLength=100;input.placeholder='Your answer';input.disabled=!connectState.user;
-   var done=result.completed_today.includes(Number(task.id));
-   var button=document.createElement('button');button.type='button';button.className='button primary';
-   button.textContent=done?'Completed today':(connectState.user?'Earn +'+task.points+' points':'Sign in to participate');button.disabled=!connectState.user||done;
-   var state=document.createElement('p');state.className='small-status';state.setAttribute('role','status');
-   button.addEventListener('click',async function(){
-    button.disabled=true;try{var reply=await connectPost('rewards.php',{action:'claim',task_id:Number(task.id),answer:input.value});
-     state.textContent=reply.message;await loadRewards();
-    }catch(e){state.textContent=e.message;button.disabled=false;}
-   });
-   article.append(title,desc,question,input,button,state);wrap.append(article);
-  });
-  var voucher=$('#voucher-list');voucher.replaceChildren();
-  result.redemptions.forEach(function(v){
-   var p=document.createElement('p');p.className='small-status';
-   if(v.status==='issued'&&v.voucher_code){
-    var pieces=v.voucher_code.split('-');p.textContent='100 MB voucher ready — username: '+pieces.shift()+' • password: '+pieces.join('-')+' (use on authorized VWEB guest hotspot)';
-   }else{p.textContent='Voucher request #'+v.id+' — '+v.status+' (not usable until issued)';}
-   voucher.append(p);
-  });
- }catch(e){connectText('#reward-tasks','Reward service unavailable until database setup.');}
 }
 function bindMemberForm(formId,handler,feedbackId){
  var form=$(formId);
@@ -361,10 +292,6 @@ $('#save-prefs').addEventListener('click',async function(){
  try{await connectPost('member.php',{action:'prefs',marketing_opt_in:$('#member-marketing').checked});
  await refreshMember();connectText('#prefs-status','Saved.');}catch(e){connectText('#prefs-status',e.message);}
 });
-bindMemberForm('#pppoe-link-form',async function(){
- var reply=await connectPost('member.php',{action:'link_isp',pppoe_username:$('#pppoe-user').value.trim()});
- connectText('#pppoe-status',reply.message);$('#pppoe-user').value='';await loadDashboard();
-},'#pppoe-status');
 bindMemberForm('#merchant-form',async function(){
  var reply=await connectPost('member.php',{action:'merchant',business_name:$('#merchant-business').value,
   offer_title:$('#merchant-title').value,description:$('#merchant-description').value,website:$('#merchant-url').value});
@@ -372,12 +299,8 @@ bindMemberForm('#merchant-form',async function(){
 },'#merchant-feedback');
 bindMemberForm('#support-form',async function(){
  var reply=await connectPost('member.php',{action:'support',subject:$('#support-subject').value,message:$('#support-message').value});
- $('#support-form').reset();connectText('#support-feedback',reply.message);await loadDashboard();
+ $('#support-form').reset();connectText('#support-feedback',reply.message);await loadSupportTickets();
 },'#support-feedback');
-$('#redeem-points').addEventListener('click',async function(){
- this.disabled=true;try{var reply=await connectPost('rewards.php',{action:'redeem'});connectText('#redeem-info',reply.message);await loadRewards();}
- catch(e){connectText('#redeem-info',e.message);}finally{await loadRewards();}
-});
 // Browser Web Push requires an installed service worker, explicit opt-in and
 // server-side VAPID signing. Nothing auto-subscribes a visitor.
 var pushVapid='';
@@ -410,7 +333,15 @@ $('#disable-push').addEventListener('click',async function(){
   connectText('#prefs-status','Notifications disabled.');
  }catch(e){connectText('#prefs-status',e.message);}
 });
-refreshMember();
+// Login/PHP/MySQL loads only after the visitor opens the optional Account page.
+var accountInitialized=false;
+function openAccountIfRequested(){
+ if(location.hash==='#account'&&!accountInitialized){
+  accountInitialized=true;refreshMember();
+ }
+}
+window.addEventListener('hashchange',openAccountIfRequested);
+openAccountIfRequested();
 
 
 // Additional fully browser-side free utilities.

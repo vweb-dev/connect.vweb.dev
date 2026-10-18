@@ -19,9 +19,7 @@ jobs:
         run: |
           find api admin ops docs -type f -name '*.php' -print0 | xargs -0 -n 1 php -l
       - name: JavaScript syntax checks
-        run: node --check assets/app.js && node --check assets/converter.js && node --check assets/hub.js && node --check assets/puter-ai.js && node --check assets/entertainment.js && node --check sw.js && node --test tests/entertainment.test.mjs tests/converter.test.mjs tests/connect20.test.mjs tests/quality.test.mjs tests/software.test.mjs
-      - name: Python source checks
-        run: python3 -m py_compile ops/radius_agent.py ops/gateway_agent.py
+        run: node --check assets/app.js && node --check assets/converter.js && node --check assets/hub.js && node --check assets/puter-ai.js && node --check assets/entertainment.js && node --check sw.js && node --test tests/entertainment.test.mjs tests/converter.test.mjs tests/connect20.test.mjs tests/quality.test.mjs tests/software.test.mjs tests/focus.test.mjs
       - name: Validate manifest and Composer metadata
         run: |
           python3 -m json.tool manifest.webmanifest >/dev/null
@@ -30,5 +28,5 @@ jobs:
         run: |
           test -f index.html && test -f .htaccess && test -f sw.js
           test -f admin/index.php && test -f admin/operations.php
-          test -f api/public.php && test -f api/member.php && test -f api/isp-sync.php
-          test -f db/schema.sql && test -f db/phase3.sql
+          test -f api/public.php && test -f api/member.php && test -f api/member-tickets.php
+          test -f db/schema.sql && test -f db/community.sql

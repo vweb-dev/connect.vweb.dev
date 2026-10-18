@@ -161,7 +161,7 @@ function admin_date_value(?array $row,string $key):string {
 <html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><meta name="robots" content="noindex,nofollow">
 <title>Connect Content Manager | VWEB.DEV</title><link rel="stylesheet" href="/admin/style.css"></head><body>
 <header><div><strong>VWEB.DEV CONNECT</strong><br><small>FIRST-PARTY CONTENT & AD MANAGER</small></div>
-<div><a href="/" class="btn secondary">← Public PWA</a> <a href="/admin/media.php" class="btn secondary">Entertainment CMS ↗</a> <a href="/admin/operations.php" class="btn secondary">Network & Members ↗</a>
+<div><a href="/" class="btn secondary">← Public PWA</a> <a href="/admin/media.php" class="btn secondary">Entertainment CMS ↗</a> <a href="/admin/operations.php" class="btn secondary">Community & Members ↗</a>
 <?php if($logged): ?><form method="post" action="/admin/" class="inline-form"><input type="hidden" name="csrf" value="<?= $e(connect_csrf()) ?>"><input type="hidden" name="action" value="logout"><button class="secondary" type="submit">Sign out</button></form><?php endif; ?></div></header>
 <main>
 <?php if ($error): ?><div class="error" role="alert"><?= $e($error) ?></div><?php endif; ?>

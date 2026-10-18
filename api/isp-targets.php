@@ -1,12 +1,9 @@
 <?php
 declare(strict_types=1);
-require __DIR__.'/_isp_auth.php';
+// Legacy ISP/Rewards integration permanently retired from the public app.
+// Historical tables and data are preserved; no subscriber / wallet data is exposed.
 header('Cache-Control: no-store');
-if($_SERVER['REQUEST_METHOD']!=='GET') connect_json(['ok'=>false],405);
-isp_auth('');
-try{
- $db=connect_db();
- $names=$db->query("SELECT DISTINCT pppoe_username FROM isp_account_links
-    WHERE status='approved' ORDER BY pppoe_username LIMIT 2000")->fetchAll(PDO::FETCH_COLUMN);
- connect_json(['ok'=>true,'usernames'=>$names]);
-}catch(Throwable $e){connect_json(['ok'=>false,'message'=>'Target lookup unavailable'],503);}
+header('Content-Type: application/json; charset=utf-8');
+http_response_code(410);
+echo json_encode(['ok'=>false,'message'=>'This feature has been retired from VWEB.DEV Connect.'],JSON_UNESCAPED_SLASHES);
+exit;

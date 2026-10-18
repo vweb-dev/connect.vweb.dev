@@ -11,12 +11,12 @@
 <meta property="og:description" content="Browser-first file tools, trusted software links, genuine Windows help and organized free YouTube courses in one lightweight digital hub.">
 <meta name="twitter:card" content="summary">
 <link rel="manifest" href="/manifest.webmanifest"><link rel="apple-touch-icon" href="/assets/connect-icon.svg"><link rel="icon" type="image/svg+xml" href="/assets/connect-icon.svg">
-<link rel="preconnect" href="https://i.ibb.co"><link rel="stylesheet" href="/assets/style.css?v=connect20-software-20261018">
-<script src="/assets/app.js?v=connect20-software-20261018" defer></script>
-<script src="/assets/puter-ai.js?v=connect20-software-20261018" defer></script>
-<script src="/assets/entertainment.js?v=connect20-software-20261018" defer></script>
-<script src="/assets/converter.js?v=connect20-software-20261018" defer></script>
-<script src="/assets/hub.js?v=connect20-software-20261018" defer></script>
+<link rel="preconnect" href="https://i.ibb.co"><link rel="stylesheet" href="/assets/style.css?v=connect20-focus-20261018">
+<script src="/assets/app.js?v=connect20-focus-20261018" defer></script>
+<script src="/assets/puter-ai.js?v=connect20-focus-20261018" defer></script>
+<script src="/assets/entertainment.js?v=connect20-focus-20261018" defer></script>
+<script src="/assets/converter.js?v=connect20-focus-20261018" defer></script>
+<script src="/assets/hub.js?v=connect20-focus-20261018" defer></script>
 </head>
 <body>
 <a class="skip" href="#main">Skip to content</a>
@@ -43,8 +43,6 @@
 </nav>
 <div class="side-label">YOUR CONNECT</div>
 <nav class="nav">
-<a href="#internet" data-nav="internet">◉ <span>My Internet</span></a>
-<a href="#rewards" data-nav="rewards">✳ <span>Rewards</span></a>
 <a href="#account" data-nav="account">◉ <span>My Account</span></a>
 </nav>
 <div class="side-end"><p>One digital space.<br><strong>More ways to do.</strong></p><a href="https://vweb.dev" target="_blank" rel="noopener noreferrer">Explore VWEB.DEV ↗</a></div>
@@ -72,7 +70,8 @@
       <p>Learn something new, fix your PC, discover trustworthy apps and use powerful tools. No compulsory account. Built for your browser.</p>
       <form id="hub-global-form" role="search" class="hub-search"><label for="hub-search" class="visually-hidden">Find apps, tools or courses</label><span aria-hidden="true">⌕</span><input id="hub-search" type="search" placeholder="Search tools, courses, apps, PC fixes…" autocomplete="off"><button type="submit" aria-label="Search">Search ↗</button></form>
       <div id="hub-search-results" class="hub-search-results" hidden></div>
-      <div class="hub-hero-tags"><span>◈ Browser first</span><span>✳ Free resources</span><span>▧ No file uploads</span></div>
+      <div class="hub-hero-tags"><span>◈ Browser first</span><span>✳ Curated app links</span><span>▧ File processing on your device</span></div>
+<div class="hub-search-suggestions"><span>Popular:</span><button type="button" data-hub-search="PDF">PDF tools</button><button type="button" data-hub-search="Windows">Windows setup</button><button type="button" data-hub-search="video">Video</button><button type="button" data-hub-search="design">Design</button></div>
     </div>
     <div class="hub-hero-aside" aria-label="Quick links">
       <strong>START HERE</strong>
@@ -96,6 +95,11 @@
   <div id="hub-home-studios" class="hub-studio-grid"></div>
   <div class="hub-home-heading"><div><span class="overline">TRUSTED DIRECT LINKS</span><h2>Useful software & apps</h2></div><a href="#apps">Explore app library ↗</a></div>
   <div id="hub-home-apps" class="hub-app-grid"></div>
+  <div class="hub-home-banner">
+   <span class="hub-banner-icon" aria-hidden="true">◧</span>
+   <div><span class="overline">YOUR SOFTWARE, YOUR CHOICE</span><h2>Build a free Windows starter pack.</h2><p>Choose trusted downloads, generate WinGet install commands, and keep the installers on their publishers’ servers.</p></div>
+   <a class="button primary" href="#pc">Build my software pack ↗</a>
+  </div>
   <div class="hub-home-heading"><div><span class="overline">START LEARNING</span><h2>Learning paths</h2></div><a href="#academy">View Academy ↗</a></div>
   <div id="hub-home-courses" class="hub-learning-grid"></div>
   <div id="home-promotions" hidden></div>
@@ -241,32 +245,19 @@
 <div class="tiles two" id="guides"></div>
 <div class="informative"><span class="informative-icon">◎</span><div><strong>Local reporting coming next.</strong><p>We will only publish attributed and verified news. This starter does not pretend to provide live Lahore updates.</p></div></div>
 </section>
-<section class="page" id="page-internet" hidden>
-<div class="page-header"><div class="overline">YOUR INTERNET ACCOUNT</div><h1>My Internet<span class="accent">.</span></h1><p>Link your ISP PPPoE account to see authorized usage, package and connection details. No router login required.</p></div>
-<div class="ai-info"><strong>Account protection</strong><span>Enter only the PPPoE username, never its password or your router admin credentials. ISP staff must independently verify your ownership before any private usage data appears.</span></div>
-<div id="internet-summary" class="unavailable compact"><span class="big-symbol">◉</span><h2>Sign in to view your internet accounts.</h2><p>ISP data is never public. Your approved account link and a configured ISP sync are required.</p><a class="button primary" href="#account">Sign in / create account ↗</a></div>
-<div id="isp-links" class="isp-account-list" aria-live="polite"></div>
-<form id="pppoe-link-form" class="tool-card account-form" hidden><h2>Request ISP account linking</h2><p>Customer support verifies ownership using the ISP's independent subscriber records. The request itself gives no access to data.</p><label for="pppoe-user">Your PPPoE username only</label><input id="pppoe-user" autocomplete="off" placeholder="customer@isp" maxlength="190" required><button class="button primary" type="submit">Request verification ↗</button><p id="pppoe-status" class="small-status" role="status"></p></form>
-</section>
-<section class="page" id="page-rewards" hidden>
-<div class="page-header"><div class="overline">LEARN & EARN</div><h1>Rewards<span class="accent">.</span></h1><p>Complete a short educational challenge to earn VWEB points. Internet data redemption is available only after a separate authorized hotspot gateway is configured.</p></div>
-<div class="reward-banner"><div><div class="overline">MY REWARDS WALLET</div><h2 id="rewards-total">Sign in to view points</h2><p>Daily earnings are limited. Affiliate clicks, purchases and marketing opt-in are never required.</p></div><div class="reward-emblem">✳</div></div>
-<h2 class="subheading">Learning challenges</h2><div id="reward-tasks" class="tiles two"><p class="muted">Loading challenges…</p></div>
-<div class="account-form tool-card"><h2>Redeem for guest Wi-Fi</h2><p id="redeem-info">Internet vouchers need an ISP-authorized gateway. Points are not equivalent to mobile data.</p><button class="button primary" type="button" id="redeem-points" disabled>Redeem 100 points for 100 MB</button><div id="voucher-list" aria-live="polite"></div></div>
-</section>
 <section class="page" id="page-account" hidden>
-<div class="page-header"><div class="overline">YOUR CONNECT ACCOUNT</div><h1>My Connect<span class="accent">.</span></h1><p>Manage saved offers, earn learning points, request ISP account linking and submit local business offers.</p></div>
+<div class="page-header"><div class="overline">YOUR CONNECT ACCOUNT</div><h1>My Connect<span class="accent">.</span></h1><p>Manage your profile, notification choices, merchant submissions and support requests.</p></div>
 <div id="member-guest" class="tiles two">
 <form class="tool-card account-form" id="login-form"><div class="card-heading"><div class="tool-icon">◉</div><div><h2>Welcome back</h2><p>Sign in to your private dashboard.</p></div></div><label for="login-email">Email</label><input id="login-email" name="email" type="email" autocomplete="email" required><label for="login-password">Password</label><input id="login-password" name="password" type="password" autocomplete="current-password" required><button class="button primary" type="submit">Sign in ↗</button><p class="small-status" id="login-feedback" role="status"></p></form>
 <form class="tool-card account-form" id="register-form"><div class="card-heading"><div class="tool-icon">✦</div><div><h2>Create an account</h2><p>No paid membership or compulsory promotions.</p></div></div><label for="register-name">Your name</label><input id="register-name" maxlength="100" required autocomplete="name"><label for="register-email">Email</label><input id="register-email" type="email" required autocomplete="email"><label for="register-password">Password (minimum 12 characters)</label><input id="register-password" type="password" minlength="12" required autocomplete="new-password"><label class="toggle-line"><input type="checkbox" id="register-marketing"> I optionally agree to promotional messages (can opt out later).</label><button class="button primary" type="submit">Create my account ↗</button><p class="small-status" id="register-feedback" role="status"></p></form>
 </div>
 <div id="member-profile" hidden>
-<div class="reward-banner"><div><div class="overline">YOUR PROFILE</div><h2 id="member-name">Welcome</h2><p id="member-email"></p></div><button type="button" class="button secondary" id="member-logout">Sign out</button></div>
+<div class="hub-profile-banner"><div><div class="overline">YOUR PROFILE</div><h2 id="member-name">Welcome</h2><p id="member-email"></p></div><button type="button" class="button secondary" id="member-logout">Sign out</button></div>
 <div class="tiles two">
-<div class="tool-card account-form"><h2>Notification preferences</h2><p>Marketing is optional. Use of our free tools and rewards does not require consent.</p>
+<div class="tool-card account-form"><h2>Notification preferences</h2><p>Marketing is optional. Free tools, courses and local bookmarks do not require consent or an account.</p>
 <label class="toggle-line"><input id="member-marketing" type="checkbox"> Receive relevant VWEB.DEV and partner offers</label><button type="button" class="button secondary" id="save-prefs">Save preferences</button>
 <div class="push-row"><button type="button" class="button secondary" id="enable-push" disabled>Enable push notifications</button><button type="button" class="button secondary" id="disable-push" disabled>Disable push</button></div><p class="small-status" id="prefs-status" role="status"></p></div>
-<div class="tool-card"><h2>My internet & rewards</h2><p>Keep PPPoE account data private; use separate PWA account verification.</p><div class="actions wrap"><a class="button secondary" href="#internet">My Internet ↗</a><a class="button secondary" href="#rewards">Rewards ↗</a></div></div>
+<div class="tool-card hub-member-links"><h2>Your digital workspace</h2><p>Save apps and learning progress locally without signing in. Your Connect account remains available for moderated community submissions, support and optional notifications.</p><div class="actions wrap"><a class="button secondary" href="#dashboard">Open My Workspace ↗</a><a class="button secondary" href="#apps">Browse software ↗</a></div></div>
 </div>
 <div class="section-title"><div><div class="overline">COMMUNITY</div><h2>Suggest a local offer</h2></div></div>
 <div class="tiles two">
@@ -276,7 +267,7 @@
 <label for="merchant-description">Description</label><textarea id="merchant-description" rows="4" required maxlength="1800"></textarea>
 <label for="merchant-url">Merchant HTTPS website</label><input type="url" id="merchant-url" required placeholder="https://">
 <button class="button primary" type="submit">Submit for review ↗</button><p id="merchant-feedback" class="small-status" role="status"></p></form>
-<form class="tool-card account-form" id="support-form"><h2>Request support</h2><p>Get assistance with app issues or ISP account verification.</p>
+<form class="tool-card account-form" id="support-form"><h2>Request support</h2><p>Get assistance with app issues, your Connect account or community submissions.</p>
 <label for="support-subject">Subject</label><input id="support-subject" required maxlength="180">
 <label for="support-message">Message</label><textarea rows="5" id="support-message" required maxlength="2000"></textarea>
 <button class="button primary" type="submit">Send support request ↗</button><p id="support-feedback" class="small-status" role="status"></p>
@@ -308,7 +299,7 @@
  </div>
  <section id="game-quiz" class="ent-game-board" aria-label="Trivia challenge">
    <div class="ent-game-top"><div><div class="overline">OPEN TRIVIA DATABASE</div><h2>Today's knowledge challenge</h2></div><span id="quiz-score" class="ent-score">Score: 0</span></div>
-   <div id="quiz-main"><p>Fresh multiple-choice questions from the free Open Trivia DB. Answers are scored locally; game points do not add ISP internet quota.</p><button id="quiz-start" type="button" class="button primary">Start 8-question quiz ↗</button></div>
+   <div id="quiz-main"><p>Fresh multiple-choice questions from Open Trivia DB. Answers are scored locally without accounts or cash rewards.</p><button id="quiz-start" type="button" class="button primary">Start 8-question quiz ↗</button></div>
    <p class="ent-attribution">Questions: <a href="https://opentdb.com/" target="_blank" rel="noopener noreferrer">Open Trivia DB</a> · CC BY-SA 4.0</p>
  </section>
  <section id="game-memory" class="ent-game-board" hidden><div class="ent-game-top"><div><div class="overline">100% IN-BROWSER</div><h2>Memory Match</h2></div><span id="memory-moves" class="ent-score">Moves: 0</span></div><p>Match all eight pairs. Cards and progress stay in your browser.</p><div id="memory-board" class="ent-memory-board"></div><p id="memory-feedback" role="status"></p><button id="memory-new" type="button" class="button secondary">New round ↻</button></section>
@@ -386,8 +377,15 @@
 </section>
 <section class="page hub-page" id="page-apps" hidden>
  <div class="hub-page-title"><div class="overline">OFFICIAL LINKS · NO MIRRORS</div><h1>App Directory<span class="accent">.</span></h1><p>Discover useful PWAs, web apps and Windows software. Open the official publisher site, save favorites and find related tools.</p></div>
- <div class="hub-app-controls"><label class="visually-hidden" for="hub-app-search">Search apps</label><input id="hub-app-search" type="search" placeholder="Search apps by name or function…"><div id="hub-app-categories" class="hub-app-filters"></div></div>
- <div id="hub-app-count" class="hub-results-count" role="status" aria-live="polite"></div><div id="hub-app-library" class="hub-app-grid"></div>
+ <div class="hub-app-controls">
+ <label class="visually-hidden" for="hub-app-search">Search apps</label><input id="hub-app-search" type="search" placeholder="Find apps, software or tools…" autocomplete="off">
+ <label class="visually-hidden" for="hub-app-kind">Application type</label><select id="hub-app-kind"><option value="All">All formats</option><option value="Windows App">Windows downloads</option><option value="Web App">Web apps & PWAs</option></select>
+ <label class="visually-hidden" for="hub-app-sort">Sort applications</label><select id="hub-app-sort"><option value="featured">Recommended</option><option value="az">Name A–Z</option><option value="za">Name Z–A</option></select>
+ </div>
+ <div id="hub-app-categories" class="hub-app-filters hub-app-filter-row"></div>
+ <div class="hub-directory-heading"><div id="hub-app-count" class="hub-results-count" role="status" aria-live="polite"></div><button id="hub-app-reset" class="hub-app-reset" type="button">Reset filters ↺</button></div>
+ <div id="hub-app-library" class="hub-app-grid"></div>
+ <div class="hub-app-pagination"><button id="hub-app-more" type="button" class="button secondary" hidden>Show more resources ↓</button></div>
  <div class="hub-inline-info"><strong>About installing PWAs</strong><p>Open an app's official website, then use your browser's install option if offered. VWEB.DEV cannot remotely install other websites as PWAs, and not every listed website is installable. Windows apps open official download pages rather than being mirrored here.</p></div>
 </section>
 <section class="page hub-page" id="page-dashboard" hidden>
@@ -398,7 +396,7 @@
   <section class="hub-panel"><div class="hub-pane-heading"><strong>Saved apps & tools</strong></div><div id="hub-dashboard-saved"></div></section>
  </div>
  <section class="hub-panel"><div class="hub-pane-heading"><strong>Recently visited</strong></div><div id="hub-dashboard-recent" class="hub-recent-list"></div></section>
- <section class="hub-panel"><div class="hub-pane-heading"><strong>Manage workspace data</strong></div><p>Export your favorites, notes and course progress as a JSON file. Import only files you trust. Clearing data affects this browser, not your existing ISP account or server profile.</p>
+ <section class="hub-panel"><div class="hub-pane-heading"><strong>Manage workspace data</strong></div><p>Export your favorites, notes and course progress as a JSON file. Import only files you trust. Clearing data affects only this browser, not the optional Connect account.</p>
  <div class="hub-action-row"><button id="hub-data-export" class="button secondary" type="button">Export workspace ↓</button><label class="button secondary hub-import-label">Import workspace<input id="hub-data-import" type="file" accept="application/json,.json" hidden></label><button id="hub-data-reset" class="button secondary" type="button">Clear workspace</button></div><p id="hub-data-message" role="status" class="hub-small-note"></p></section>
 </section>
 
@@ -408,5 +406,4 @@
 <nav class="mobile-nav" aria-label="Mobile quick navigation"><a href="#home" data-nav="home">⌂<small>Home</small></a><a href="#studios" data-nav="studios">⇄<small>Tools</small></a><a href="#academy" data-nav="academy">▶<small>Learn</small></a><a href="#apps" data-nav="apps">◧<small>Apps</small></a><button id="mobile-more" type="button" aria-label="Show all sections" aria-expanded="false">☰<small>More</small></button></nav>
 <div id="mobile-drawer" class="mobile-drawer" hidden><div class="mobile-drawer-panel"><div class="mobile-drawer-head"><strong>EXPLORE CONNECT</strong><button id="mobile-drawer-close" type="button" aria-label="Close navigation">✕</button></div><nav aria-label="All pages">
 <a href="#home">⌂ Overview</a><a href="#studios">⇄ Tool Studios</a><a href="#academy">▶ Video Academy</a><a href="#pc">▦ PC Help / WinGet</a><a href="#apps">◧ App Directory</a><a href="#dashboard">◇ My Workspace</a>
-<a href="#convert">▤ Converter</a><a href="#tools">⌘ Quick Utilities</a><a href="#ai">✦ AI Studio</a><a href="#play">◆ Play & Learn</a><a href="#watch">▶ Watch & Podcasts</a><a href="#discover">✧ Discover</a><a href="#offers">◇ Deals</a><a href="#community">◎ Local & Learn</a><a href="#internet">◉ My Internet</a><a href="#rewards">✳ Rewards</a><a href="#account">◉ My Account</a></nav></div></div></div>
 </body></html>

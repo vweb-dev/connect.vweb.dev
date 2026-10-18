@@ -43,7 +43,7 @@ test('editorial directory retains safe official URLs',()=>{
 test('PWA caches simplified discovery engine and catalog',()=>{
  assert.match(sw,/data\/entertainment\.json/);
  assert.match(sw,/path==='\/assets\/entertainment\.js'/);
- assert.match(sw,/vweb-connect-static-v15/);
+ assert.match(sw,/vweb-connect-static-v16/);
  assert.match(page,/entertainment\.js\?v=/);
 });
 test('sponsored discovery placement and mobile cards remain',()=>{

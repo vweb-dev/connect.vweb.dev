@@ -1,0 +1,62 @@
+-- VWEB.DEV Connect community account schema (new installs only).
+
+-- Existing installations retain their historical ISP/rewards records; do not drop tables.
+
+
+
+CREATE TABLE IF NOT EXISTS app_users (
+ id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+ name VARCHAR(100) NOT NULL,
+ email VARCHAR(190) NOT NULL UNIQUE,
+ password_hash VARCHAR(255) NOT NULL,
+ status ENUM('active','disabled') NOT NULL DEFAULT 'active',
+ marketing_opt_in TINYINT(1) NOT NULL DEFAULT 0,
+ created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+ last_login_at DATETIME NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+CREATE TABLE IF NOT EXISTS merchant_submissions (
+ id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+ user_id BIGINT UNSIGNED NOT NULL,
+ business_name VARCHAR(140) NOT NULL,
+ offer_title VARCHAR(180) NOT NULL,
+ description TEXT NOT NULL,
+ website VARCHAR(1024) NOT NULL,
+ status ENUM('pending','approved','rejected') NOT NULL DEFAULT 'pending',
+ created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+ reviewed_at DATETIME NULL,
+ CONSTRAINT fk_merchant_user FOREIGN KEY(user_id) REFERENCES app_users(id) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+CREATE TABLE IF NOT EXISTS support_tickets (
+ id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+ user_id BIGINT UNSIGNED NOT NULL,
+ subject VARCHAR(180) NOT NULL,
+ message TEXT NOT NULL,
+ status ENUM('open','resolved') NOT NULL DEFAULT 'open',
+ created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+ updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+ CONSTRAINT fk_ticket_user FOREIGN KEY(user_id) REFERENCES app_users(id) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+CREATE TABLE IF NOT EXISTS push_subscriptions (
+ id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+ user_id BIGINT UNSIGNED NOT NULL,
+ endpoint_hash CHAR(64) NOT NULL UNIQUE,
+ subscription_json TEXT NOT NULL,
+ enabled TINYINT(1) NOT NULL DEFAULT 1,
+ created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+ CONSTRAINT fk_push_user FOREIGN KEY(user_id) REFERENCES app_users(id) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+CREATE TABLE IF NOT EXISTS notification_jobs (
+ id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+ title VARCHAR(140) NOT NULL,
+ body VARCHAR(250) NOT NULL,
+ target_url VARCHAR(400) NOT NULL DEFAULT '/',
+ status ENUM('draft','queued','sent','failed') NOT NULL DEFAULT 'draft',
+ attempted INT UNSIGNED DEFAULT 0,
+ delivered INT UNSIGNED DEFAULT 0,
+ created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+ sent_at DATETIME NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;

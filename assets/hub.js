@@ -10,7 +10,7 @@ const el=(tag,cls,txt)=>{
 };
 const safeUrl=s=>{try{const u=new URL(s);return u.protocol==='https:'?u.href:null;}catch(_){return null;}};
 const STORAGE='vweb.connect20.v1';
-let data={courses:[],apps:[],studios:[],help:[]},appFilter='All',appSearch='',courseId=null,lessonIndex=0,playlistId=null;
+let data={courses:[],apps:[],studios:[],help:[]},appFilter='All',appSearch='',appKind='All',appSort='featured',appLimit=12,courseId=null,lessonIndex=0,playlistId=null;
 const emptyState=()=>({favorites:[],completed:{},position:{},notes:{},recent:[]});
 function loadStore(){
  try{
@@ -90,7 +90,7 @@ function renderHome(){
  const root=$('#hub-home-studios');clear(root);
  data.studios.slice(0,4).forEach(item=>root.append(studioCard(item)));
  const apps=$('#hub-home-apps');clear(apps);
- ['powertoys','brave','7zip','vscode'].forEach(id=>{
+ ['powertoys','vert','7zip','vscode'].forEach(id=>{
   const item=data.apps.find(x=>x.id===id);if(item)apps.append(appCard(item));
  });
  const study=$('#hub-home-courses');clear(study);
@@ -128,24 +128,54 @@ function renderStudios(){
  const root=$('#hub-studios-grid');clear(root);
  data.studios.forEach(s=>root.append(studioCard(s)));
 }
+// Directory: show only a page of cards to keep low-memory phones responsive.
+const featuredApps=['powertoys','7zip','vscode','vlc','gimp','obsidian','excalidraw','vert','firefox','brave','localsend','it-tools'];
 function renderApps(){
  const host=$('#hub-app-library');clear(host);
  const cats=$('#hub-app-categories');clear(cats);
  ['All',...new Set(data.apps.map(x=>x.category)),'Saved'].forEach(category=>{
-  const b=el('button','hub-chip'+(appFilter===category?' selected':''),category);b.type='button';
-  b.setAttribute('aria-pressed',String(appFilter===category));
-  b.addEventListener('click',()=>{appFilter=category;renderApps();});cats.append(b);
+  const button=el('button','hub-chip'+(appFilter===category?' selected':''),category);
+  button.type='button';button.setAttribute('aria-pressed',String(appFilter===category));
+  button.addEventListener('click',()=>{appFilter=category;appLimit=12;renderApps();});
+  cats.append(button);
  });
- const matches=data.apps.filter(x=>{
-  const cat=appFilter==='All'||(appFilter==='Saved'?state.favorites.includes(x.id):x.category===appFilter);
-  const match=[x.name,x.desc,x.category,...(x.tags||[])].join(' ').toLowerCase().includes(appSearch);
-  return cat&&match;
+ const visible=data.apps.filter(item=>{
+  const category=appFilter==='All'||(appFilter==='Saved'?state.favorites.includes(item.id):item.category===appFilter);
+  const kind=appKind==='All'||item.kind===appKind;
+  return category&&kind&&[item.name,item.desc,item.category,...(item.tags||[])].join(' ').toLowerCase().includes(appSearch);
  });
- $('#hub-app-count').textContent=matches.length+' resources · direct official destinations';
- if(!matches.length)textMsg(host,'Nothing matches yet. Try another keyword or category.');
- matches.forEach(item=>host.append(appCard(item)));
+ visible.sort((a,b)=>{
+  if(appSort==='az')return a.name.localeCompare(b.name);
+  if(appSort==='za')return b.name.localeCompare(a.name);
+  const aRank=featuredApps.indexOf(a.id),bRank=featuredApps.indexOf(b.id);
+  if(aRank!==-1||bRank!==-1)return (aRank===-1?999:aRank)-(bRank===-1?999:bRank);
+  return a.name.localeCompare(b.name);
+ });
+ const shown=visible.slice(0,appLimit);
+ $('#hub-app-count').textContent='Showing '+shown.length+' of '+visible.length+' resources · official publisher links';
+ const more=$('#hub-app-more');more.hidden=visible.length<=appLimit;
+ more.textContent='Show '+Math.min(12,visible.length-appLimit)+' more resources ↓';
+ if(!visible.length)textMsg(host,'No matching apps. Change a filter or clear your search.');
+ const fragment=document.createDocumentFragment();
+ shown.forEach(item=>fragment.append(appCard(item)));
+ host.append(fragment);
 }
-$('#hub-app-search').addEventListener('input',event=>{appSearch=event.target.value.trim().toLowerCase();renderApps();});
+function resetApps(){
+ appFilter='All';appSearch='';appKind='All';appSort='featured';appLimit=12;
+ $('#hub-app-search').value='';$('#hub-app-kind').value='All';$('#hub-app-sort').value='featured';
+ renderApps();
+}
+$('#hub-app-search').addEventListener('input',event=>{
+ appSearch=event.target.value.trim().toLowerCase();appLimit=12;renderApps();
+});
+$('#hub-app-kind').addEventListener('change',event=>{
+ appKind=event.target.value;appLimit=12;renderApps();
+});
+$('#hub-app-sort').addEventListener('change',event=>{
+ appSort=event.target.value;appLimit=12;renderApps();
+});
+$('#hub-app-reset').addEventListener('click',resetApps);
+$('#hub-app-more').addEventListener('click',()=>{appLimit+=12;renderApps();});
 // Optional global find: user searches a curated local index, not a backend.
 function searchIndex(query){
  const q=query.toLowerCase().trim();
@@ -170,13 +200,17 @@ function renderGlobalSearch(){
   b.addEventListener('click',()=>{
    $('#hub-search').value='';root.hidden=true;
    if(item.course)setCourse(item.course,true);
-   if(item.app){appFilter='All';appSearch=item.app.toLowerCase();$('#hub-app-search').value=item.app;renderApps();}
+   if(item.app){appFilter='All';appSearch=item.app.toLowerCase();appKind='All';appLimit=12;$('#hub-app-search').value=item.app;$('#hub-app-kind').value='All';renderApps();}
    location.hash=item.destination;
   });
   root.append(b);
  });
 }
 $('#hub-search').addEventListener('input',renderGlobalSearch);
+$('[data-hub-search]').forEach(button=>button.addEventListener('click',()=>{
+ $('#hub-search').value=button.dataset.hubSearch;renderGlobalSearch();
+ const field=$('#hub-search');field.focus();
+}));
 $('#hub-global-form').addEventListener('submit',event=>{
  event.preventDefault();
  renderGlobalSearch();

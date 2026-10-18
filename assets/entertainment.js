@@ -72,8 +72,17 @@ async function loadCatalog(){
   relevant.forEach(item=>root.append(makeMediaCard(item)));
  }
 }
-loadCatalog();
-window.addEventListener('hashchange',()=>{if(location.hash!=='#watch'&&podcastEmbed)clearPodcast();});
+// No media PHP/API calls until the user deliberately visits Discovery/Watch.
+let mediaCatalogStarted=false;
+function openDiscoveryWhenNeeded(){
+ const page=(location.hash||'#home').slice(1);
+ if(!mediaCatalogStarted&&(page==='watch'||page==='discover')){
+  mediaCatalogStarted=true;loadCatalog();
+ }
+ if(page!=='watch'&&podcastEmbed)clearPodcast();
+}
+window.addEventListener('hashchange',openDiscoveryWhenNeeded);
+openDiscoveryWhenNeeded();
 // Browser-local games and educational search are initialized below.
 // Open Trivia DB: questions are CC BY-SA 4.0; client fetch, no backend burden.
 const fallbackQuiz=[

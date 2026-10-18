@@ -302,3 +302,19 @@ Activation CMD tools: `slmgr /xpr`, `slmgr /dlv`, `slmgr /ato` (attempt for an a
 App library: 73 entries including Windows software, official web apps and PWA destinations. Filter/like links stay client-side; external sites own installer/CDN bandwidth. WinGet: 34 package identifiers exposed for user-generated commands, with user verification encouraged. The .cmd or .ps1 generated locally only installs when manually launched on Windows. App costs/licenses vary; some are freeware or freemium rather than open-source.
 
 TV/Radio: these modules have been retired due to unreliable public stream/player compatibility. Live TV and radio routes removed; historical URL hashes redirect to Watch. Discovery retains only on-demand publisher links, podcasts and six browser games, and media API filters archived TV entries. Existing DB enum and legacy sponsor placements are retained for compatibility, but admin no longer permits publishing new TV entries. No destructive migration required. Service worker v15.
+
+
+## Current release — Focused Tools & Learning (2026-10-18)
+
+The Free Internet / ISP dashboard, PPPoE linking, learning reward points, hotspot voucher redemption and network gateway features are retired. Old routes redirect to My Workspace. Retired APIs return HTTP 410 without opening MySQL. Historical tables and data were NOT dropped. Follow local retention obligations before any deletion.
+
+Anonymous homepage visits no longer fetch member, rewards, ISP, public CMS or on-demand media CMS APIs. The optional member API loads after the user visits #account; public offers/community CMS loads after visiting those sections; media CMS is fetched after visiting #watch or #discover. The static JSON catalog and browser-first tools remain available.
+
+App Directory: web/Windows formats, categories, sorting, search, saved apps and 12-at-a-time pagination; prominent software pack CTA on the homepage. Community administration handles merchant moderation, support tickets and opt-in notifications. Fresh installations can use db/community.sql to create only account/community tables. Existing deployments should NOT drop legacy database records.
+
+Support requests are fetched from an authenticated member-tickets.php endpoint instead of the retired ISP dashboard. Service worker cache v16.
+
+**Deployment action:** Disable any previously scheduled ISP agents such as ops/radius_agent.py or ops/gateway_agent.py in your actual hosting/router environment. Updating GitHub alone does not stop external cron tasks or clear live legacy data.
+
+
+Deployment tests: check #home, #apps, #dashboard, #account, #offers, #watch, old #internet and #rewards hash redirects, mobile directory filters, community moderation, lazy PHP calls and browser-local tools. The GitHub code update alone is NOT Hostinger deployment.
