@@ -2,7 +2,7 @@
 (function () {
 var $ = function (s) { return document.querySelector(s); };
 var $$ = function (s) { return Array.from(document.querySelectorAll(s)); };
-var routes=['home','convert','tools','ai','tv','watch','listen','play','discover','offers','community','internet','rewards','account'];
+var routes=['home','studios','academy','pc','apps','dashboard','convert','tools','ai','tv','watch','listen','play','discover','offers','community','internet','rewards','account'];
 function route(){
   var key=location.hash.replace('#','')||'home';if(routes.indexOf(key)<0)key='home';
   $$('.page').forEach(function(el){el.hidden=el.id!=='page-'+key;});

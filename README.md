@@ -115,3 +115,18 @@ Open \`/#convert\` for four local file-processing workspaces:
 These are original VWEB.DEV JavaScript implementations and **do not copy VERT's AGPL source**. VERT is linked as an independent external tool for advanced video/file codecs. No customer file is uploaded to our API, Hotspot, PHP/MySQL or Puter. Browser CPU/RAM/storage usage still applies; a third-party PDF library is fetched as code, not as an upload of your files.
 
 Entertainment reliability: official radio listening destinations remain available even if the community directory, stream codec, geo-rights or insecure feed prevents in-page playback; TV cards always expose provider links. This does not imply any third-party channel stream is guaranteed live.
+
+## VWEB.DEV Connect 2.0 — six integrated phases
+
+1. Homepage redesign: unified search and purposeful navigation with featured courses, tools and software.
+2. Video Academy: two creator-led verified YouTube courses arranged as 23 manually curated timestamped chapters, plus native YouTube playlist URL import, notes and manual progress.
+3. PC & Windows Help: genuine Windows activation guidance, official Microsoft links, and curated WinGet package command builder; no keygens or activation bypass.
+4. Apps & PWA Directory: curated 21 official web/software destinations, filters, saved apps and install guidance; it does not force-install third-party PWAs.
+5. Tool Studios: seven grouped existing workspaces, removing homepage repetition and adding lazy-loaded client-side QR generation.
+6. My Workspace: browser-local recent sections, saved apps, course progress, notes, JSON export/import/clear.
+
+Production: catalogs load from data/connect-hub.json; application UI loads assets/hub.js. Hostinger serves static code/catalog only. YouTube, linked PWAs and software stay on their publishers' sites. Existing ISP/backend/ads/AI code is retained. No SQL migration is required.
+
+Deploy newest main to Hostinger, invalidate PWA v12 cache, test main routes on mobile and desktop, and run the smoke tests in tests/connect20.test.mjs. Any external YouTube embedding restrictions or outdated software links need periodic source review. Imported playlists use YouTube's own native playlist viewer; custom lesson titles cannot be extracted without YouTube Data API.
+
+Legacy single-image compressor remains in the DOM for JS compatibility but is visually consolidated into Convert Studio's richer Image Lab. The existing data/text utilities remain accessible under Quick Utilities.

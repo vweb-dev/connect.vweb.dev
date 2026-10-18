@@ -274,3 +274,19 @@ pdf-lib: https://github.com/Hopding/pdf-lib (MIT; lazy CDN integration)
 Radio Browser: https://api.radio-browser.info/ (external community API)
 
 The directory and advanced media are separate from this local converter.
+
+## VWEB.DEV Connect 2.0 combined release
+
+Six phases: redesigned searchable home, YouTube Academy, legal PC/WinGet Help, curated PWA/software directory, merged tool studios, and personal local dashboard.
+
+Source files: data/connect-hub.json, assets/hub.js and assets/style.css. On Hostinger deploy newest main to the existing Connect document root. No new database migrations, paid API or media/installer hosting is needed. Verify new sw.js cache version v12.
+
+Academy: curated course chapters are start/end timestamped ranges within public creator videos; completion is explicitly marked by the learner and does NOT track YouTube watch activity. Importing a full YouTube playlist uses YouTube's official embedded playlist UI. No unofficial extraction or video download takes place.
+
+PC Help: only genuine Microsoft activation/troubleshooting and safe license status check (slmgr /xpr). WinGet builder outputs exact package IDs from a static approved catalog. Users review and run commands themselves. No pirated activator, KMS script or unofficial ISO is included.
+
+PWA installs: browser/official destination controls installability. Some web-app destinations are free but not open source; review provider terms.
+
+Performance: catalog static JSON and front-end JS may be cached by Cloudflare. External player video, downloads, PDF/QR helpers and client-side processing use third-party delivery and visitor device resources. No guarantee of absolute zero static Hostinger traffic. Course notes/progress/saved apps use localStorage only, exportable as JSON and not synced to the ISP database.
+
+QA: home search, route navigation, Academy chapters/playlist, manual progress/notes persistence, WinGet commands, Apps filters/favorites, tools tabs, QR creation, dashboard import/export/clear, responsive screens and existing ISP/Puter/ads regression. Do not treat source smoke tests as live browser verification.
