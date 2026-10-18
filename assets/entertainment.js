@@ -4,6 +4,7 @@
 const $=s=>document.querySelector(s);
 const $$=s=>Array.from(document.querySelectorAll(s));
 function textNode(tag,value,cls=''){const e=document.createElement(tag);e.textContent=value;if(cls)e.className=cls;return e;}
+function empty(root,message){if(root)root.replaceChildren(textNode('div',message,'ent-empty'));}
 // Open Trivia DB: questions are CC BY-SA 4.0; client fetch, no backend burden.
 const fallbackQuiz=[
  {q:'Which planet is known as the Red Planet?',answers:['Mars','Venus','Neptune','Jupiter'],correct:'Mars'},
@@ -167,7 +168,7 @@ function resetSudoku(){
  $('#sudoku-feedback').textContent='';
 }
 $('#sudoku-check').addEventListener('click',()=>{
- const got=$('#sudoku-grid input').map(i=>Number(i.value));
+ const got=$$('#sudoku-grid input').map(i=>Number(i.value));
  const filled=got.every(n=>Number.isInteger(n)&&n>=1&&n<=4);
  if(!filled){$('#sudoku-feedback').textContent='Fill all blank squares with numbers 1–4.';return;}
  const valid=got.every((v,i)=>v===sudokuSolution[i]);

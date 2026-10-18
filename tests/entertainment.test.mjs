@@ -35,3 +35,9 @@ test('retired on-demand media fetching is not part of games or PWA shell',()=>{
  assert.ok(!page.includes('data-ent-sponsor="watch"'));
  assert.ok(css.includes('ent-game-board'));
 });
+
+test('games quiz fallback and Sudoku input collection remain usable',()=>{
+ assert.match(runtime,/function empty\(root,message\)/);
+ assert.match(runtime,/const got=\$\$\('#sudoku-grid input'\)\.map/);
+ assert.doesNotMatch(runtime,/const got=\$\('#sudoku-grid input'\)\.map/);
+});
