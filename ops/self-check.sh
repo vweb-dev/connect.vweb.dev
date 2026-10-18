@@ -7,9 +7,12 @@ find api admin ops docs -type f -name '*.php' -print0 | while IFS= read -r -d ''
   php -l "$f"
 done
 if command -v node >/dev/null 2>&1; then
- echo "[Connect] Checking JavaScript..."
+ echo "[Connect] Checking JavaScript and media tests..."
  node --check assets/app.js
+ node --check assets/puter-ai.js
+ node --check assets/entertainment.js
  node --check sw.js
+ node --test tests/entertainment.test.mjs
 else
  echo "[Connect] Node unavailable: JS syntax check skipped."
 fi

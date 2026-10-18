@@ -2,7 +2,7 @@
 (function () {
 var $ = function (s) { return document.querySelector(s); };
 var $$ = function (s) { return Array.from(document.querySelectorAll(s)); };
-var routes=['home','tools','ai','offers','community','internet','rewards','account'];
+var routes=['home','tools','ai','tv','watch','listen','play','discover','offers','community','internet','rewards','account'];
 function route(){
   var key=location.hash.replace('#','')||'home';if(routes.indexOf(key)<0)key='home';
   $$('.page').forEach(function(el){el.hidden=el.id!=='page-'+key;});
@@ -11,6 +11,23 @@ function route(){
   window.scrollTo(0,0);
 }
 window.addEventListener('hashchange',route);route();
+var drawer=$('#mobile-drawer'),menuBtn=$('#mobile-more'),headMenu=$('#mobile-menu-toggle');
+function toggleDrawer(show){
+ if(!drawer)return;drawer.hidden=!show;
+ if(menuBtn)menuBtn.setAttribute('aria-expanded',String(show));
+ if(headMenu)headMenu.setAttribute('aria-expanded',String(show));
+ document.body.classList.toggle('drawer-open',show);
+ if(show){var closeBtn=$('#mobile-drawer-close');if(closeBtn)closeBtn.focus();}
+ else if(document.activeElement&&drawer.contains(document.activeElement)){(menuBtn||headMenu).focus();}
+}
+if(menuBtn)menuBtn.addEventListener('click',function(){toggleDrawer(drawer.hidden);});
+if(headMenu)headMenu.addEventListener('click',function(){toggleDrawer(drawer.hidden);});
+$('#mobile-drawer-close').addEventListener('click',function(){toggleDrawer(false);});
+drawer.addEventListener('click',function(e){if(e.target===drawer)toggleDrawer(false);});
+drawer.querySelectorAll('nav a').forEach(function(a){a.addEventListener('click',function(){toggleDrawer(false);});});
+window.addEventListener('keydown',function(e){if(e.key==='Escape'&&!drawer.hidden)toggleDrawer(false);});
+window.addEventListener('hashchange',function(){if(!drawer.hidden)toggleDrawer(false);});
+
 $('#year').textContent=new Date().getFullYear();
 if('serviceWorker' in navigator){window.addEventListener('load',function(){navigator.serviceWorker.register('/sw.js').catch(function(){});});}
 var installEvent=null;window.addEventListener('beforeinstallprompt',function(e){e.preventDefault();installEvent=e;$('#install').hidden=false;});

@@ -94,3 +94,8 @@ Media outputs from Puter are mounted in a bounded responsive frame rather than d
 ## AI Studio tabs (October 2026)
 
 AI Studio now has four proper ARIA tabs: Ask AI, Images, Videos and Captions. Each tab preserves its prompt, generated media, progress timer, and output when switching tools. Only the selected panel is displayed, so video previews cannot overlap another AI tool. Desktop uses a focused prompt/preview workspace, mobile uses compact 2×2 tabs and vertically stacked editor/preview. JavaScript supports mouse/touch and Left/Right/Home/End keyboard navigation. A background generation continues on the same page while another tab is shown, with a visible status dot and the existing floating activity tray. Closing/reloading still interrupts the local UI and may not stop upstream Puter processing.
+
+
+## VWEB Entertainment (October 2026)
+
+The PWA now includes **VWEB TV, Watch, Radio & Podcasts, Play & Learn, and Discover**, with a new mobile browse drawer, an official source directory, Radio Browser integration, Spotify official embeds, local favorites, Open Trivia DB plus offline games, Open Library search, and optional admin-curated media/first-party sponsorship. All provider streams play directly in the browser, never proxied by Hostinger. Use `/admin/media.php` for optional database-backed content curation after database setup. Review `docs/all-modules-setup.md` for licensing, configuration and testing instructions. Not every official channel permits embedding; VWEB opens their official source when it does not. No newly added content is asserted live unless the publisher has verified it.

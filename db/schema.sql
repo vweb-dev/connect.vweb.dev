@@ -14,7 +14,7 @@ CREATE TABLE IF NOT EXISTS content_items (
  category VARCHAR(80) NOT NULL DEFAULT 'General',
  code VARCHAR(80) NOT NULL DEFAULT '',
  url VARCHAR(1024) NOT NULL,
- placement ENUM('home','offers','news') NOT NULL DEFAULT 'offers',
+ placement ENUM('home','offers','news','tv','watch','listen','play') NOT NULL DEFAULT 'offers',
  priority SMALLINT NOT NULL DEFAULT 0,
  status ENUM('draft','published') NOT NULL DEFAULT 'draft',
  starts_at DATETIME NULL,

@@ -137,3 +137,87 @@ Set CONNECT_TARGETS_URL=https://connect.vweb.dev/api/isp-targets.php in the auth
 ### Run source checks without a GitHub runner
 
 From the deployed site document root over SSH, run `bash ops/self-check.sh`. It uses PHP lint, optional Node checks and Python AST parsing without paid services. This does not verify actual MySQL, SSL, push delivery, router management or billing-data accuracy. Configure and smoke-test those separately.
+
+
+
+# Entertainment modules (October 2026)
+
+Public-facing additions: \`#tv\`, \`#watch\`, \`#listen\`, \`#play\`, \`#discover\`.
+All media is **provider-direct**; Hostinger only hosts HTML, static JSON and
+optional PHP/MySQL metadata. Never enable video proxy, restreaming, scraping
+or automatic CDN mirroring on Hostinger.
+
+## What works without a database
+
+- Static curated TV/watch/podcast/learning directory: \`data/entertainment.json\`.
+- DW News verified official YouTube livestream embed (publisher may disable it).
+- Official NASA+, NASA Live, Euronews, France 24, Al Jazeera, PTV, TED and
+  educational links that open at their publishers.
+- Radio Browser direct browser search + playback and local favorites; HTTPS
+  stations only in the inline player, insecure feeds are not proxied.
+- Spotify embedded podcasts when the official \`show\` ID is valid; provider
+  controls playback, region restrictions and subscriptions.
+- Trivia through Open Trivia DB (CC BY-SA 4.0; one call per IP per 5 seconds).
+  An original offline set is used when the remote API is unavailable.
+- Memory, math, flags, word scramble and mini Sudoku entirely in the browser.
+  Official Lichess chess puzzle destination.
+- Open Library search from the browser, subject to its API availability.
+- Persistent local favorites for TV/radio; no sign-in required.
+- Small-screen Browse drawer; single active TV/podcast/radio player strategy,
+  lazy provider embeds and minimal video memory load.
+
+## Activate entertainment publishing on Hostinger
+
+1. Pull the latest \`main\` to your **separate** connect.vweb.dev document root.
+2. Ensure PHP/MySQL CMS was initialized at \`/admin/\` as documented earlier.
+3. Open \`https://connect.vweb.dev/admin/media.php\` while signed in.
+4. Click **Initialize entertainment catalog**: this creates the new table and
+   extends your existing own-ad placement enum to include
+   TV, Watch, Radio & Podcasts, and Games.
+5. Create a **Draft** first, enter an official HTTPS URL, provider details,
+   and independent proof that the publisher permits the selected embed.
+6. Confirm source and rights, then Publish. Only approved reviewed entries
+   are returned by \`/api/media.php\` and merged into the PWA catalog.
+7. In the existing Ads Manager at \`/admin/\`, create clearly labelled
+   sponsored cards using the new placements. Only one sponsor appears per
+   section. Sponsorships are separate from embedded players.
+
+Never label an arbitrary HLS/IPTV playlist as authorized. Generic HLS entries
+are only allowed with an explicit licensed-stream confirmation. Licensed HLS uses native Safari playback where supported, or lazy-loaded
+hls.js 1.7.3 from the public jsDelivr CDN in compatible browsers. The stream
+must allow CORS and must be licensed; the external publisher link remains the
+fallback when no compatible player is available. Do not treat this as a
+fully-featured IPTV player or assume third-party terms automatically permit
+embedding. This is an independent media **directory**, not a content owner.
+
+## Quality assurance
+
+- Desktop: navigate all four entertainment pages, search and favorite a TV listing.
+- Play the official DW YouTube embed then leave TV; iframe should unload.
+- Radio: search PK/GB/US stations, try HTTPS stations, pause/close the bottom
+  dock; external streams may be geo-blocked or unavailable.
+- Podcasts: select a Spotify item, open provider player and switch back to radio.
+- Games: verify quiz scoring and offline fallback, memory matching, flag
+  quiz, unscramble, math and Sudoku checks.
+- Discover: query Open Library, navigate to an official book listing.
+- Admin: verify drafts are NOT public, published entries require rights
+  confirmation, and new approved entries are visible in catalog.
+- Ads: verify sponsored labels, correct placement and secure redirects.
+- Mobile: test navigation drawer and bottom tabs, no cropped players.
+- Offline: the PWA shell and cached local catalog are available after the
+  first visit; radio/external streaming/live APIs do NOT work offline.
+- No DNS/hosting/ISP plan changes and no new paid service are required.
+  Provider limits, ISP bandwidth, existing hosting and power cost remain.
+
+## Sources and rights
+
+- YouTube Embed: https://support.google.com/youtube/answer/171780
+- Spotify: https://developer.spotify.com/documentation/embeds/
+- Radio Browser API: https://api.radio-browser.info/
+- Open Trivia DB: https://opentdb.com/api_config.php
+- NASA official live: https://www.nasa.gov/live/
+- Open Library API: https://openlibrary.org/developers/api
+
+Production checklist must include permissions review, user-specific external
+API limitations, mobile/browser tests and ISP bandwidth forecasting. Never
+imply partner endorsement by external media providers.
