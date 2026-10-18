@@ -1,0 +1,34 @@
+name: Connect code checks
+on:
+  push:
+    branches: [main]
+  pull_request:
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+      - name: Prepare PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.2'
+          extensions: pdo_mysql, mbstring, openssl
+          coverage: none
+      - name: PHP syntax checks
+        run: |
+          find api admin ops docs -type f -name '*.php' -print0 | xargs -0 -n 1 php -l
+      - name: JavaScript syntax checks
+        run: node --check assets/app.js && node --check sw.js
+      - name: Python source checks
+        run: python3 -m py_compile ops/radius_agent.py ops/gateway_agent.py
+      - name: Validate manifest and Composer metadata
+        run: |
+          python3 -m json.tool manifest.webmanifest >/dev/null
+          python3 -m json.tool composer.json >/dev/null
+      - name: Verify deployment files
+        run: |
+          test -f index.html && test -f .htaccess && test -f sw.js
+          test -f admin/index.php && test -f admin/operations.php
+          test -f api/public.php && test -f api/member.php && test -f api/isp-sync.php
+          test -f db/schema.sql && test -f db/phase3.sql

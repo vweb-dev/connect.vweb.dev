@@ -17,3 +17,25 @@
 .coupon-code{display:flex;flex-wrap:wrap;align-items:center;gap:9px;background:#101820;border:1px dashed #8a7047;border-radius:9px;padding:10px 12px}
 .coupon-code code{color:#f3d69c;font-size:13px;font-weight:700;overflow-wrap:anywhere}
 .coupon-code button{border:1px solid #836b44;background:#2a261e;border-radius:7px;color:#ead0a1;padding:6px 10px;font-size:11px;margin-left:auto}
+
+/* Auth, ISP and rewards — no false live subscriber metrics */
+.account-form{max-width:none}.account-form .button{margin-top:13px}
+.reward-banner{display:flex;justify-content:space-between;align-items:center;gap:20px;background:linear-gradient(105deg,#30271b,#191f26);border:1px solid #705738;border-radius:18px;padding:29px;margin:5px 0 28px}
+.reward-banner h2{font-size:clamp(23px,3vw,38px);margin:10px 0}.reward-banner p{margin:0;font-size:12px;max-width:480px}
+.reward-emblem{font-size:75px;color:var(--gold);opacity:.65}
+.subheading{margin:36px 0 18px}.account-form{margin-bottom:22px}
+.account-form input[type=email],.account-form input[type=url],.account-form input[type=password]{width:100%;background:#0e131a;border:1px solid #3b4450;color:#fff;padding:12px;border-radius:9px}
+.isp-account-list{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:15px;margin:25px 0}
+.isp-card{background:#17202a;border:1px solid #343f4d;border-radius:16px;padding:22px;overflow-wrap:anywhere}
+.isp-card h3{font-size:22px;margin:10px 0}.isp-card dl{display:grid;grid-template-columns:1fr 1fr;gap:10px 15px;font-size:12px}
+.isp-card dt{color:var(--muted)}.isp-card dd{margin:0;text-align:right}
+.isp-pill{border:1px solid #5b5440;border-radius:20px;padding:5px 10px;font-size:10px;color:var(--gold);display:inline-block}
+.isp-pill.online{color:#95d1aa;border-color:#476652}
+.reward-task{display:flex;flex-direction:column;gap:9px}
+.reward-task label{font-size:12px;color:var(--muted)}.reward-task input{width:100%;padding:10px;border:1px solid #45505e;border-radius:8px;background:#111922;color:#f6f0e6}
+.reward-task button:disabled,.account-form button:disabled{opacity:.55;cursor:not-allowed}
+.push-row{display:flex;gap:8px;flex-wrap:wrap;margin-top:20px}
+.compact.unavailable{min-height:240px;margin:0;padding:30px}
+#member-tickets{font-size:12px;color:var(--muted)}
+#member-tickets div{padding:8px 0;border-bottom:1px solid var(--line)}
+@media(max-width:800px){.isp-account-list{grid-template-columns:1fr}}

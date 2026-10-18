@@ -2,7 +2,7 @@
 (function () {
 var $ = function (s) { return document.querySelector(s); };
 var $$ = function (s) { return Array.from(document.querySelectorAll(s)); };
-var routes=['home','tools','ai','offers','community','internet','rewards'];
+var routes=['home','tools','ai','offers','community','internet','rewards','account'];
 function route(){
   var key=location.hash.replace('#','')||'home';if(routes.indexOf(key)<0)key='home';
   $$('.page').forEach(function(el){el.hidden=el.id!=='page-'+key;});
@@ -204,4 +204,303 @@ $('#generate-ai-image').addEventListener('click',async function(){
  if(result instanceof HTMLElement){result.alt='AI-generated image';out.append(result);}else if(typeof result==='string'){var img=document.createElement('img');img.src=result;img.alt='AI-generated image';out.append(img);}else{out.textContent='Unexpected response; please try again.';}
  }catch(e){out.textContent='Image request failed: '+(e.message||String(e))+' Please check credits and connectivity.';}finally{b.disabled=false;}
 });
+
+// ACCOUNT, RADIUS CUSTOMER VIEW AND REWARDS MODULES
+// All private data remains on the same Hostinger origin, behind a server session.
+var connectState={csrf:null,user:null,gatewayEnabled:false};
+async function connectGet(path){
+ var r=await fetch('/api/'+path,{credentials:'same-origin',cache:'no-store',headers:{'Accept':'application/json'}});
+ var json=await r.json();if(!r.ok||!json.ok)throw Error(json.message||'Service is currently unavailable.');
+ return json;
+}
+async function connectPost(path,data){
+ if(!connectState.csrf)throw Error('Accounts are not configured. Ask VWEB.DEV to finish Hostinger database setup.');
+ var r=await fetch('/api/'+path,{method:'POST',credentials:'same-origin',cache:'no-store',
+  headers:{'Content-Type':'application/json','X-CSRF-Token':connectState.csrf},
+  body:JSON.stringify(data)});
+ var json=await r.json();if(!r.ok||!json.ok)throw Error(json.message||'Request could not be completed.');
+ return json;
+}
+function connectText(id,text){var el=$(id);if(el)el.textContent=text;}
+function connectMb(bytes){
+ if(bytes===null||bytes===undefined||bytes==='')return 'Not available';
+ var num=Number(bytes);
+ if(!Number.isFinite(num)||num<0)return 'Not available';
+ return num>=1073741824?(num/1073741824).toFixed(2)+' GB':(num/1048576).toFixed(1)+' MB';
+}
+function connectDate(value){if(!value)return 'Not available';var d=new Date(String(value).replace(' ','T')+(String(value).includes('Z')?'':'Z'));return isNaN(d)?'Not available':d.toLocaleString();}
+function memberUI(){
+ var signed=!!connectState.user;
+ $('#member-guest').hidden=signed;$('#member-profile').hidden=!signed;
+ if(signed){
+  connectText('#member-name','Hello, '+connectState.user.name);
+  connectText('#member-email',connectState.user.email);
+  $('#member-marketing').checked=!!Number(connectState.user.marketing_opt_in);
+ }else{
+  connectText('#internet-summary h2','Sign in to view your internet accounts.');
+  $('#internet-summary').hidden=false;$('#pppoe-link-form').hidden=true;
+  $('#isp-links').replaceChildren();
+  connectText('#rewards-total','Sign in to view points');
+ }
+}
+async function refreshMember(){
+ try{
+  var result=await connectGet('member.php');connectState.csrf=result.csrf;
+  connectState.user=result.user||null;
+  memberUI();
+  if(result.user){await loadDashboard();}
+  await loadRewards();
+  await updatePushAvailability();
+ }catch(e){
+  connectState.csrf=null;connectState.user=null;memberUI();
+  connectText('#login-feedback','Account service not configured yet: '+e.message);
+  connectText('#register-feedback','Sign-up will work once the Hostinger app database is activated.');
+  connectText('#reward-tasks','Learning rewards will appear after backend activation.');
+  connectText('#redeem-info','Wi-Fi quota redemption requires an ISP-authorized guest gateway.');
+ }
+}
+async function loadDashboard(){
+ if(!connectState.user)return;
+ try{
+  var data=await connectGet('dashboard.php');
+  $('#internet-summary').hidden=true;$('#pppoe-link-form').hidden=false;
+  var list=$('#isp-links');list.replaceChildren();
+  if(!data.links.length){var p=document.createElement('div');p.className='informative';p.textContent='No ISP account linked. Submit your PPPoE username below for independent ISP ownership verification.';list.append(p);}
+  data.links.forEach(function(acc){
+   var box=document.createElement('article');box.className='isp-card';
+   var flag=document.createElement('span');flag.className='isp-pill'+(acc.is_online===1||acc.is_online==='1'?' online':'');
+   var status=acc.status==='approved'?(acc.data_status==='recent'?(Number(acc.is_online)?'Online':'Offline'):'Not live'):'Verification '+acc.status;
+   flag.textContent=status;
+   var title=document.createElement('h3');title.textContent=acc.pppoe_username;
+   var note=document.createElement('p');note.textContent=acc.status==='approved'?
+      (acc.data_status==='recent'?'Recently synchronized from the ISP.':'Waiting for fresh ISP accounting data; online status is not verified.'):
+      'Private usage remains hidden until ISP staff verify account ownership.';
+   box.append(flag,title,note);
+   if(acc.status==='approved'){
+    var dl=document.createElement('dl');
+    [
+     ['Package',acc.plan_name||'Not available'],
+     ['Session uptime',acc.session_uptime_seconds==null?'Not available':Math.round(Number(acc.session_uptime_seconds)/3600)+' hours'],
+     ['Current session download',connectMb(acc.session_download_bytes)],
+     ['Current session upload',connectMb(acc.session_upload_bytes)],
+     ['Reported download',connectMb(acc.reported_download_bytes)],
+     ['Reported upload',connectMb(acc.reported_upload_bytes)],
+     ['Usage period',acc.reported_period||'Not available'],
+     ['Source accuracy',acc.reported_basis==='session_start_estimate'?'Estimate (session start)':'As reported by ISP'],
+     ['Subscription renewal',acc.renewal_date||'Not supplied'],
+     ['Last sync',acc.collected_at?connectDate(acc.collected_at):'Not available']
+    ].forEach(function(pair){var dt=document.createElement('dt');dt.textContent=pair[0];var dd=document.createElement('dd');dd.textContent=pair[1];dl.append(dt,dd);});
+    box.append(dl);
+   }
+   list.append(box);
+  });
+  var tickets=$('#member-tickets');tickets.replaceChildren();
+  if(!data.tickets.length)tickets.textContent='No support requests yet.';
+  data.tickets.forEach(function(t){var div=document.createElement('div');div.textContent=t.subject+' — '+t.status;tickets.append(div);});
+ }catch(e){connectText('#internet-summary h2','Internet dashboard unavailable.');$('#internet-summary').hidden=false;}
+}
+async function loadRewards(){
+ try{
+  var result=await connectGet('rewards.php');
+  connectState.gatewayEnabled=!!result.gateway_enabled;
+  connectText('#rewards-total',connectState.user?String(result.points)+' points':'Sign in to earn points');
+  connectText('#redeem-info',connectState.gatewayEnabled?'Exchange 100 points for a 100 MB hotspot voucher. Only confirmed provisioning becomes usable.':'Internet vouchers are not yet active. Learning points can be earned; they are not MB.');
+  $('#redeem-points').disabled=!connectState.user||!connectState.gatewayEnabled||Number(result.points)<100;
+  var wrap=$('#reward-tasks');wrap.replaceChildren();
+  if(!result.tasks.length)wrap.textContent='Learning challenges will be published soon.';
+  result.tasks.forEach(function(task){
+   var article=document.createElement('article');article.className='tile reward-task';
+   var title=document.createElement('h3');title.textContent=task.title;
+   var desc=document.createElement('p');desc.textContent=task.description;
+   var question=document.createElement('label');question.textContent=task.question;
+   var input=document.createElement('input');input.type='text';input.maxLength=100;input.placeholder='Your answer';input.disabled=!connectState.user;
+   var done=result.completed_today.includes(Number(task.id));
+   var button=document.createElement('button');button.type='button';button.className='button primary';
+   button.textContent=done?'Completed today':(connectState.user?'Earn +'+task.points+' points':'Sign in to participate');button.disabled=!connectState.user||done;
+   var state=document.createElement('p');state.className='small-status';state.setAttribute('role','status');
+   button.addEventListener('click',async function(){
+    button.disabled=true;try{var reply=await connectPost('rewards.php',{action:'claim',task_id:Number(task.id),answer:input.value});
+     state.textContent=reply.message;await loadRewards();
+    }catch(e){state.textContent=e.message;button.disabled=false;}
+   });
+   article.append(title,desc,question,input,button,state);wrap.append(article);
+  });
+  var voucher=$('#voucher-list');voucher.replaceChildren();
+  result.redemptions.forEach(function(v){
+   var p=document.createElement('p');p.className='small-status';
+   if(v.status==='issued'&&v.voucher_code){
+    var pieces=v.voucher_code.split('-');p.textContent='100 MB voucher ready — username: '+pieces.shift()+' • password: '+pieces.join('-')+' (use on authorized VWEB guest hotspot)';
+   }else{p.textContent='Voucher request #'+v.id+' — '+v.status+' (not usable until issued)';}
+   voucher.append(p);
+  });
+ }catch(e){connectText('#reward-tasks','Reward service unavailable until database setup.');}
+}
+function bindMemberForm(formId,handler,feedbackId){
+ var form=$(formId);
+ if(!form)return;
+ form.addEventListener('submit',async function(ev){ev.preventDefault();
+  var btn=form.querySelector('button[type=submit]');btn.disabled=true;connectText(feedbackId,'Working…');
+  try{await handler();connectText(feedbackId,'Success.');}catch(e){connectText(feedbackId,e.message);}
+  finally{btn.disabled=false;}
+ });
+}
+bindMemberForm('#login-form',async function(){
+ await connectPost('member.php',{action:'login',email:$('#login-email').value,password:$('#login-password').value});
+ $('#login-password').value='';await refreshMember();location.hash='#account';
+},'#login-feedback');
+bindMemberForm('#register-form',async function(){
+ await connectPost('member.php',{action:'register',name:$('#register-name').value,
+  email:$('#register-email').value,password:$('#register-password').value,
+  marketing_opt_in:$('#register-marketing').checked});
+ $('#register-password').value='';await refreshMember();location.hash='#account';
+},'#register-feedback');
+$('#member-logout').addEventListener('click',async function(){try{await connectPost('member.php',{action:'logout'});await refreshMember();location.hash='#home';}catch(e){connectText('#prefs-status',e.message);}});
+$('#save-prefs').addEventListener('click',async function(){
+ try{await connectPost('member.php',{action:'prefs',marketing_opt_in:$('#member-marketing').checked});
+ await refreshMember();connectText('#prefs-status','Saved.');}catch(e){connectText('#prefs-status',e.message);}
+});
+bindMemberForm('#pppoe-link-form',async function(){
+ var reply=await connectPost('member.php',{action:'link_isp',pppoe_username:$('#pppoe-user').value.trim()});
+ connectText('#pppoe-status',reply.message);$('#pppoe-user').value='';await loadDashboard();
+},'#pppoe-status');
+bindMemberForm('#merchant-form',async function(){
+ var reply=await connectPost('member.php',{action:'merchant',business_name:$('#merchant-business').value,
+  offer_title:$('#merchant-title').value,description:$('#merchant-description').value,website:$('#merchant-url').value});
+ $('#merchant-form').reset();connectText('#merchant-feedback',reply.message);
+},'#merchant-feedback');
+bindMemberForm('#support-form',async function(){
+ var reply=await connectPost('member.php',{action:'support',subject:$('#support-subject').value,message:$('#support-message').value});
+ $('#support-form').reset();connectText('#support-feedback',reply.message);await loadDashboard();
+},'#support-feedback');
+$('#redeem-points').addEventListener('click',async function(){
+ this.disabled=true;try{var reply=await connectPost('rewards.php',{action:'redeem'});connectText('#redeem-info',reply.message);await loadRewards();}
+ catch(e){connectText('#redeem-info',e.message);}finally{await loadRewards();}
+});
+// Browser Web Push requires an installed service worker, explicit opt-in and
+// server-side VAPID signing. Nothing auto-subscribes a visitor.
+var pushVapid='';
+async function updatePushAvailability(){
+ try{
+  var p=await connectGet('push.php');pushVapid=p.vapid_public_key||'';
+  var supported=!!(connectState.user&&p.available&&'serviceWorker' in navigator&&'PushManager' in window&&'Notification' in window);
+  $('#enable-push').disabled=!supported;$('#disable-push').disabled=!supported;
+  if(!p.available)connectText('#prefs-status','Web Push sender is not configured yet; account settings still work.');
+ }catch(e){$('#enable-push').disabled=true;$('#disable-push').disabled=true;}
+}
+function pushKey(key){
+ var text=key.replace(/-/g,'+').replace(/_/g,'/');var padded=text+'='.repeat((4-text.length%4)%4);
+ return Uint8Array.from(atob(padded),function(c){return c.charCodeAt(0);});
+}
+$('#enable-push').addEventListener('click',async function(){
+ try{
+  if(!$('#member-marketing').checked)throw Error('Save optional promotional consent first.');
+  var permission=await Notification.requestPermission();
+  if(permission!=='granted')throw Error('Notifications were not permitted by your browser.');
+  var reg=await navigator.serviceWorker.ready;
+  var sub=await reg.pushManager.subscribe({userVisibleOnly:true,applicationServerKey:pushKey(pushVapid)});
+  await connectPost('push.php',{action:'subscribe',subscription:sub.toJSON()});
+  connectText('#prefs-status','Notifications enabled. You can disable them any time.');
+ }catch(e){connectText('#prefs-status',e.message);}
+});
+$('#disable-push').addEventListener('click',async function(){
+ try{var reg=await navigator.serviceWorker.ready;var sub=await reg.pushManager.getSubscription();
+  if(sub){await connectPost('push.php',{action:'unsubscribe',endpoint:sub.endpoint});await sub.unsubscribe();}
+  connectText('#prefs-status','Notifications disabled.');
+ }catch(e){connectText('#prefs-status',e.message);}
+});
+refreshMember();
+
+
+// Additional fully browser-side free utilities.
+function convertUnits(){
+ var x=Number($('#conv-input').value),mode=$('#conv-mode').value;
+ if(!Number.isFinite(x)){connectText('#conv-result','Enter a valid number.');return;}
+ var out,unit;
+ switch(mode){
+ case 'km-mi':out=x*0.6213711922;unit='miles';break;
+ case 'mi-km':out=x/0.6213711922;unit='kilometres';break;
+ case 'kg-lb':out=x*2.2046226218;unit='pounds';break;
+ case 'lb-kg':out=x/2.2046226218;unit='kilograms';break;
+ case 'sqft-sqm':out=x*0.09290304;unit='m²';break;
+ case 'sqm-sqft':out=x/0.09290304;unit='ft²';break;
+ case 'c-f':out=x*9/5+32;unit='°F';break;
+ case 'f-c':out=(x-32)*5/9;unit='°C';break;
+ default:return;
+ }
+ connectText('#conv-result',out.toLocaleString(undefined,{maximumFractionDigits:5})+' '+unit);
+}
+$('#conv-mode').addEventListener('change',convertUnits);
+$('#conv-input').addEventListener('input',convertUnits);convertUnits();
+// Quote-aware CSV parser, supports CRLF and escaped quoted commas.
+function parseCsv(input){
+ var rows=[],row=[],value='',quoted=false;
+ for(var i=0;i<input.length;i++){
+  var ch=input[i];
+  if(ch==='"'){if(quoted&&input[i+1]==='"'){value+='"';i++;}else quoted=!quoted;}
+  else if(ch===','&&!quoted){row.push(value);value='';}
+  else if((ch==='\n'||ch==='\r')&&!quoted){if(ch==='\r'&&input[i+1]==='\n')i++;row.push(value);rows.push(row);row=[];value='';}
+  else value+=ch;
+ }
+ if(quoted)throw Error('Unclosed CSV quote.');
+ if(value!==''||row.length){row.push(value);rows.push(row);}
+ return rows.filter(function(r){return !(r.length===1&&r[0]==='');});
+}
+$('#csv-convert').addEventListener('click',function(){
+ try{
+  var source=$('#csv-content').value;if(source.length>200000)throw Error('Use CSV under 200 KB.');
+  var rows=parseCsv(source),keys=rows.shift();
+  if(!keys||keys.some(function(x){return !x.trim();}))throw Error('Include a header row.');
+  if(new Set(keys).size!==keys.length)throw Error('CSV headers must be unique.');
+  var result=rows.map(function(row){var obj={};keys.forEach(function(key,i){obj[key]=row[i]||'';});return obj;});
+  connectText('#csv-result',JSON.stringify(result,null,2));
+ }catch(e){connectText('#csv-result',e.message);}
+});
+$('#csv-copy').addEventListener('click',function(){copy($('#csv-result').textContent,$('#csv-copy'));});
+function contrastRatio(fg,bg){
+ function linear(hex){
+  return [1,3,5].map(function(i){var c=parseInt(hex.slice(i,i+2),16)/255;return c<=.04045?c/12.92:Math.pow((c+.055)/1.055,2.4);});
+ }
+ function lum(hex){var c=linear(hex);return .2126*c[0]+.7152*c[1]+.0722*c[2];}
+ var x=lum(fg),y=lum(bg);return (Math.max(x,y)+.05)/(Math.min(x,y)+.05);
+}
+function checkContrast(){
+ var fg=$('#contrast-fg').value,bg=$('#contrast-bg').value;
+ $('#contrast-sample').style.color=fg;$('#contrast-sample').style.backgroundColor=bg;
+ var n=contrastRatio(fg,bg);
+ connectText('#contrast-result',n.toFixed(2)+':1 contrast — '+(n>=7?'AAA normal text':n>=4.5?'AA normal text':n>=3?'AA large text only':'Insufficient text contrast'));
+}
+$('#contrast-fg').addEventListener('input',checkContrast);
+$('#contrast-bg').addEventListener('input',checkContrast);checkContrast();
+// Explicit user gesture required; Puter credits are never promised unlimited.
+$('#generate-ai-video').addEventListener('click',async function(){
+ var prompt=$('#video-prompt').value.trim(),out=$('#video-result'),b=this;
+ if(!prompt){out.textContent='Describe a video first.';return;}
+ b.disabled=true;out.textContent='Connecting to Puter video generation. You may need credits…';
+ try{
+  var sdk=await getPuter();
+  if(!sdk.ai||typeof sdk.ai.txt2vid!=='function')throw Error('Video generation is not available in the current Puter SDK.');
+  var result=await sdk.ai.txt2vid(prompt);
+  out.replaceChildren();
+  if(result instanceof HTMLVideoElement){result.controls=true;out.append(result);}
+  else{
+   var url=typeof result==='string'?result:(result&&result.url)||null;
+   if(!url||!/^https:\/\//.test(url))throw Error('Video response format is unsupported.');
+   var video=document.createElement('video');video.controls=true;video.playsInline=true;video.src=url;
+   video.style.maxWidth='100%';out.append(video);
+  }
+ }catch(e){out.textContent='Video unavailable: '+(e.message||String(e))+' Check account allowance and model availability.';}
+ finally{b.disabled=false;}
+});
+$('#generate-caption').addEventListener('click',async function(){
+ var prompt=$('#caption-topic').value.trim(),out=$('#caption-result'),b=this;
+ if(!prompt){out.textContent='Describe a topic or product first.';return;}
+ b.disabled=true;out.textContent='Creating caption via Puter…';
+ try{
+  var sdk=await getPuter();
+  var result=await sdk.ai.chat('Write an original professional social-media caption with a clear call to action and no invented offers for: '+prompt);
+  out.textContent=(typeof result==='string'?result:(result&&result.message&&result.message.content)||JSON.stringify(result))||'No output.';
+ }catch(e){out.textContent='AI unavailable: '+(e.message||String(e));}
+ finally{b.disabled=false;}
+});
+
 })();

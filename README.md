@@ -60,3 +60,12 @@ CMS backend is included under api/, admin/, db/ and docs/. It stays disabled unt
 - PWA gracefully falls back to Phase 1 content when the database is unavailable.
 
 Note: This release does **not** connect PPPoE usernames, MikroTik SSH, RADIUS, ISP billing data, Wi-Fi quota redemption or real push subscription. These require further authorized private integration.
+
+
+## Consolidated modules release
+
+The main branch includes member accounts, independent PPPoE ownership approval,
+RADIUS read-only sync, learning-points wallet, optional isolated ISP guest
+voucher gateway, optional opt-in Web Push, merchant submissions, support tickets
+and administration. Operational features require server configuration and ISP
+permission. See [All-modules guide](docs/all-modules-setup.md).

@@ -1,0 +1,128 @@
+-- VWEB.DEV Connect user, PPPoE, rewards, support and notification schema.
+-- Run this once AFTER db/schema.sql; use existing Hostinger MySQL database.
+CREATE TABLE IF NOT EXISTS app_users (
+ id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+ name VARCHAR(100) NOT NULL,
+ email VARCHAR(190) NOT NULL UNIQUE,
+ password_hash VARCHAR(255) NOT NULL,
+ status ENUM('active','disabled') NOT NULL DEFAULT 'active',
+ marketing_opt_in TINYINT(1) NOT NULL DEFAULT 0,
+ created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+ last_login_at DATETIME NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+CREATE TABLE IF NOT EXISTS isp_accounts (
+ username VARCHAR(190) NOT NULL PRIMARY KEY,
+ is_online TINYINT(1) NOT NULL DEFAULT 0,
+ session_uptime_seconds BIGINT UNSIGNED NULL,
+ session_download_bytes BIGINT UNSIGNED NULL,
+ session_upload_bytes BIGINT UNSIGNED NULL,
+ reported_download_bytes BIGINT UNSIGNED NULL,
+ reported_upload_bytes BIGINT UNSIGNED NULL,
+ reported_period VARCHAR(40) NOT NULL DEFAULT 'not_available',
+ reported_basis VARCHAR(60) NOT NULL DEFAULT 'unknown',
+ plan_name VARCHAR(120) NULL,
+ renewal_date DATE NULL,
+ collected_at DATETIME NOT NULL,
+ KEY collected_idx(collected_at)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+CREATE TABLE IF NOT EXISTS isp_account_links (
+ id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+ user_id BIGINT UNSIGNED NOT NULL,
+ pppoe_username VARCHAR(190) NOT NULL,
+ status ENUM('pending','approved','rejected') NOT NULL DEFAULT 'pending',
+ reviewer_note VARCHAR(255) NOT NULL DEFAULT '',
+ created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+ reviewed_at DATETIME NULL,
+ UNIQUE KEY uq_isp_user(user_id, pppoe_username),
+ KEY username_status(pppoe_username,status),
+ CONSTRAINT fk_isp_user FOREIGN KEY(user_id) REFERENCES app_users(id) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+CREATE TABLE IF NOT EXISTS reward_tasks (
+ id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+ title VARCHAR(140) NOT NULL,
+ description VARCHAR(400) NOT NULL,
+ question VARCHAR(240) NOT NULL,
+ answer_hash CHAR(64) NOT NULL,
+ points INT UNSIGNED NOT NULL,
+ enabled TINYINT(1) NOT NULL DEFAULT 1
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+CREATE TABLE IF NOT EXISTS reward_claims (
+ id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+ user_id BIGINT UNSIGNED NOT NULL,
+ task_id INT UNSIGNED NOT NULL,
+ claim_date DATE NOT NULL,
+ points INT UNSIGNED NOT NULL,
+ created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+ UNIQUE KEY uq_daily_claim(user_id,task_id,claim_date),
+ CONSTRAINT fk_claim_user FOREIGN KEY(user_id) REFERENCES app_users(id) ON DELETE CASCADE,
+ CONSTRAINT fk_claim_task FOREIGN KEY(task_id) REFERENCES reward_tasks(id)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+CREATE TABLE IF NOT EXISTS wallet_ledger (
+ id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+ user_id BIGINT UNSIGNED NOT NULL,
+ delta INT NOT NULL,
+ reason VARCHAR(100) NOT NULL,
+ reference_id VARCHAR(140) NOT NULL UNIQUE,
+ created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+ KEY wallet_user(user_id,created_at),
+ CONSTRAINT fk_wallet_user FOREIGN KEY(user_id) REFERENCES app_users(id) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+CREATE TABLE IF NOT EXISTS gateway_jobs (
+ id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+ user_id BIGINT UNSIGNED NOT NULL,
+ points INT UNSIGNED NOT NULL,
+ quota_mb INT UNSIGNED NOT NULL,
+ status ENUM('pending','issued','failed') NOT NULL DEFAULT 'pending',
+ voucher_code VARCHAR(100) NULL,
+ submitted_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+ fulfilled_at DATETIME NULL,
+ UNIQUE KEY uq_voucher(voucher_code),
+ CONSTRAINT fk_job_user FOREIGN KEY(user_id) REFERENCES app_users(id) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+CREATE TABLE IF NOT EXISTS sync_nonces (
+ nonce CHAR(40) PRIMARY KEY,
+ created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+ INDEX nonce_age(created_at)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+CREATE TABLE IF NOT EXISTS merchant_submissions (
+ id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+ user_id BIGINT UNSIGNED NOT NULL,
+ business_name VARCHAR(140) NOT NULL,
+ offer_title VARCHAR(180) NOT NULL,
+ description TEXT NOT NULL,
+ website VARCHAR(1024) NOT NULL,
+ status ENUM('pending','approved','rejected') NOT NULL DEFAULT 'pending',
+ created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+ reviewed_at DATETIME NULL,
+ CONSTRAINT fk_merchant_user FOREIGN KEY(user_id) REFERENCES app_users(id) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+CREATE TABLE IF NOT EXISTS support_tickets (
+ id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+ user_id BIGINT UNSIGNED NOT NULL,
+ subject VARCHAR(180) NOT NULL,
+ message TEXT NOT NULL,
+ status ENUM('open','resolved') NOT NULL DEFAULT 'open',
+ created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+ updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+ CONSTRAINT fk_ticket_user FOREIGN KEY(user_id) REFERENCES app_users(id) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+CREATE TABLE IF NOT EXISTS push_subscriptions (
+ id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+ user_id BIGINT UNSIGNED NOT NULL,
+ endpoint_hash CHAR(64) NOT NULL UNIQUE,
+ subscription_json TEXT NOT NULL,
+ enabled TINYINT(1) NOT NULL DEFAULT 1,
+ created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+ CONSTRAINT fk_push_user FOREIGN KEY(user_id) REFERENCES app_users(id) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+CREATE TABLE IF NOT EXISTS notification_jobs (
+ id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+ title VARCHAR(140) NOT NULL,
+ body VARCHAR(250) NOT NULL,
+ target_url VARCHAR(400) NOT NULL DEFAULT '/',
+ status ENUM('draft','queued','sent','failed') NOT NULL DEFAULT 'draft',
+ attempted INT UNSIGNED DEFAULT 0,
+ delivered INT UNSIGNED DEFAULT 0,
+ created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+ sent_at DATETIME NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;

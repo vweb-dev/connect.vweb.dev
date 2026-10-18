@@ -1,0 +1,15 @@
+# No live credentials, database exports, server access files or client data
+.env
+.env.*
+!.env.example
+connect-secrets.php
+**/connect-secrets.php
+vendor/
+node_modules/
+*.log
+*.sql.gz
+*.sqlite
+*.sqlite3
+__pycache__/
+*.pyc
+.DS_Store

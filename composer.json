@@ -1,0 +1,9 @@
+{
+  "name": "vweb/connect",
+  "description": "VWEB Connect optional Web Push sender",
+  "type": "project",
+  "require": {
+    "php": ">=8.2",
+    "minishlink/web-push": "^9.0"
+  }
+}

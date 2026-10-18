@@ -25,13 +25,14 @@
 <nav class="nav">
 <a href="#internet" data-nav="internet">◉ <span>My Internet</span></a>
 <a href="#rewards" data-nav="rewards">✳ <span>Rewards</span></a>
+<a href="#account" data-nav="account">◉ <span>My Account</span></a>
 </nav>
 <div class="side-end"><p>One digital space.<br><strong>More ways to do.</strong></p><a href="https://vweb.dev" target="_blank" rel="noopener noreferrer">Explore VWEB.DEV ↗</a></div>
 </aside>
 <div class="workspace">
 <header class="top">
 <div class="top-copy"><span class="gold-square">✦</span> YOUR FREE DIGITAL COMPANION</div>
-<div class="top-actions"><span class="live-dot">FREE HUB</span><button id="install" class="button secondary small" type="button" hidden>Install app ↓</button><a class="avatar" href="https://vweb.dev" target="_blank" rel="noopener noreferrer" aria-label="VWEB.DEV">V</a></div>
+<div class="top-actions"><span class="live-dot">FREE HUB</span><button id="install" class="button secondary small" type="button" hidden>Install app ↓</button><a class="avatar" href="#account" aria-label="My VWEB.DEV Connect account">V</a></div>
 </header>
 <main id="main">
 <section class="page" id="page-home">
@@ -61,6 +62,24 @@
 <article class="tool-card"><div class="card-heading"><div class="tool-icon">⌘</div><div><h2>Password Generator</h2><p>Generate strong passwords securely, offline.</p></div></div><label for="pass-length">Length <output id="pass-length-output">18</output></label><input type="range" id="pass-length" min="10" max="40" value="18"><label class="toggle-line"><input type="checkbox" id="pass-symbols" checked> Include symbols</label><input id="password-output" type="text" readonly placeholder="Select Generate" aria-label="Generated password"><div class="actions"><button type="button" id="pass-create" class="button primary">Generate</button><button type="button" id="pass-copy" class="button secondary">Copy</button></div><p id="pass-status" class="small-status" role="status"></p></article>
 <article class="tool-card"><div class="card-heading"><div class="tool-icon">Aa</div><div><h2>Text Studio</h2><p>Count and transform text instantly.</p></div></div><label for="text-content">Your text</label><textarea id="text-content" rows="5" placeholder="Type or paste your text here…"></textarea><div class="stats-line"><div><strong id="word-count">0</strong> words</div><div><strong id="char-count">0</strong> characters</div></div><div class="actions wrap"><button type="button" id="text-upper" class="button secondary">UPPERCASE</button><button type="button" id="text-clean" class="button secondary">Clean spaces</button><button type="button" id="text-copy" class="button secondary">Copy</button></div><p id="text-status" class="small-status" role="status"></p></article>
 <article class="tool-card"><div class="card-heading"><div class="tool-icon">{ }</div><div><h2>JSON Formatter</h2><p>Validate and format JSON right on your device.</p></div></div><label for="json-content">JSON input</label><textarea id="json-content" rows="6" spellcheck="false" placeholder='{"status":"ready"}'></textarea><div class="actions wrap"><button type="button" id="json-format" class="button primary">Format JSON</button><button type="button" id="json-minify" class="button secondary">Minify</button><button type="button" id="json-copy" class="button secondary">Copy</button></div><p id="json-status" class="small-status" role="status"></p></article>
+
+<article class="tool-card"><div class="card-heading"><div class="tool-icon">⇄</div><div><h2>Unit Converter</h2><p>Everyday conversions calculated in your browser.</p></div></div>
+<label for="conv-mode">Conversion type</label><select id="conv-mode">
+<option value="km-mi">Kilometres → Miles</option><option value="mi-km">Miles → Kilometres</option>
+<option value="kg-lb">Kilograms → Pounds</option><option value="lb-kg">Pounds → Kilograms</option>
+<option value="sqft-sqm">Square feet → Square metres</option><option value="sqm-sqft">Square metres → Square feet</option>
+<option value="c-f">Celsius → Fahrenheit</option><option value="f-c">Fahrenheit → Celsius</option></select>
+<label for="conv-input">Value</label><input id="conv-input" type="number" step="any" value="1">
+<div class="ai-result" id="conv-result" role="status">Ready to convert.</div></article>
+<article class="tool-card"><div class="card-heading"><div class="tool-icon">▤</div><div><h2>CSV to JSON</h2><p>Convert small spreadsheets without uploading them.</p></div></div>
+<label for="csv-content">CSV with column headers</label><textarea id="csv-content" spellcheck="false" rows="5" placeholder="name,city&#10;Ali,Lahore"></textarea>
+<button type="button" class="button primary" id="csv-convert">Convert CSV → JSON</button>
+<div id="csv-result" class="ai-result" role="status">Formatted output appears here.</div><button type="button" class="button secondary" id="csv-copy">Copy output</button></article>
+<article class="tool-card"><div class="card-heading"><div class="tool-icon">◒</div><div><h2>Color Contrast Checker</h2><p>Test text readability using WCAG contrast ratios.</p></div></div>
+<div class="twocol"><label for="contrast-fg">Text color<input type="color" id="contrast-fg" value="#ffffff"></label>
+<label for="contrast-bg">Background<input type="color" id="contrast-bg" value="#17202a"></label></div>
+<div class="ai-result" id="contrast-sample" style="font-size:20px;font-weight:700">Readable design</div>
+<p id="contrast-result" class="small-status" role="status"></p></article>
 </div></section>
 <section class="page" id="page-ai" hidden>
 <div class="page-header"><div class="overline">IDEAS INTO SOMETHING REAL</div><h1>AI Studio<span class="accent">✦</span></h1><p>Discover what AI can help you create. Powered by Puter — users manage their own allowance and credits.</p></div>
@@ -68,6 +87,14 @@
 <div class="tiles two tools-grid">
 <article class="tool-card"><div class="card-heading"><div class="tool-icon">✦</div><div><h2>Ask AI</h2><p>Ask questions, brainstorm or draft text.</p></div></div><label for="chat-prompt">Your prompt</label><textarea rows="5" id="chat-prompt" placeholder="Write a concise product description for my Shopify store…"></textarea><button type="button" class="button primary" id="ask-ai">Ask AI ↗</button><div id="chat-result" class="ai-result" aria-live="polite">Your result will appear here.</div></article>
 <article class="tool-card"><div class="card-heading"><div class="tool-icon">▣</div><div><h2>AI Image Generator</h2><p>Create an image from your own description.</p></div></div><label for="image-prompt">Image description</label><textarea rows="5" id="image-prompt" placeholder="An elegant home interior with a neutral sofa and warm daylight…"></textarea><button type="button" class="button primary" id="generate-ai-image">Generate image ↗</button><div id="image-result" class="ai-result" aria-live="polite">Your image will appear here.</div></article>
+<article class="tool-card"><div class="card-heading"><div class="tool-icon">▶</div><div><h2>AI Video Generation</h2><p>Experimental Puter video generation. May use substantial credits and depends on your account/model availability.</p></div></div><label for="video-prompt">Describe a short video</label>
+<textarea rows="4" id="video-prompt" maxlength="500" placeholder="A cinematic product showcase with slow camera movement…"></textarea>
+<button class="button primary" type="button" id="generate-ai-video">Try video generation ↗</button>
+<div id="video-result" class="ai-result" aria-live="polite">Video generation is optional and may not be free.</div></article>
+<article class="tool-card"><div class="card-heading"><div class="tool-icon">✎</div><div><h2>Social Caption Writer</h2><p>Generate polished social copy using your Puter AI allowance.</p></div></div>
+<label for="caption-topic">Describe your post or product</label><textarea rows="4" id="caption-topic" maxlength="1500" placeholder="Promote ASTER Multiseat to school IT administrators…"></textarea>
+<button class="button primary" type="button" id="generate-caption">Create caption ↗</button>
+<div id="caption-result" class="ai-result" aria-live="polite">A caption will appear here.</div></article>
 </div>
 </section>
 <section class="page" id="page-offers" hidden>
@@ -82,16 +109,50 @@
 <div class="informative"><span class="informative-icon">◎</span><div><strong>Local reporting coming next.</strong><p>We will only publish attributed and verified news. This starter does not pretend to provide live Lahore updates.</p></div></div>
 </section>
 <section class="page" id="page-internet" hidden>
-<div class="page-header"><div class="overline">YOUR INTERNET ACCOUNT</div><h1>My Internet<span class="accent">.</span></h1><p>View ISP PPPoE data without opening your router — once your ISP account is securely linked.</p></div>
-<div class="unavailable"><span class="big-symbol">◉</span><span class="flag">INTEGRATION PENDING</span><h2>ISP account lookup is not connected yet.</h2><p>Your authorized MikroTik/RADIUS integration and a verified customer login must be configured before any live usage or package data can be displayed. Never enter PPPoE or router admin passwords on this page.</p><div class="tag-line"><span>Connection status</span><span>Usage history</span><span>Package & renewal</span></div></div>
+<div class="page-header"><div class="overline">YOUR INTERNET ACCOUNT</div><h1>My Internet<span class="accent">.</span></h1><p>Link your ISP PPPoE account to see authorized usage, package and connection details. No router login required.</p></div>
+<div class="ai-info"><strong>Account protection</strong><span>Enter only the PPPoE username, never its password or your router admin credentials. ISP staff must independently verify your ownership before any private usage data appears.</span></div>
+<div id="internet-summary" class="unavailable compact"><span class="big-symbol">◉</span><h2>Sign in to view your internet accounts.</h2><p>ISP data is never public. Your approved account link and a configured ISP sync are required.</p><a class="button primary" href="#account">Sign in / create account ↗</a></div>
+<div id="isp-links" class="isp-account-list" aria-live="polite"></div>
+<form id="pppoe-link-form" class="tool-card account-form" hidden><h2>Request ISP account linking</h2><p>Customer support verifies ownership using the ISP's independent subscriber records. The request itself gives no access to data.</p><label for="pppoe-user">Your PPPoE username only</label><input id="pppoe-user" autocomplete="off" placeholder="customer@isp" maxlength="190" required><button class="button primary" type="submit">Request verification ↗</button><p id="pppoe-status" class="small-status" role="status"></p></form>
 </section>
 <section class="page" id="page-rewards" hidden>
-<div class="page-header"><div class="overline">MAKE USEFUL ACTIONS COUNT</div><h1>Rewards<span class="accent">.</span></h1><p>A future points and hotspot internet quota programme.</p></div>
-<div class="unavailable"><span class="big-symbol">✳</span><span class="flag">NOT ACTIVE</span><h2>Your rewards wallet is being prepared.</h2><p>Rewards require verified tasks, accounts and a dedicated ISP-authorized guest gateway. No live internet quota is currently offered or credited.</p></div>
+<div class="page-header"><div class="overline">LEARN & EARN</div><h1>Rewards<span class="accent">.</span></h1><p>Complete a short educational challenge to earn VWEB points. Internet data redemption is available only after a separate authorized hotspot gateway is configured.</p></div>
+<div class="reward-banner"><div><div class="overline">MY REWARDS WALLET</div><h2 id="rewards-total">Sign in to view points</h2><p>Daily earnings are limited. Affiliate clicks, purchases and marketing opt-in are never required.</p></div><div class="reward-emblem">✳</div></div>
+<h2 class="subheading">Learning challenges</h2><div id="reward-tasks" class="tiles two"><p class="muted">Loading challenges…</p></div>
+<div class="account-form tool-card"><h2>Redeem for guest Wi-Fi</h2><p id="redeem-info">Internet vouchers need an ISP-authorized gateway. Points are not equivalent to mobile data.</p><button class="button primary" type="button" id="redeem-points" disabled>Redeem 100 points for 100 MB</button><div id="voucher-list" aria-live="polite"></div></div>
+</section>
+<section class="page" id="page-account" hidden>
+<div class="page-header"><div class="overline">YOUR CONNECT ACCOUNT</div><h1>My Connect<span class="accent">.</span></h1><p>Manage saved offers, earn learning points, request ISP account linking and submit local business offers.</p></div>
+<div id="member-guest" class="tiles two">
+<form class="tool-card account-form" id="login-form"><div class="card-heading"><div class="tool-icon">◉</div><div><h2>Welcome back</h2><p>Sign in to your private dashboard.</p></div></div><label for="login-email">Email</label><input id="login-email" name="email" type="email" autocomplete="email" required><label for="login-password">Password</label><input id="login-password" name="password" type="password" autocomplete="current-password" required><button class="button primary" type="submit">Sign in ↗</button><p class="small-status" id="login-feedback" role="status"></p></form>
+<form class="tool-card account-form" id="register-form"><div class="card-heading"><div class="tool-icon">✦</div><div><h2>Create an account</h2><p>No paid membership or compulsory promotions.</p></div></div><label for="register-name">Your name</label><input id="register-name" maxlength="100" required autocomplete="name"><label for="register-email">Email</label><input id="register-email" type="email" required autocomplete="email"><label for="register-password">Password (minimum 12 characters)</label><input id="register-password" type="password" minlength="12" required autocomplete="new-password"><label class="toggle-line"><input type="checkbox" id="register-marketing"> I optionally agree to promotional messages (can opt out later).</label><button class="button primary" type="submit">Create my account ↗</button><p class="small-status" id="register-feedback" role="status"></p></form>
+</div>
+<div id="member-profile" hidden>
+<div class="reward-banner"><div><div class="overline">YOUR PROFILE</div><h2 id="member-name">Welcome</h2><p id="member-email"></p></div><button type="button" class="button secondary" id="member-logout">Sign out</button></div>
+<div class="tiles two">
+<div class="tool-card account-form"><h2>Notification preferences</h2><p>Marketing is optional. Use of our free tools and rewards does not require consent.</p>
+<label class="toggle-line"><input id="member-marketing" type="checkbox"> Receive relevant VWEB.DEV and partner offers</label><button type="button" class="button secondary" id="save-prefs">Save preferences</button>
+<div class="push-row"><button type="button" class="button secondary" id="enable-push" disabled>Enable push notifications</button><button type="button" class="button secondary" id="disable-push" disabled>Disable push</button></div><p class="small-status" id="prefs-status" role="status"></p></div>
+<div class="tool-card"><h2>My internet & rewards</h2><p>Keep PPPoE account data private; use separate PWA account verification.</p><div class="actions wrap"><a class="button secondary" href="#internet">My Internet ↗</a><a class="button secondary" href="#rewards">Rewards ↗</a></div></div>
+</div>
+<div class="section-title"><div><div class="overline">COMMUNITY</div><h2>Suggest a local offer</h2></div></div>
+<div class="tiles two">
+<form class="tool-card account-form" id="merchant-form"><h2>Business / merchant submission</h2><p>All submissions are moderated. Approval does not guarantee a sponsored placement.</p>
+<label for="merchant-business">Business name</label><input id="merchant-business" required maxlength="140">
+<label for="merchant-title">Offer title</label><input id="merchant-title" required maxlength="180">
+<label for="merchant-description">Description</label><textarea id="merchant-description" rows="4" required maxlength="1800"></textarea>
+<label for="merchant-url">Merchant HTTPS website</label><input type="url" id="merchant-url" required placeholder="https://">
+<button class="button primary" type="submit">Submit for review ↗</button><p id="merchant-feedback" class="small-status" role="status"></p></form>
+<form class="tool-card account-form" id="support-form"><h2>Request support</h2><p>Get assistance with app issues or ISP account verification.</p>
+<label for="support-subject">Subject</label><input id="support-subject" required maxlength="180">
+<label for="support-message">Message</label><textarea rows="5" id="support-message" required maxlength="2000"></textarea>
+<button class="button primary" type="submit">Send support request ↗</button><p id="support-feedback" class="small-status" role="status"></p>
+<h3>Recent requests</h3><div id="member-tickets"></div></form>
+</div></div>
 </section>
 </main>
 <footer><span>© <span id="year">2026</span> VWEB.DEV · All rights reserved.</span><span>Purpose-built digital experiences · <a href="https://vweb.dev" target="_blank" rel="noopener noreferrer">VWEB.DEV ↗</a></span></footer>
 </div>
-<nav class="mobile-nav" aria-label="Mobile navigation"><a href="#home" data-nav="home">⌂<small>Home</small></a><a href="#tools" data-nav="tools">▧<small>Tools</small></a><a href="#ai" data-nav="ai">✦<small>AI</small></a><a href="#offers" data-nav="offers">◇<small>Deals</small></a><a href="#internet" data-nav="internet">◉<small>Internet</small></a></nav>
+<nav class="mobile-nav" aria-label="Mobile navigation"><a href="#home" data-nav="home">⌂<small>Home</small></a><a href="#tools" data-nav="tools">▧<small>Tools</small></a><a href="#ai" data-nav="ai">✦<small>AI</small></a><a href="#offers" data-nav="offers">◇<small>Deals</small></a><a href="#account" data-nav="account">◉<small>Account</small></a></nav>
 </div>
 </body></html>
