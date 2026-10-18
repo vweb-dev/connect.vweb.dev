@@ -37,8 +37,16 @@ test('independent local tools and stable routes are preserved',()=>{
  assert.match(hub,/qrcode@1\.5\.4/);
 });
 test('PWA cache bust and visible fallback status',()=>{
- assert.match(sw,/vweb-connect-static-v17/);
+ assert.match(sw,/vweb-connect-static-v18/);
  assert.match(html,/hub\.js\?v=tools-recovery-/);
  assert.match(css,/hub-catalog-status/);
  assert.match(html,/id="hub-catalog-retry"/);
+});
+
+// Search shortcut controls are NodeList collections, not single elements.
+// Querying one element and calling .forEach crashes before the catalog boots.
+test('search shortcuts cannot abort tools catalog initialization',()=>{
+ assert.match(hub,/\$\$\('\[data-hub-search\]'\)\.forEach\(/);
+ assert.doesNotMatch(hub,/(^|\n)\s*\$\([^\n]*\)\.forEach\(/);
+ assert.match(hub,/\bboot\(\);\s*\}\)\(\);/);
 });

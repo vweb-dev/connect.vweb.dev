@@ -207,7 +207,7 @@ function renderGlobalSearch(){
  });
 }
 $('#hub-search').addEventListener('input',renderGlobalSearch);
-$('[data-hub-search]').forEach(button=>button.addEventListener('click',()=>{
+$$('[data-hub-search]').forEach(button=>button.addEventListener('click',()=>{
  $('#hub-search').value=button.dataset.hubSearch;renderGlobalSearch();
  const field=$('#hub-search');field.focus();
 }));
