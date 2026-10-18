@@ -69,3 +69,8 @@ RADIUS read-only sync, learning-points wallet, optional isolated ISP guest
 voucher gateway, optional opt-in Web Push, merchant submissions, support tickets
 and administration. Operational features require server configuration and ISP
 permission. See [All-modules guide](docs/all-modules-setup.md).
+
+
+## Puter authentication flow
+
+AI Studio loads Puter.js when the user navigates to AI Studio and presents a separate **Connect Puter Account** control. The SDK finishes loading before the button becomes usable. Clicking Connect directly invokes `puter.auth.signIn()` synchronously from the click handler (required for popup blockers), then displays the signed-in username and offers sign-out/switch-account actions. AI model actions require a signed-in Puter user; browser tools and VWEB.DEV member accounts remain independent. Some mobile in-app browsers/guest Wi-Fi gateways block Puter popups or SDK domains; open the PWA URL directly in Chrome/Edge/Firefox and test `https://js.puter.com/v2/` reachability. A full live OAuth flow cannot be verified without a real user browser and authorized Puter account.

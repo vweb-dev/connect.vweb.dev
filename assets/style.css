@@ -39,3 +39,16 @@
 #member-tickets{font-size:12px;color:var(--muted)}
 #member-tickets div{padding:8px 0;border-bottom:1px solid var(--line)}
 @media(max-width:800px){.isp-account-list{grid-template-columns:1fr}}
+
+/* Puter account flow: explicit popup trigger, clear status, distinct identity. */
+.puter-auth{display:flex;justify-content:space-between;align-items:center;gap:20px;border:1px solid #816943;
+ background:linear-gradient(110deg,#292419,#171f29);padding:22px 24px;border-radius:16px;margin-bottom:12px}
+.puter-auth-copy{flex:1;min-width:200px}.puter-auth-copy strong{display:block;font-family:Outfit,sans-serif;font-size:20px;margin:8px 0 5px}
+.puter-auth-copy p{font-size:12px;margin:0;max-width:540px}
+.puter-auth-buttons{display:flex;flex-wrap:wrap;gap:8px;align-items:center;justify-content:flex-end}
+.puter-auth-buttons .button:disabled{opacity:.55;cursor:wait}
+.puter-help{font-size:12px;color:#bbc1c9;margin:0 0 23px;padding:8px 2px}
+.puter-help summary{cursor:pointer;color:var(--gold);font-weight:700}
+.puter-help p{margin:8px 0}.puter-help a{color:var(--gold);font-weight:700}
+@media(max-width:690px){.puter-auth{flex-direction:column;align-items:stretch;padding:19px}
+ .puter-auth-buttons{justify-content:flex-start}.puter-auth-buttons .button{flex:1}}

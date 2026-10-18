@@ -1,5 +1,6 @@
 'use strict';
 (function () {
+var puterPromise=null, puterLoadingTimer=null;
 var $ = function (s) { return document.querySelector(s); };
 var $$ = function (s) { return Array.from(document.querySelectorAll(s)); };
 var routes=['home','tools','ai','offers','community','internet','rewards','account'];
@@ -9,6 +10,7 @@ function route(){
   $$('[data-nav]').forEach(function(el){var active=el.dataset.nav===key;el.classList.toggle('active',active);if(active){el.setAttribute('aria-current','page');}else{el.removeAttribute('aria-current');}});
   document.title=(key==='home'?'VWEB.DEV Connect':key.charAt(0).toUpperCase()+key.slice(1)+' | VWEB.DEV Connect');
   window.scrollTo(0,0);
+  if(key==='ai')preparePuter();
 }
 window.addEventListener('hashchange',route);route();
 $('#year').textContent=new Date().getFullYear();
@@ -188,19 +190,117 @@ function jsonAction(minify){try{var parsed=JSON.parse($('#json-content').value);
 $('#json-format').addEventListener('click',function(){jsonAction(false);});$('#json-minify').addEventListener('click',function(){jsonAction(true);});
 $('#json-copy').addEventListener('click',function(){copy($('#json-content').value,$('#json-status'));});
 
-// Load optional third-party AI library only on explicit action, never for ordinary visits.
-var puterPromise;
-function getPuter(){if(window.puter)return Promise.resolve(window.puter);if(puterPromise)return puterPromise;
- puterPromise=new Promise(function(resolve,reject){var s=document.createElement('script');s.src='https://js.puter.com/v2/';s.async=true;s.onload=function(){window.puter?resolve(window.puter):reject(Error('AI SDK unavailable.'));};s.onerror=function(){reject(Error('Puter could not load. Check the network allowlist.'));};document.head.append(s);});return puterPromise;}
+// Prepare the SDK as soon as AI Studio is visited so the *next direct click*
+// can call puter.auth.signIn() synchronously, before popup activation expires.
+// Delaying SDK download until the login click may cause mobile popup blocking.
+function puterStatus(title,message){
+ $('#puter-auth-label').textContent=title;
+ $('#puter-auth-message').textContent=message;
+}
+function puterAuthError(error){
+ var code=error&&typeof error==='object'?(error.error||error.code||''):'';
+ var detail=error&&(error.msg||error.message)||String(error||'Unknown error');
+ switch(code){
+  case 'popup_blocked':return 'Your browser blocked the Puter login window. Open in Chrome/Edge and allow pop-ups, then retry.';
+  case 'auth_window_closed':return 'The Puter sign-in window was closed before authorization finished. Try again.';
+  case 'unsupported_origin':return 'Puter cannot authenticate from this page context. Open https://connect.vweb.dev/#ai directly in a browser (not a sandboxed preview).';
+  case 'not_available_in_app':return 'Puter apps are already authenticated by their host. Try using the AI tool.';
+  default:return detail;
+ }
+}
+function getPuter(){
+ if(window.puter&&window.puter.auth)return Promise.resolve(window.puter);
+ if(puterPromise)return puterPromise;
+ puterStatus('Connecting to Puter…','Loading the Puter login service before opening an account window.');
+ $('#puter-signin').disabled=true;
+ $('#puter-retry').hidden=true;
+ puterPromise=new Promise(function(resolve,reject){
+  var done=false;
+  var script=document.createElement('script');
+  script.src='https://js.puter.com/v2/';
+  script.async=true;
+  function finish(error){
+   if(done)return;done=true;clearTimeout(puterLoadingTimer);
+   if(error){script.remove();puterPromise=null;reject(error);}
+   else resolve(window.puter);
+  }
+  puterLoadingTimer=setTimeout(function(){finish(Error('Puter SDK request timed out. Check your connection to js.puter.com.'));},15000);
+  script.onload=function(){
+   if(window.puter&&window.puter.auth&&typeof window.puter.auth.signIn==='function')finish(null);
+   else finish(Error('Puter script loaded but its login service is unavailable.'));
+  };
+  script.onerror=function(){finish(Error('Cannot load js.puter.com. Check network, DNS or content blockers.'));};
+  document.head.appendChild(script);
+ });
+ return puterPromise;
+}
+async function refreshPuterAuth(){
+ var sdk=window.puter;
+ if(!sdk||!sdk.auth){puterStatus('Puter is not ready','Retry the connection to load the Puter login service.');return false;}
+ try{
+  var logged=Boolean(await sdk.auth.isSignedIn());
+  $('#puter-signin').hidden=logged;$('#puter-switch').hidden=!logged;$('#puter-signout').hidden=!logged;
+  $('#puter-retry').hidden=true;
+  $('#puter-signin').disabled=false;
+  if(logged){
+   var user=await sdk.auth.getUser().catch(function(){return null;});
+   var name=user&&(user.username||user.name)||'Puter user';
+   puterStatus('Connected as '+name,'Your Puter account is ready for AI tools. Model requests may use your Puter allowance or credits.');
+  }else{puterStatus('Puter account not connected','Tap Connect Puter Account to open the official sign-in window. This is separate from the Connect member login.');}
+  return logged;
+ }catch(error){
+  puterStatus('Unable to check Puter status',puterAuthError(error));
+  $('#puter-retry').hidden=false;
+  return false;
+ }
+}
+function preparePuter(){
+ getPuter().then(refreshPuterAuth).catch(function(error){
+  puterStatus('Puter unavailable',puterAuthError(error));
+  $('#puter-signin').disabled=true;
+  $('#puter-retry').hidden=false;
+ });
+}
+function requirePuterAuth(){
+ var sdk=window.puter;
+ if(!sdk||!sdk.auth||!sdk.ai)throw Error('Puter is still loading. Wait for the Connect Puter Account button.');
+ if(!sdk.auth.isSignedIn())throw Error('Connect your Puter account using the button above before using AI.');
+ return sdk;
+}
+function startPuterSignin(switchAccount){
+ var sdk=window.puter;
+ if(!sdk||!sdk.auth){preparePuter();return;}
+ var start;
+ // IMPORTANT: signIn() is invoked within this original click handler,
+ // BEFORE any await or async SDK load, preserving mobile user activation.
+ try {
+  $('#puter-signin').disabled=true;$('#puter-switch').disabled=true;
+  puterStatus('Opening Puter sign-in…','Complete authorization in the Puter popup window.');
+  start=sdk.auth.signIn(switchAccount?{request_auth:true}:undefined);
+ }catch(error){puterStatus('Unable to sign in',puterAuthError(error));$('#puter-signin').disabled=false;$('#puter-switch').disabled=false;return;}
+ Promise.resolve(start).then(function(){return refreshPuterAuth();}).catch(function(error){
+  puterStatus('Puter login unsuccessful',puterAuthError(error));
+ }).finally(function(){$('#puter-signin').disabled=false;$('#puter-switch').disabled=false;});
+}
+$('#puter-signin').addEventListener('click',function(){startPuterSignin(false);});
+$('#puter-switch').addEventListener('click',function(){startPuterSignin(true);});
+$('#puter-signout').addEventListener('click',function(){
+ try {
+  var result=window.puter.auth.signOut();
+  Promise.resolve(result).then(refreshPuterAuth).catch(function(error){puterStatus('Sign-out failed',puterAuthError(error));});
+ }catch(error){puterStatus('Sign-out failed',puterAuthError(error));}
+});
+$('#puter-retry').addEventListener('click',preparePuter);
+
 $('#ask-ai').addEventListener('click',async function(){
  var prompt=$('#chat-prompt').value.trim(),out=$('#chat-result'),b=this;if(!prompt){out.textContent='Enter a question first.';return;}
  b.disabled=true;out.textContent='Connecting to Puter — sign in if requested…';
- try{var puter=await getPuter();var result=await puter.ai.chat(prompt);out.textContent=(typeof result==='string'?result:(result&&result.message&&result.message.content)||JSON.stringify(result))||'No response returned.';}catch(e){out.textContent='AI request failed: '+(e.message||String(e))+' Please check Puter login, credits and connectivity.';}finally{b.disabled=false;}
+ try{var puter=requirePuterAuth();var result=await puter.ai.chat(prompt);out.textContent=(typeof result==='string'?result:(result&&result.message&&result.message.content)||JSON.stringify(result))||'No response returned.';}catch(e){out.textContent='AI request failed: '+(e.message||String(e))+' Please check Puter login, credits and connectivity.';}finally{b.disabled=false;}
 });
 $('#generate-ai-image').addEventListener('click',async function(){
  var prompt=$('#image-prompt').value.trim(),out=$('#image-result'),b=this;if(!prompt){out.textContent='Describe an image first.';return;}
  b.disabled=true;out.textContent='Generating via Puter — sign in if requested…';
- try{var puter=await getPuter();var result=await puter.ai.txt2img(prompt);out.replaceChildren();
+ try{var puter=requirePuterAuth();var result=await puter.ai.txt2img(prompt);out.replaceChildren();
  if(result instanceof HTMLElement){result.alt='AI-generated image';out.append(result);}else if(typeof result==='string'){var img=document.createElement('img');img.src=result;img.alt='AI-generated image';out.append(img);}else{out.textContent='Unexpected response; please try again.';}
  }catch(e){out.textContent='Image request failed: '+(e.message||String(e))+' Please check credits and connectivity.';}finally{b.disabled=false;}
 });
@@ -477,7 +577,7 @@ $('#generate-ai-video').addEventListener('click',async function(){
  if(!prompt){out.textContent='Describe a video first.';return;}
  b.disabled=true;out.textContent='Connecting to Puter video generation. You may need credits…';
  try{
-  var sdk=await getPuter();
+  var sdk=requirePuterAuth();
   if(!sdk.ai||typeof sdk.ai.txt2vid!=='function')throw Error('Video generation is not available in the current Puter SDK.');
   var result=await sdk.ai.txt2vid(prompt);
   out.replaceChildren();
@@ -496,7 +596,7 @@ $('#generate-caption').addEventListener('click',async function(){
  if(!prompt){out.textContent='Describe a topic or product first.';return;}
  b.disabled=true;out.textContent='Creating caption via Puter…';
  try{
-  var sdk=await getPuter();
+  var sdk=requirePuterAuth();
   var result=await sdk.ai.chat('Write an original professional social-media caption with a clear call to action and no invented offers for: '+prompt);
   out.textContent=(typeof result==='string'?result:(result&&result.message&&result.message.content)||JSON.stringify(result))||'No output.';
  }catch(e){out.textContent='AI unavailable: '+(e.message||String(e));}

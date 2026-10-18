@@ -84,6 +84,21 @@
 <section class="page" id="page-ai" hidden>
 <div class="page-header"><div class="overline">IDEAS INTO SOMETHING REAL</div><h1>AI Studio<span class="accent">✦</span></h1><p>Discover what AI can help you create. Powered by Puter — users manage their own allowance and credits.</p></div>
 <div class="ai-info"><strong>Important</strong><span>AI tools use Puter authentication and third-party models. Free usage is limited and generation may require paid credits. Do not submit confidential details.</span></div>
+<section class="puter-auth" aria-label="Puter AI account connection">
+<div class="puter-auth-copy">
+<div class="overline">CONNECT YOUR AI ACCOUNT</div>
+<strong id="puter-auth-label">Preparing Puter…</strong>
+<p id="puter-auth-message" role="status" aria-live="polite">Loading the secure Puter sign-in system. This is separate from your VWEB.DEV Connect account.</p>
+</div>
+<div class="puter-auth-buttons">
+<button type="button" id="puter-signin" class="button primary" disabled>Connect Puter Account ↗</button>
+<button type="button" id="puter-switch" class="button secondary" hidden>Switch account</button>
+<button type="button" id="puter-signout" class="button secondary" hidden>Sign out</button>
+<button type="button" id="puter-retry" class="button secondary" hidden>Retry connection</button>
+</div>
+</section>
+<details class="puter-help"><summary>Puter login window not opening?</summary><p>Use a normal Chrome, Edge or Firefox browser rather than an in-app browser. Allow pop-ups for this site and check that js.puter.com and puter.com are reachable. On Wi-Fi networks with restricted internet access, Puter authentication may not work until those domains are allowed. Never enter your Puter password directly on VWEB.DEV Connect.</p>
+<p><a href="https://puter.com" target="_blank" rel="noopener noreferrer">Open Puter in a new browser tab ↗</a></p></details>
 <div class="tiles two tools-grid">
 <article class="tool-card"><div class="card-heading"><div class="tool-icon">✦</div><div><h2>Ask AI</h2><p>Ask questions, brainstorm or draft text.</p></div></div><label for="chat-prompt">Your prompt</label><textarea rows="5" id="chat-prompt" placeholder="Write a concise product description for my Shopify store…"></textarea><button type="button" class="button primary" id="ask-ai">Ask AI ↗</button><div id="chat-result" class="ai-result" aria-live="polite">Your result will appear here.</div></article>
 <article class="tool-card"><div class="card-heading"><div class="tool-icon">▣</div><div><h2>AI Image Generator</h2><p>Create an image from your own description.</p></div></div><label for="image-prompt">Image description</label><textarea rows="5" id="image-prompt" placeholder="An elegant home interior with a neutral sofa and warm daylight…"></textarea><button type="button" class="button primary" id="generate-ai-image">Generate image ↗</button><div id="image-result" class="ai-result" aria-live="polite">Your image will appear here.</div></article>
