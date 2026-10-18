@@ -1,3 +1,9 @@
+## Tools Visibility Reliability Fix (October 2026)
+
+The Tool Studios section now has seven navigable HTML fallback cards and the homepage has static tool/app links, making the interface useful even if the catalog JavaScript does not run. A complete editor-curated static JSON snapshot is embedded in index.html. assets/hub.js renders it immediately, then revalidates data/connect-hub.json in the background with a timeout. If the external static catalog fails, the embedded catalog is preserved and an optional retry notice appears instead of empty cards. Quick tools initialize independently so one optional widget cannot stop the whole directory. Service worker upgraded to v17 and assets use cache-busting URLs.
+
+**Deployment:** Publish updated index.html, assets/hub.js, assets/style.css, sw.js and data/connect-hub.json together, and ensure Cloudflare does not serve mixed versions. Hard refresh or reinstall stale PWA only if browser still shows the previous layout. The GitHub commit alone is not a live deployment. Run tests/tools-visibility.test.mjs, check #studios/#apps/#tools/#convert on actual mobile and desktop devices, and test both successful and simulated-failing JSON catalog requests.
+
 ## Current release — Focused Tools & Learning (2026-10-18)
 
 The Free Internet / ISP dashboard, PPPoE linking, learning reward points, hotspot voucher redemption and network gateway features are retired. Old routes redirect to My Workspace. Retired APIs return HTTP 410 without opening MySQL. Historical tables and data were NOT dropped. Follow local retention obligations before any deletion.

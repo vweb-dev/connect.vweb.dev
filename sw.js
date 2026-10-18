@@ -1,4 +1,4 @@
-const CACHE='vweb-connect-static-v16';
+const CACHE='vweb-connect-static-v17';
 const APP=['/','/index.html','/assets/style.css','/assets/app.js','/assets/puter-ai.js','/assets/entertainment.js','/assets/converter.js','/assets/hub.js','/data/connect-hub.json','/data/entertainment.json','/assets/connect-icon.svg','/manifest.webmanifest'];
 self.addEventListener('install',event=>{event.waitUntil(caches.open(CACHE).then(cache=>cache.addAll(APP)));self.skipWaiting();});
 self.addEventListener('activate',event=>{event.waitUntil(caches.keys().then(keys=>Promise.all(keys.filter(k=>k!==CACHE).map(k=>caches.delete(k)))));self.clients.claim();});

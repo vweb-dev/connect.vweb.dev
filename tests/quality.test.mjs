@@ -52,7 +52,7 @@ test('WinGet presets never execute installation on website server',()=>{
  assert.doesNotMatch(hub,/kmsauto|keygen|activation bypass/i);
 });
 test('service worker uses network-first static catalog with safe offline fallback',()=>{
- assert.match(sw,/vweb-connect-static-v16/);
+ assert.match(sw,/vweb-connect-static-v17/);
  assert.match(sw,/path==='\/data\/connect-hub\.json'/);
  assert.match(sw,/caches\.match\(path\)/);
  assert.match(html,/id="hub-network-status"/);
@@ -67,10 +67,11 @@ test('premium responsive styling and canonical metadata',()=>{
 });
 
 test('independent offline utilities and revalidated catalogs',()=>{
- const start=hub.indexOf('async function boot(){');
- const setup=hub.indexOf('addQR();addDeveloperUtilities();',start);
- const request=hub.indexOf("fetch('/data/connect-hub.json'",start);
- assert.ok(setup>start&&setup<request,'quick tools should initialize before catalog request');
+ const start=hub.indexOf('function boot(){');
+ const setup=hub.indexOf('for(const init of [addQR,addDeveloperUtilities])',start);
+ const fallback=hub.indexOf('applyCatalog(JSON.parse',start);
+ const request=hub.indexOf('void refreshCatalog()',start);
+ assert.ok(start>=0&&setup>start&&fallback>setup&&request>fallback,'local tools and fallback must initialize before network revalidation');
  assert.match(hub,/cache:'no-cache'/);
  assert.match(read('assets/entertainment.js'),/fetch\('\/data\/entertainment\.json',\{cache:'no-cache'\}\)/);
  const apache=read('.htaccess');

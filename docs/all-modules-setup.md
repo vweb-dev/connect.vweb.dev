@@ -318,3 +318,8 @@ Support requests are fetched from an authenticated member-tickets.php endpoint i
 
 
 Deployment tests: check #home, #apps, #dashboard, #account, #offers, #watch, old #internet and #rewards hash redirects, mobile directory filters, community moderation, lazy PHP calls and browser-local tools. The GitHub code update alone is NOT Hostinger deployment.
+
+
+## Tool cards failure recovery (PWA v17)
+
+Static HTML fallbacks guarantee seven Studio links remain visible even when the catalog JSON request is blocked, stale, 404 or offline. An inline static snapshot in index.html supplies all current curated apps, courses and help to the browser before network revalidation. Each renderer executes separately so one broken optional module does not blank the whole tools interface. A Retry catalog button is shown when the network file cannot be reached. Changed data/connect-hub.json must be deployed alongside matching HTML and JS. Use the browser DevTools Network panel to check /assets/hub.js and /data/connect-hub.json; verify service worker v17 controls the page after reload.

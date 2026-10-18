@@ -855,26 +855,93 @@ function addDeveloperUtilities(){
  }
  render();
 }
-async function boot(){
- // Dependency-free quick tools should work even if the remote/static catalog
- // cannot load due to temporary network or browser cache failures.
- addQR();addDeveloperUtilities();
- try{
-  const response=await fetch('/data/connect-hub.json',{cache:'no-cache'});
-  if(!response.ok)throw Error('Catalog HTTP '+response.status);
-  const responseData=await response.json();
-  if(!responseData||!Array.isArray(responseData.apps)||!Array.isArray(responseData.courses)||!Array.isArray(responseData.studios)||!Array.isArray(responseData.help))throw Error('Invalid catalog format.');
-  data=responseData;
-  data.apps=data.apps.filter(x=>safeUrl(x.open));
-  data.help=data.help.filter(x=>safeUrl(x.url));
-  renderHome();renderStudios();renderApps();renderGuides();renderActivation();renderWinGet();renderDashboard();
-  if(data.courses.length)setCourse(data.courses[0].id,true);
-  trackVisit();
- }catch(err){
-  textMsg($('#hub-home-apps'),'Catalog unavailable. Refresh when you are online.');
-  textMsg($('#hub-studios-grid'),'Catalog could not load. Browser PWA files may need refreshing.');
-  $('#hub-lesson-desc').textContent='Could not load curated courses. '+err.message;
+// Critical Tool Studios and App Directory must never be empty because a
+// network request is slow, a service worker is stale or optional APIs are down.
+const fallbackCatalogNodes=new Map();
+for(const selector of ['#hub-home-studios','#hub-home-apps','#hub-home-courses','#hub-studios-grid']){
+ const root=$(selector);
+ if(root)fallbackCatalogNodes.set(selector,root.innerHTML);
+}
+let catalogReady=false,catalogRefreshInProgress=false;
+function catalogStatus(message){
+ const root=$('#hub-catalog-status'),label=$('#hub-catalog-status-text');
+ if(!root||!label)return;
+ root.hidden=!message;
+ label.textContent=message||'';
+}
+function restoreStaticCatalog(){
+ for(const [selector,markup] of fallbackCatalogNodes){
+  const root=$(selector);
+  if(root&&!root.children.length&&markup)root.innerHTML=markup;
  }
+}
+function applyCatalog(payload){
+ if(!payload||!Array.isArray(payload.studios)||!Array.isArray(payload.courses)||
+   !Array.isArray(payload.apps)||!Array.isArray(payload.help)||!payload.studios.length)
+  throw Error('Invalid tool catalog schema');
+ const cleaned={...payload,
+  apps:payload.apps.filter(item=>item&&safeUrl(item.open)),
+  help:payload.help.filter(item=>item&&safeUrl(item.url))};
+ data=cleaned;
+ const failures=[];
+ for(const fn of [renderHome,renderStudios,renderApps,renderGuides,renderActivation,renderWinGet,renderDashboard]){
+  try{fn();}catch(err){failures.push(fn.name);console.warn('Connect catalog: '+fn.name,err);}
+ }
+ if(cleaned.courses.length){
+  try{
+   if(!courseId||!cleaned.courses.some(course=>course.id===courseId))setCourse(cleaned.courses[0].id,true);
+   else{renderCourses();renderCurriculum();}
+  }catch(err){failures.push('course player');console.warn('Connect course player',err);}
+ }
+ restoreStaticCatalog();
+ catalogReady=true;
+ if(failures.length)catalogStatus('Some tools could not initialize ('+failures.join(', ')+'). Refresh or retry the catalog.');
+ return failures.length===0;
+}
+async function refreshCatalog(){
+ if(catalogRefreshInProgress)return;
+ catalogRefreshInProgress=true;
+ const button=$('#hub-catalog-retry');
+ if(button)button.disabled=true;
+ const controller=new AbortController(),timeout=setTimeout(()=>controller.abort(),7500);
+ try{
+  const response=await fetch('/data/connect-hub.json',{cache:'no-cache',signal:controller.signal});
+  if(!response.ok)throw Error('HTTP '+response.status);
+  const fresh=await response.json();
+  if(!fresh||!Array.isArray(fresh.studios)||!Array.isArray(fresh.apps)||!Array.isArray(fresh.courses))
+   throw Error('Unexpected catalog format');
+  const changed=!catalogReady||JSON.stringify(fresh)!==JSON.stringify(data);
+  if(changed){if(!applyCatalog(fresh))return;}
+  catalogStatus('');
+ }catch(err){
+  console.warn('Connect catalog request; offline fallback remains available',err);
+  if(catalogReady)catalogStatus('Showing built-in tools and software. Latest catalog unavailable; you can keep working or retry.');
+  else catalogStatus('Tool catalog could not load. Use the direct tool links below or retry.');
+  restoreStaticCatalog();
+ }finally{
+  clearTimeout(timeout);
+  catalogRefreshInProgress=false;
+  if(button)button.disabled=false;
+ }
+}
+$('#hub-catalog-retry').addEventListener('click',()=>refreshCatalog());
+function boot(){
+ // Local independent tools should continue working even if one fails.
+ for(const init of [addQR,addDeveloperUtilities]){
+  try{init();}catch(err){console.warn('Local tool did not initialize',err);}
+ }
+ try{
+  const fallback=$('#hub-offline-catalog');
+  if(!fallback)throw Error('Embedded catalog missing');
+  applyCatalog(JSON.parse(fallback.textContent||'{}'));
+ }catch(err){
+  console.warn('Embedded catalog unavailable',err);
+  restoreStaticCatalog();
+  catalogStatus('Tool catalog could not initialize. Open direct links below, or retry.');
+ }
+ trackVisit();
+ // Background revalidation never blocks first render.
+ void refreshCatalog();
 }
 
 // Network/PWA state: communicate limitations rather than silently failing.
