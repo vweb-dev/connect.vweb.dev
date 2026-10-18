@@ -79,14 +79,18 @@ function studioCard(item){
  open.type='button';
  open.addEventListener('click',()=>{
   location.hash='#'+item.page;
-  if(item.tab)setTimeout(()=>{
+  if(item.tab)requestAnimationFrame(()=>{
    const tab=$('#convert-tab-'+item.tab);
    if(tab)tab.click();
-  },60);
+  });
  });
  c.append(open);return c;
 }
 function renderHome(){
+ $('#hub-count-studios').textContent=String(data.studios.length);
+ $('#hub-count-apps').textContent=String(data.apps.length);
+ $('#hub-count-courses').textContent=String(data.courses.length);
+ $('#hub-count-tools').textContent=String(quickToolIndex.length);
  const root=$('#hub-home-studios');clear(root);
  data.studios.slice(0,4).forEach(item=>root.append(studioCard(item)));
  const apps=$('#hub-home-apps');clear(apps);
@@ -129,9 +133,13 @@ function renderStudios(){
  data.studios.forEach(s=>root.append(studioCard(s)));
 }
 // Directory: show only a page of cards to keep low-memory phones responsive.
+let appLayout='grid';
 const featuredApps=['powertoys','7zip','vscode','vlc','gimp','obsidian','excalidraw','vert','firefox','brave','localsend','it-tools'];
 function renderApps(){
  const host=$('#hub-app-library');clear(host);
+ host.classList.toggle('is-list',appLayout==='list');
+ $('#hub-app-view-grid').setAttribute('aria-pressed',String(appLayout==='grid'));
+ $('#hub-app-view-list').setAttribute('aria-pressed',String(appLayout==='list'));
  const cats=$('#hub-app-categories');clear(cats);
  ['All',...new Set(data.apps.map(x=>x.category)),'Saved'].forEach(category=>{
   const button=el('button','hub-chip'+(appFilter===category?' selected':''),category);
@@ -176,11 +184,48 @@ $('#hub-app-sort').addEventListener('change',event=>{
 });
 $('#hub-app-reset').addEventListener('click',resetApps);
 $('#hub-app-more').addEventListener('click',()=>{appLimit+=12;renderApps();});
+$$('[data-app-shortcut]').forEach(button=>button.addEventListener('click',()=>{
+ const target=button.dataset.appShortcut;
+ appFilter=target;appKind='All';appSearch='';appLimit=12;
+ $('#hub-app-search').value='';$('#hub-app-kind').value='All';
+ renderApps();
+}));
+for(const kind of ['grid','list']){
+ $('#hub-app-view-'+kind).addEventListener('click',()=>{appLayout=kind;renderApps();});
+}
 // Optional global find: user searches a curated local index, not a backend.
+const quickToolIndex=[
+ {title:'Password Generator',detail:'Create strong passwords locally',destination:'#tools',tool:'password',icon:'✳'},
+ {title:'Text Studio',detail:'Word count, text cleanup and uppercase',destination:'#tools',tool:'text',icon:'Aa'},
+ {title:'Unit Converter',detail:'Convert length, mass, temperature and area',destination:'#tools',tool:'units',icon:'⇄'},
+ {title:'CSV to JSON',detail:'Convert spreadsheet rows into JSON',destination:'#tools',tool:'csv',icon:'▤'},
+ {title:'JSON Studio',detail:'Format, minify and validate JSON',destination:'#tools',tool:'json',icon:'{ }'},
+ {title:'Text Encoder',detail:'URL and Unicode Base64 encode / decode',destination:'#tools',tool:'encode',icon:'↔'},
+ {title:'SHA-256 Hash',detail:'Generate SHA-256 text fingerprints',destination:'#tools',tool:'hash',icon:'⌁'},
+ {title:'UUID Generator',detail:'Create random UUID identifiers',destination:'#tools',tool:'uuid',icon:'#'},
+ {title:'QR Code Studio',detail:'QR for website, Wi-Fi, WhatsApp and contact',destination:'#tools',tool:'qr',icon:'▦'},
+ {title:'Color Contrast',detail:'Check accessible WCAG text contrast',destination:'#tools',tool:'contrast',icon:'◐'}
+];
+function openIndexedResult(item){
+ if(item.course)setCourse(item.course,true);
+ if(item.app){
+  appFilter='All';appSearch=item.app.toLowerCase();appKind='All';appLimit=12;
+  $('#hub-app-search').value=item.app;$('#hub-app-kind').value='All';renderApps();
+ }
+ if(item.tool){
+  if(location.hash!=='#tools')location.hash='#tools';
+  requestAnimationFrame(()=>window.dispatchEvent(new CustomEvent('connect:open-tool',{detail:{id:item.tool}})));
+  return;
+ }
+ if(location.hash===item.destination&&item.destination==='#academy'&&item.course)startLesson(lessonIndex);
+ else location.hash=item.destination;
+}
+
 function searchIndex(query){
  const q=query.toLowerCase().trim();
  if(!q)return [];
  const all=[
+  ...quickToolIndex,
   ...data.studios.map(x=>({title:x.title,detail:x.subtitle,destination:'#studios',icon:x.icon})),
   ...data.courses.map(x=>({title:x.title,detail:x.description,destination:'#academy',course:x.id,icon:x.icon})),
   ...data.apps.map(x=>({title:x.name,detail:x.desc,destination:'#apps',app:x.name,icon:x.initial||'◧'})),
@@ -199,9 +244,7 @@ function renderGlobalSearch(){
   b.append(el('span','hub-search-mark',item.icon),el('strong','',item.title),el('small','',item.detail.slice(0,100)));
   b.addEventListener('click',()=>{
    $('#hub-search').value='';root.hidden=true;
-   if(item.course)setCourse(item.course,true);
-   if(item.app){appFilter='All';appSearch=item.app.toLowerCase();appKind='All';appLimit=12;$('#hub-app-search').value=item.app;$('#hub-app-kind').value='All';renderApps();}
-   location.hash=item.destination;
+   openIndexedResult(item);
   });
   root.append(b);
  });
@@ -223,7 +266,7 @@ const quickSections=[
  {title:'Tool Studios',detail:'Image, PDF, Media, QR, Design and developer tools',destination:'#studios',icon:'⇄'},
  {title:'Video Academy',detail:'Organized YouTube courses and full playlists',destination:'#academy',icon:'▶'},
  {title:'Windows & PC Help',detail:'Activation, repairs and official installers',destination:'#pc',icon:'▦'},
- {title:'App Directory',detail:'21 verified publisher destinations and PWA apps',destination:'#apps',icon:'◧'},
+ {title:'App Directory',detail:'Curated Windows downloads, web apps and PWAs',destination:'#apps',icon:'◧'},
  {title:'My Workspace',detail:'Saved apps, notes, progress and recent activities',destination:'#dashboard',icon:'◇'},
  {title:'Convert Studio',detail:'On-device image, PDF, video and audio converters',destination:'#convert',icon:'▤'},
  {title:'Quick Utilities',detail:'QR code, passwords, text and everyday tools',destination:'#tools',icon:'⌘'},
@@ -240,12 +283,9 @@ function paletteOptions(query){
  });
 }
 function gotoSearchResult(item){
- if(item.course)setCourse(item.course,true);
- if(item.app){appFilter='All';appSearch=item.app.toLowerCase();$('#hub-app-search').value=item.app;renderApps();}
  if(palette.open)palette.close();
  $('#hub-search-results').hidden=true;
- if(location.hash===item.destination&&item.destination==='#academy'&&item.course)startLesson(lessonIndex);
- else location.hash=item.destination;
+ openIndexedResult(item);
 }
 function highlightPalette(index){
  palettePos=index;
@@ -543,6 +583,18 @@ function updateWinGet(){
  const lines=wingetLines();
  $('#hub-winget-output').value=lines.join('\n');
  $('#hub-winget-count').textContent=lines.length+' app'+(lines.length===1?'':'s')+' selected';
+ const chips=$('#hub-winget-selected-list');chips.replaceChildren();
+ const picked=selectedWinGet();
+ const label=el('span','hub-winget-picked-label',picked.length?'Ready to review:':'No software selected yet.');
+ chips.append(label);
+ for(const id of picked.slice(0,7)){
+  const pkg=data.apps.find(item=>item.winget===id);
+  const remove=el('button','hub-winget-picked-chip',(pkg?.name||id)+' ×');
+  remove.type='button';remove.title='Remove '+(pkg?.name||id);
+  remove.addEventListener('click',()=>{selectedWinget.delete(id);updateWinGet();});
+  chips.append(remove);
+ }
+ if(picked.length>7)chips.append(el('span','hub-winget-picked-more','+'+(picked.length-7)+' more'));
 }
 $('#hub-winget-download').addEventListener('click',()=>{
  const commands=wingetLines();
@@ -1068,6 +1120,12 @@ function initToolsTabs(){
  search.addEventListener('input',()=>activate('all'));
  clearButton.addEventListener('click',()=>{
   search.value='';activate('all');search.focus();
+ });
+ window.addEventListener('connect:open-tool',event=>{
+  const item=tools.find(x=>x.id===event.detail?.id);
+  if(!item)return;
+  activate(item.category,{resetSearch:true});
+  choose(item,{focusPanel:true});
  });
  // Expose the new interface only when the entire launcher is initialized.
  choose(tools[0]);

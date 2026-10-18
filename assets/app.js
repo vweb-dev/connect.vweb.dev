@@ -3,6 +3,41 @@
 var $ = function (s) { return document.querySelector(s); };
 var $$ = function (s) { return Array.from(document.querySelectorAll(s)); };
 var routes=['home','studios','academy','pc','apps','dashboard','convert','tools','ai','watch','play','discover','offers','community','account'];
+
+var contextTitles={
+ home:'Overview',studios:'Tool Studios',academy:'Video Academy',pc:'Windows & PC Help',
+ apps:'App Directory',dashboard:'My Workspace',convert:'File Converter',tools:'Quick Utilities',
+ ai:'AI Studio',watch:'Watch & Podcasts',play:'Games & Quizzes',discover:'Discover',
+ offers:'Deals',community:'Local & Learn',account:'My Account'
+};
+var contextRelated={
+ studios:[['#tools','Quick utilities'],['#convert','File converter'],['#apps','App directory']],
+ academy:[['#dashboard','My progress'],['#apps','Useful apps'],['#tools','Quick tools']],
+ pc:[['#apps','Software directory'],['#tools','Browser tools'],['#academy','Learn Windows']],
+ apps:[['#pc','WinGet builder'],['#studios','Tool studios'],['#dashboard','Saved apps']],
+ dashboard:[['#academy','Continue learning'],['#apps','Find apps'],['#tools','Quick tools']],
+ convert:[['#tools','Quick utilities'],['#studios','Tool studios'],['#dashboard','My workspace']],
+ tools:[['#convert','File converter'],['#studios','Tool studios'],['#apps','App directory']],
+ ai:[['#tools','Free utilities'],['#academy','Video academy'],['#studios','Tool studios']],
+ watch:[['#discover','Discover'],['#play','Games'],['#academy','Academy']],
+ play:[['#watch','Watch'],['#discover','Discover'],['#academy','Academy']],
+ discover:[['#watch','Watch'],['#academy','Academy'],['#apps','App directory']],
+ offers:[['#apps','App directory'],['#community','Community'],['#studios','Tool studios']],
+ community:[['#academy','Academy'],['#discover','Discover'],['#apps','Useful apps']],
+ account:[['#dashboard','Local workspace'],['#apps','Apps'],['#home','Overview']]
+};
+function renderContext(key){
+ var container=$('#hub-context');
+ if(!container)return;
+ container.hidden=key==='home';
+ if(key==='home')return;
+ $('#hub-context-label').textContent=contextTitles[key]||'Connect';
+ var nav=$('#hub-context-actions');nav.replaceChildren();
+ (contextRelated[key]||[]).forEach(function(item){
+  var link=document.createElement('a');link.href=item[0];link.textContent=item[1]+' ↗';nav.append(link);
+ });
+}
+
 function route(){
   var key=location.hash.replace('#','')||'home';
   if(key==='tv'||key==='listen'){key='watch';history.replaceState(null,'','#watch');}
@@ -11,6 +46,7 @@ function route(){
   $$('.page').forEach(function(el){el.hidden=el.id!=='page-'+key;});
   $$('[data-nav]').forEach(function(el){var active=el.dataset.nav===key;el.classList.toggle('active',active);if(active){el.setAttribute('aria-current','page');}else{el.removeAttribute('aria-current');}});
   document.title=(key==='home'?'VWEB.DEV Connect':key.charAt(0).toUpperCase()+key.slice(1)+' | VWEB.DEV Connect');
+  renderContext(key);
   window.scrollTo(0,0);
 }
 window.addEventListener('hashchange',route);route();

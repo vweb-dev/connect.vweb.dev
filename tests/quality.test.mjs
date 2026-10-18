@@ -78,3 +78,16 @@ test('independent offline utilities and revalidated catalogs',()=>{
  assert.match(apache,/Cache-Control "public, max-age=3600/);
  assert.match(apache,/Cache-Control "no-cache, must-revalidate"/);
 });
+
+test('cross-project discoverability release preserves direct tool access and real catalog metrics',()=>{
+ for(const id of ['hub-context','hub-context-actions','hub-count-studios','hub-count-apps','hub-count-courses','hub-count-tools','hub-app-view-list','hub-winget-selected-list'])
+  assert.ok(html.includes('id="'+id+'"'),id);
+ assert.match(read('assets/app.js'),/renderContext\(key\)/);
+ assert.match(hub,/function openIndexedResult/);
+ assert.match(hub,/const quickToolIndex=\[/);
+ assert.match(hub,/new CustomEvent\('connect:open-tool'/);
+ assert.match(hub,/window\.addEventListener\('connect:open-tool'/);
+ assert.match(hub,/appLayout==='list'/);
+ assert.match(hub,/hub-winget-picked-chip/);
+ assert.match(css,/hub-context/);
+});
