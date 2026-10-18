@@ -1,3 +1,9 @@
+## Watch & Discover / Discover retirement — October 18, 2026
+
+Both public sections were removed from desktop and mobile navigation, app routing, pages, contextual links, and their browser-side media catalog fetches. The Watch page's on-demand collections and podcasts, and Discover's Open Library book finder, are no longer available. Previous `#watch`, `#discover`, `#tv`, and `#listen` URLs redirect to Overview. Games & Quizzes (`#play`) and all six browser games remain operational. The PWA shell was advanced to v20; current public assets use `connect-focus-20261018b`. Existing CMS/database records were not deleted. Historical descriptions below refer to earlier releases, not the active navigation.
+
+---
+
 ## Connected experience refresh — October 18, 2026
 
 This release improves the whole VWEB.DEV Connect experience while preserving the free/browser-first architecture and retiring no additional modules.

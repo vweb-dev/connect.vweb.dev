@@ -28,7 +28,10 @@ test('anonymous visitors do not initiate optional PHP calls',()=>{
  assert.ok(app.includes('loadPublishedWhenNeeded'));
  assert.ok(app.includes("destination==='offers'||destination==='community'")||
            app.includes("section==='offers'||section==='community'"));
- assert.ok(media.includes('openDiscoveryWhenNeeded'));
+ assert.ok(!media.includes('openDiscoveryWhenNeeded'));
+ assert.ok(!media.includes('data/entertainment.json'));
+ assert.ok(!html.includes('id="page-watch"')&&!html.includes('id="page-discover"'));
+ assert.ok(html.includes('id="page-play"'));
  assert.ok(app.includes('openAccountIfRequested'));
  assert.ok(app.includes("location.hash==='#account'"));
  assert.ok(!app.includes('loadRewards();'));
@@ -55,7 +58,7 @@ test('community admin preserves support, merchant and optional notifications',()
  assert.match(privacy,/Retired Internet and Rewards features/);
 });
 test('cache invalidated and updated assets remain static',()=>{
- assert.match(sw,/vweb-connect-static-v19/);
- assert.match(html,/hub\.js\?v=(?:connect20-focus-|(?:tools-(?:recovery|fix|tabs)-|connect-refresh-))/);
+ assert.match(sw,/vweb-connect-static-v20/);
+ assert.match(html,/hub\.js\?v=(?:connect20-focus-|(?:tools-(?:recovery|fix|tabs)-|(?:connect-refresh-|connect-focus-)))/);
  assert.match(read('.github/workflows/checks.yml'),/tests\/focus\.test\.mjs/);
 });

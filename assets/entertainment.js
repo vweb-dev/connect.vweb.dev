@@ -1,89 +1,9 @@
 'use strict';
-/* VWEB.DEV Connect Discovery: editorial publisher links and browser games. */
+/* Browser-only games; Watch/Discover and book search are retired. */
 (function(){
-const $=(s)=>document.querySelector(s);
-const $$=(s)=>Array.from(document.querySelectorAll(s));
-const safeUrl=value=>{try{const u=new URL(String(value));return u.protocol==='https:'?u.href:null;}catch(_){return null;}};
+const $=s=>document.querySelector(s);
+const $$=s=>Array.from(document.querySelectorAll(s));
 function textNode(tag,value,cls=''){const e=document.createElement(tag);e.textContent=value;if(cls)e.className=cls;return e;}
-function empty(root,message){if(!root)return;root.replaceChildren(textNode('div',message,'ent-empty'));}
-function externalLink(url,title='Official source ↗'){
- const a=textNode('a',title,'button secondary');a.href=url;a.target='_blank';a.rel='noopener noreferrer';return a;
-}
-let podcastEmbed=null;
-function clearPodcast(){
- const player=$('#podcast-player');if(!player)return;
- player.replaceChildren();player.hidden=true;podcastEmbed=null;
-}
-function mediaItem(raw){
- if(!raw||typeof raw!=='object'||!['watch','discover','podcast'].includes(raw.kind))return null;
- const url=safeUrl(raw.source_url);
- if(!url)return null;
- return {id:String(raw.id||'').slice(0,90),kind:raw.kind,title:String(raw.title||'Resource').slice(0,160),
- summary:String(raw.summary||'').slice(0,450),category:String(raw.category||'General').slice(0,70),
- provider:String(raw.provider||'external'),source_url:url,source_name:String(raw.source_name||'Publisher').slice(0,90),
- badge:String(raw.badge||'Official resource').slice(0,70),external_id:String(raw.external_id||''),
- poster_style:['news','space','culture','learning','entertainment'].includes(raw.poster_style)?raw.poster_style:'learning'};
-}
-function makeMediaCard(item){
- const article=document.createElement('article');article.className='ent-item';
- const poster=document.createElement('div');poster.className='ent-poster p-'+item.poster_style;
- const symbols={news:'◉',space:'✧',learning:'✦',culture:'◈',entertainment:'▶'};
- poster.append(textNode('span',symbols[item.poster_style]||'▶','ent-poster-symbol'),textNode('span',item.badge,'ent-poster-label'));
- const body=document.createElement('div');body.className='ent-item-body';
- body.append(textNode('div',[item.source_name,item.category].filter(Boolean).join(' · '),'ent-item-meta'),
-   textNode('h3',item.title),textNode('p',item.summary));
- const actions=document.createElement('div');actions.className='ent-item-actions';
- if(item.kind==='podcast'&&item.provider==='spotify'&&/^[a-zA-Z0-9]{22}$/.test(item.external_id)){
-  const play=textNode('button','▶ Listen in page','button primary');play.type='button';
-  play.addEventListener('click',()=>{
-   clearPodcast();
-   const frame=document.createElement('iframe');
-   frame.src='https://open.spotify.com/embed/show/'+item.external_id;
-   frame.title=item.title+' — Spotify';frame.loading='lazy';
-   frame.allow='autoplay; encrypted-media; fullscreen; picture-in-picture';
-   const root=$('#podcast-player');root.hidden=false;root.append(frame);podcastEmbed=frame;
-   root.scrollIntoView({block:'center',behavior:'smooth'});
-  });actions.append(play);
- }
- actions.append(externalLink(item.source_url,'Open publisher ↗'));
- body.append(actions);article.append(poster,body);return article;
-}
-async function loadCatalog(){
- let items=[];
- try{
-  const r=await fetch('/data/entertainment.json',{cache:'no-cache'});
-  if(r.ok){const d=await r.json();items=(d.items||[]).map(mediaItem).filter(Boolean);}
- }catch(_){}
- // Optional CMS: only publish on-demand media. Live TV and radio are retired.
- try{
-  const controller=new AbortController();const timeout=setTimeout(()=>controller.abort(),3000);
-  const response=await fetch('/api/media.php',{signal:controller.signal,cache:'no-store'});
-  clearTimeout(timeout);
-  if(response.ok){const json=await response.json();if(json.ok&&Array.isArray(json.items)){
-   const map=new Map(items.map(item=>[item.id,item]));
-   json.items.map(mediaItem).filter(Boolean).forEach(item=>map.set(item.id,item));
-   items=[...map.values()];
-  }}
- }catch(_){}
- for(const [kind,selector] of [['watch','#watch-list'],['podcast','#podcast-list'],['discover','#discover-list']]){
-  const root=$(selector);if(!root)continue;root.replaceChildren();
-  const relevant=items.filter(i=>i.kind===kind);
-  if(!relevant.length){empty(root,'No resources available yet. Check again when online.');continue;}
-  relevant.forEach(item=>root.append(makeMediaCard(item)));
- }
-}
-// No media PHP/API calls until the user deliberately visits Discovery/Watch.
-let mediaCatalogStarted=false;
-function openDiscoveryWhenNeeded(){
- const page=(location.hash||'#home').slice(1);
- if(!mediaCatalogStarted&&(page==='watch'||page==='discover')){
-  mediaCatalogStarted=true;loadCatalog();
- }
- if(page!=='watch'&&podcastEmbed)clearPodcast();
-}
-window.addEventListener('hashchange',openDiscoveryWhenNeeded);
-openDiscoveryWhenNeeded();
-// Browser-local games and educational search are initialized below.
 // Open Trivia DB: questions are CC BY-SA 4.0; client fetch, no backend burden.
 const fallbackQuiz=[
  {q:'Which planet is known as the Red Planet?',answers:['Mars','Venus','Neptune','Jupiter'],correct:'Mars'},
@@ -190,7 +110,7 @@ $$('[data-game]').forEach(btn=>btn.addEventListener('click',()=>{
  ['quiz','memory','number','flags','word','sudoku'].forEach(x=>$('#game-'+x).hidden=x!==type);
 }));
 
-/* Additional zero-backend games and direct Open Library discovery */
+/* Additional zero-backend games */
 const flagPairs=[
  ['🇵🇰','Pakistan'],['🇮🇳','India'],['🇨🇦','Canada'],['🇯🇵','Japan'],
  ['🇧🇷','Brazil'],['🇫🇷','France'],['🇩🇪','Germany'],['🇦🇺','Australia'],
@@ -254,39 +174,5 @@ $('#sudoku-check').addEventListener('click',()=>{
  $('#sudoku-feedback').textContent=valid?'Solved! Every number is correct.':'Some squares are incorrect. Keep trying.';
 });
 $('#sudoku-new').addEventListener('click',resetSudoku);resetSudoku();
-$('#book-form').addEventListener('submit',async(e)=>{
- e.preventDefault();
- const query=$('#book-query').value.trim(),root=$('#book-results');
- if(!query){return;}
- empty(root,'Searching Open Library…');
- const ctrl=new AbortController(),timeout=setTimeout(()=>ctrl.abort(),9500);
- try{
-  const u=new URL('https://openlibrary.org/search.json');
-  u.search=new URLSearchParams({q:query,limit:'9',fields:'key,title,author_name,first_publish_year,cover_i'}).toString();
-  const response=await fetch(u,{signal:ctrl.signal});
-  if(!response.ok)throw Error('Open Library returned an error');
-  const data=await response.json();
-  root.replaceChildren();
-  const docs=Array.isArray(data.docs)?data.docs:[];
-  if(!docs.length){empty(root,'No matching books. Try another search.');return;}
-  for(const book of docs){
-   if(typeof book.key!=='string'||!/^\/works\/[A-Za-z0-9]+$/.test(book.key))continue;
-   const article=document.createElement('article');article.className='ent-item';
-   const poster=document.createElement('div');poster.className='ent-poster p-culture';
-   if(Number.isInteger(book.cover_i)&&book.cover_i>0){
-    const img=document.createElement('img');img.className='ent-book-cover';
-    img.src='https://covers.openlibrary.org/b/id/'+book.cover_i+'-M.jpg';img.loading='lazy';img.alt='Book cover';poster.append(img);
-   }else poster.append(textNode('span','▤','ent-poster-symbol'));
-   const body=document.createElement('div');body.className='ent-item-body';
-   body.append(textNode('div',(book.author_name||[]).slice(0,2).join(', ')||'Unknown author','ent-item-meta'),
-    textNode('h3',String(book.title||'Untitled').slice(0,100)),
-    textNode('p','First published: '+(book.first_publish_year||'Not available')));
-   body.append(externalLink('https://openlibrary.org'+book.key,'View book ↗'));
-   article.append(poster,body);root.append(article);
-  }
- }catch(err){empty(root,'Open Library search is unavailable or blocked. Please retry shortly.');}
- finally{clearTimeout(timeout);}
-});
-
 
 })();

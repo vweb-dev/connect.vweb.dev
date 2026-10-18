@@ -652,7 +652,7 @@ async function copy(value,selector,defaultText){
 }
 // Dashboard, privacy and recent use
 const pageNames={home:'Overview',studios:'Tool Studios',academy:'Video Academy',pc:'Windows Help',apps:'App Directory',
- dashboard:'My Workspace',convert:'Convert Studio',tools:'Quick Utilities',ai:'AI Studio',play:'Games',watch:'Watch',offers:'Deals',community:'Local & Learn',discover:'Discover'};
+ dashboard:'My Workspace',convert:'Convert Studio',tools:'Quick Utilities',ai:'AI Studio',play:'Games',offers:'Deals',community:'Local & Learn'};
 function trackVisit(){
  const route=(location.hash||'#home').slice(1)||'home';
  if(!pageNames[route])return;
@@ -699,7 +699,7 @@ function renderDashboard(){
   saved.append(button);
  });
  const recent=$('#hub-dashboard-recent');clear(recent);
- state.recent.forEach(page=>recent.append(link(pageNames[page]+' ↗','#'+page,'hub-recent-chip')));
+ state.recent.filter(page=>pageNames[page]).forEach(page=>recent.append(link(pageNames[page]+' ↗','#'+page,'hub-recent-chip')));
 }
 $('#hub-data-export').addEventListener('click',()=>{
  const blob=new Blob([JSON.stringify({format:'vweb-connect-workspace',version:1,exportedAt:new Date().toISOString(),data:state},null,2)],

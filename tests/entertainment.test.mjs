@@ -1,55 +1,37 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {readFileSync} from 'node:fs';
-const read=(p)=>readFileSync(new URL('../'+p,import.meta.url),'utf8');
+const read=p=>readFileSync(new URL('../'+p,import.meta.url),'utf8');
 const page=read('index.html'),runtime=read('assets/entertainment.js'),
  app=read('assets/app.js'),sw=read('sw.js'),css=read('assets/style.css');
-const catalog=JSON.parse(read('data/entertainment.json'));
-test('retired live radio and television are completely removed',()=>{
- assert.ok(!page.includes('id="page-tv"'));
- assert.ok(!page.includes('id="page-listen"'));
- assert.ok(!page.includes('href="#tv"'));
- assert.ok(!page.includes('href="#listen"'));
- assert.ok(!app.includes("'ai','tv','watch'"));
- assert.ok(!runtime.includes('radio-browser.info'));
- assert.ok(!runtime.includes('const radioHosts'));
- assert.ok(!runtime.includes('hls.js'));
- assert.ok(catalog.items.every(x=>x.kind!=='tv'));
+test('both public Watch/Discover modules and menus are gone',()=>{
+ const routes=app.match(/var routes=\[([^\]]+)\]/)?.[1]||'';
+ for(const key of ['watch','discover']){
+  assert.ok(!page.includes('id="page-'+key+'"'));
+  assert.ok(!page.includes('href="#'+key+'"'));
+  assert.ok(!page.includes('data-nav="'+key+'"'));
+  assert.ok(!routes.includes("'"+key+"'"));
+ }
+ for(const token of ['Watch & Discover','Watch & Podcasts','id="watch-list"','id="podcast-list"','id="discover-list"','id="book-form"'])
+  assert.ok(!page.includes(token),token);
 });
-test('watch collections, podcasts, games and books remain accessible',()=>{
- for(const route of ['watch','play','discover']){
-  assert.ok(page.includes('id="page-'+route+'"'));
-  assert.ok(app.includes("'"+route+"'"));
- }
- for(const id of ['watch-list','podcast-list','podcast-player','discover-list','book-form']){
-  assert.ok(page.includes('id="'+id+'"'));
- }
- assert.match(runtime,/open\.spotify\.com\/embed\/show/);
+test('obsolete hashes redirect to overview',()=>{
+ assert.match(app,/includes\(key\)\)\{key='home';history\.replaceState\(null,'','#home'\)/);
+ for(const key of ['watch','discover','tv','listen'])assert.ok(app.includes("'"+key+"'"));
+});
+test('all six games remain accessible and locally initialized',()=>{
+ assert.ok(page.includes('id="page-play"'));
+ assert.ok(app.includes("'play'"));
+ for(const key of ['quiz','memory','number','flags','word','sudoku'])assert.ok(page.includes('id="game-'+key+'"'),key);
+ for(const id of ['quiz-start','memory-new','number-next','flag-next','word-check','sudoku-check'])assert.ok(runtime.includes(id),id);
  assert.match(runtime,/opentdb\.com\/api\.php/);
- assert.match(runtime,/openlibrary\.org\/search\.json/);
- for(const game of ['quiz','memory','number','flags','word','sudoku']){
-  assert.ok(page.includes('id="game-'+game+'"'));
- }
-});
-test('editorial directory retains safe official URLs',()=>{
- const ids=new Set();
- for(const item of catalog.items){
-  assert.ok(!ids.has(item.id));ids.add(item.id);
-  assert.ok(['watch','discover','podcast'].includes(item.kind));
-  assert.ok(item.source_url.startsWith('https://'));
-  assert.ok(['official_embed','official_link','licensed_stream'].includes(item.permission));
- }
-});
-test('PWA caches simplified discovery engine and catalog',()=>{
- assert.match(sw,/data\/entertainment\.json/);
- assert.match(sw,/path==='\/assets\/entertainment\.js'/);
- assert.match(sw,/vweb-connect-static-v19/);
- assert.match(page,/entertainment\.js\?v=/);
-});
-test('sponsored discovery placement and mobile cards remain',()=>{
- assert.ok(page.includes('data-ent-sponsor="watch"'));
  assert.ok(page.includes('data-ent-sponsor="play"'));
- assert.ok(!page.includes('data-ent-sponsor="tv"'));
- assert.ok(css.includes('ent-catalog'));
- assert.ok(!runtime.includes('document.write('));
+});
+test('retired on-demand media fetching is not part of games or PWA shell',()=>{
+ assert.doesNotMatch(runtime,/entertainment\.json|api\/media\.php|spotify\.com\/embed|openlibrary\.org|podcast-player|book-form|openDiscoveryWhenNeeded/);
+ assert.doesNotMatch(sw,/entertainment\.json/);
+ assert.match(sw,/vweb-connect-static-v20/);
+ assert.match(page,/entertainment\.js\?v=connect-focus-/);
+ assert.ok(!page.includes('data-ent-sponsor="watch"'));
+ assert.ok(css.includes('ent-game-board'));
 });

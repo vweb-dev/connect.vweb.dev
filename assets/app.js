@@ -2,12 +2,12 @@
 (function () {
 var $ = function (s) { return document.querySelector(s); };
 var $$ = function (s) { return Array.from(document.querySelectorAll(s)); };
-var routes=['home','studios','academy','pc','apps','dashboard','convert','tools','ai','watch','play','discover','offers','community','account'];
+var routes=['home','studios','academy','pc','apps','dashboard','convert','tools','ai','play','offers','community','account'];
 
 var contextTitles={
  home:'Overview',studios:'Tool Studios',academy:'Video Academy',pc:'Windows & PC Help',
  apps:'App Directory',dashboard:'My Workspace',convert:'File Converter',tools:'Quick Utilities',
- ai:'AI Studio',watch:'Watch & Podcasts',play:'Games & Quizzes',discover:'Discover',
+ ai:'AI Studio',play:'Games & Quizzes',
  offers:'Deals',community:'Local & Learn',account:'My Account'
 };
 var contextRelated={
@@ -19,11 +19,9 @@ var contextRelated={
  convert:[['#tools','Quick utilities'],['#studios','Tool studios'],['#dashboard','My workspace']],
  tools:[['#convert','File converter'],['#studios','Tool studios'],['#apps','App directory']],
  ai:[['#tools','Free utilities'],['#academy','Video academy'],['#studios','Tool studios']],
- watch:[['#discover','Discover'],['#play','Games'],['#academy','Academy']],
- play:[['#watch','Watch'],['#discover','Discover'],['#academy','Academy']],
- discover:[['#watch','Watch'],['#academy','Academy'],['#apps','App directory']],
+ play:[['#academy','Academy'],['#tools','Quick tools'],['#apps','App directory']],
  offers:[['#apps','App directory'],['#community','Community'],['#studios','Tool studios']],
- community:[['#academy','Academy'],['#discover','Discover'],['#apps','Useful apps']],
+ community:[['#academy','Academy'],['#play','Games & quizzes'],['#apps','Useful apps']],
  account:[['#dashboard','Local workspace'],['#apps','Apps'],['#home','Overview']]
 };
 function renderContext(key){
@@ -40,7 +38,7 @@ function renderContext(key){
 
 function route(focusHeading){
   var key=location.hash.replace('#','')||'home';
-  if(key==='tv'||key==='listen'){key='watch';history.replaceState(null,'','#watch');}
+  if(['watch','discover','tv','listen'].includes(key)){key='home';history.replaceState(null,'','#home');}
   if(key==='internet'||key==='rewards'){key='dashboard';history.replaceState(null,'','#dashboard');}
   if(routes.indexOf(key)<0)key='home';
   $$('.page').forEach(function(el){el.hidden=el.id!=='page-'+key;});
