@@ -51,3 +51,14 @@ test('site shell and PWA cache use consistent current revision',()=>{
  assert.match(html,/id="hub-offline-catalog"/);
  assert.match(hub,/restoreStaticCatalog/);
 });
+
+test('local workspace supports pinned quick tools without breaking old exports',()=>{
+ assert.match(hub,/pinnedTools:Array\.isArray\(p\.pinnedTools\)/);
+ assert.match(hub,/state\.pinnedTools=Array\.isArray\(p\.pinnedTools\)/);
+ assert.match(hub,/id="hub-data-export"|vweb-connect-workspace/);
+ assert.match(hub,/connect:pins-changed/);
+ assert.match(hub,/function refreshPins/);
+ assert.match(hub,/renderDashboard\(\)/);
+ assert.match(html,/id="qt-pin-tool"/);
+ assert.match(style,/#qt-pin-tool\[aria-pressed=true\]/);
+});

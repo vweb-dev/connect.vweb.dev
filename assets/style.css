@@ -901,3 +901,10 @@ body.drawer-open{overflow:hidden}
 @media(max-width:920px){.hub-overview-stats{grid-template-columns:repeat(2,minmax(0,1fr))}.hub-home .hub-quick-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.hub-context-actions{gap:5px}.hub-context-actions a{font-size:10px}}
 @media(max-width:650px){.hub-journey-grid{grid-template-columns:1fr}.hub-journey-card{padding:15px}.hub-overview-stats{gap:8px}.hub-overview-stats a{padding:13px}.hub-overview-stats small{font-size:9px}.hub-directory-topline{align-items:flex-start}.hub-directory-shortcuts{width:100%}.hub-app-grid.is-list .hub-app-card{grid-template-columns:43px minmax(0,1fr);gap:9px}.hub-app-grid.is-list .hub-app-card p,.hub-app-grid.is-list .hub-app-card .hub-app-meta,.hub-app-grid.is-list .hub-app-card .hub-app-footer{grid-column:2/-1}.hub-context{align-items:flex-start;padding:10px 0 13px}.hub-context-actions{width:100%;overflow-x:auto;flex-wrap:nowrap}.hub-context-actions a{white-space:nowrap}.hub-app-controls .hub-app-view-switch{grid-column:1/-1;justify-self:end}.hub-journey-heading a{display:none}}
 @media(prefers-reduced-motion:reduce){.hub-overview-stats a{transition:none;transform:none}}
+
+/* Saved utilities share the same local workspace as saved apps. */
+.qt-workspace-actions{display:flex;align-items:center;gap:11px;flex-wrap:wrap;justify-content:flex-end}
+#qt-pin-tool{border:1px solid #806a49;background:#342d22;color:#e8cb92;border-radius:9px;padding:9px 12px;white-space:nowrap;font-size:11px;font-weight:800;cursor:pointer}
+#qt-pin-tool:hover,#qt-pin-tool[aria-pressed=true]{border-color:#d6af72;background:#493724;color:#ffdfac}
+.qt-tool-choice.pinned .qt-tool-arrow{opacity:1;color:#e5be7d}
+@media(max-width:560px){.qt-workspace-header{gap:8px}.qt-workspace-actions{align-items:flex-end;gap:5px}#qt-pin-tool{padding:8px 9px;font-size:10px}}

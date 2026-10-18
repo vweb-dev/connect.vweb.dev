@@ -11,13 +11,14 @@ const el=(tag,cls,txt)=>{
 const safeUrl=s=>{try{const u=new URL(s);return u.protocol==='https:'?u.href:null;}catch(_){return null;}};
 const STORAGE='vweb.connect20.v1';
 let data={courses:[],apps:[],studios:[],help:[]},appFilter='All',appSearch='',appKind='All',appSort='featured',appLimit=12,courseId=null,lessonIndex=0,playlistId=null;
-const emptyState=()=>({favorites:[],completed:{},position:{},notes:{},recent:[]});
+const emptyState=()=>({favorites:[],pinnedTools:[],completed:{},position:{},notes:{},recent:[]});
 function loadStore(){
  try{
   const p=JSON.parse(localStorage.getItem(STORAGE)||'null');
   if(!p||typeof p!=='object'||Array.isArray(p))return emptyState();
   return {
    favorites:Array.isArray(p.favorites)?p.favorites.filter(x=>typeof x==='string').slice(0,150):[],
+   pinnedTools:Array.isArray(p.pinnedTools)?[...new Set(p.pinnedTools.filter(x=>typeof x==='string'))].slice(0,10):[],
    completed:p.completed&&typeof p.completed==='object'&&!Array.isArray(p.completed)?p.completed:{},
    position:p.position&&typeof p.position==='object'&&!Array.isArray(p.position)?p.position:{},
    notes:p.notes&&typeof p.notes==='object'&&!Array.isArray(p.notes)?p.notes:{},
@@ -669,7 +670,8 @@ function trackVisit(){
 function renderDashboard(){
  const favorites=state.favorites.filter(id=>data.apps.some(a=>a.id===id));
  const completed=Object.values(state.completed).reduce((n,v)=>n+(Array.isArray(v)?v.length:0),0);
- $('#hub-stat-saved').textContent=String(favorites.length);
+ const pinned=state.pinnedTools.filter(id=>quickToolIndex.some(t=>t.tool===id));
+ $('#hub-stat-saved').textContent=String(favorites.length+pinned.length);
  $('#hub-stat-done').textContent=String(completed);
  $('#hub-stat-recent').textContent=String(state.recent.length);
  const learning=$('#hub-dashboard-learning');clear(learning);
@@ -681,10 +683,20 @@ function renderDashboard(){
   learning.append(b);
  });
  const saved=$('#hub-dashboard-saved');clear(saved);
- if(!favorites.length)saved.append(el('p','hub-muted','Save useful apps from the App Directory to find them here.'));
+ if(!favorites.length&&!pinned.length)saved.append(el('p','hub-muted','Save useful apps or pin Quick Utilities to find them here.'));
  favorites.forEach(id=>{
   const item=data.apps.find(a=>a.id===id);
-  if(item)saved.append(link(item.name+' ↗',item.open,'hub-dashboard-row',true));
+  if(item)saved.append(link('◧ '+item.name+' ↗',item.open,'hub-dashboard-row',true));
+ });
+ pinned.forEach(id=>{
+  const item=quickToolIndex.find(t=>t.tool===id);
+  if(!item)return;
+  const button=el('button','hub-dashboard-row','⌘ '+item.title+' ↗');button.type='button';
+  button.addEventListener('click',()=>{
+   location.hash='#tools';
+   requestAnimationFrame(()=>window.dispatchEvent(new CustomEvent('connect:open-tool',{detail:{id}})));
+  });
+  saved.append(button);
  });
  const recent=$('#hub-dashboard-recent');clear(recent);
  state.recent.forEach(page=>recent.append(link(pageNames[page]+' ↗','#'+page,'hub-recent-chip')));
@@ -708,6 +720,8 @@ $('#hub-data-import').addEventListener('change',async e=>{
   if(!Array.isArray(p.favorites)||!Array.isArray(p.recent)||typeof p.notes!=='object'||typeof p.completed!=='object'||typeof p.position!=='object')throw Error('Invalid workspace data.');
   const allowed=new Set(data.apps.map(a=>a.id)),courseIds=new Set(data.courses.map(c=>c.id));
   state.favorites=p.favorites.filter(x=>allowed.has(x)).slice(0,150);
+  const toolIds=new Set(quickToolIndex.map(item=>item.tool));
+  state.pinnedTools=Array.isArray(p.pinnedTools)?[...new Set(p.pinnedTools.filter(x=>toolIds.has(x)))].slice(0,10):[];
   state.recent=p.recent.filter(x=>pageNames[x]).slice(0,15);
   state.completed={};state.position={};state.notes={};
   for(const course of courseIds){
@@ -720,12 +734,14 @@ $('#hub-data-import').addEventListener('change',async e=>{
    if(typeof note==='string')state.notes[course]=note.slice(0,12000);
   }
   save();renderApps();renderHome();renderDashboard();if(courseId)setCourse(courseId,true);
+  window.dispatchEvent(new Event('connect:pins-changed'));
   $('#hub-data-message').textContent='Workspace restored in this browser.';
  }catch(err){$('#hub-data-message').textContent='Could not import: '+err.message;}
 });
 $('#hub-data-reset').addEventListener('click',()=>{
- if(!window.confirm('Clear locally saved favorites, course progress, notes and recent sections?'))return;
+ if(!window.confirm('Clear locally saved favorite apps, pinned tools, course progress, notes and recent sections?'))return;
  state=emptyState();save();renderApps();renderHome();renderDashboard();
+ window.dispatchEvent(new Event('connect:pins-changed'));
  if(courseId)setCourse(courseId);
  $('#hub-data-message').textContent='Local workspace data cleared.';
 });
@@ -1050,7 +1066,26 @@ function initToolsTabs(){
  const clearButton=$('#hub-tools-clear'),summary=$('#hub-tools-summary'),empty=$('#hub-tools-no-results');
  const categoryLabel={all:'All tools',everyday:'Everyday',developer:'Developer',creative:'Design & Share'};
  let currentTab='all',current=null;
- const entries=new Map();
+ const entries=new Map(),pinButton=$('#qt-pin-tool');
+ function refreshPins(){
+  entries.forEach((button,id)=>{
+   const pinned=state.pinnedTools.includes(id);
+   button.classList.toggle('pinned',pinned);
+   const mark=button.querySelector('.qt-tool-arrow');
+   if(mark)mark.textContent=pinned?'★':'↗';
+  });
+  if(!current||!pinButton)return;
+  const pinned=state.pinnedTools.includes(current.id);
+  pinButton.textContent=pinned?'★ Saved tool':'☆ Save tool';
+  pinButton.setAttribute('aria-pressed',String(pinned));
+ }
+ if(pinButton)pinButton.addEventListener('click',()=>{
+  if(!current)return;
+  state.pinnedTools=state.pinnedTools.includes(current.id)
+   ?state.pinnedTools.filter(id=>id!==current.id):state.pinnedTools.concat(current.id).slice(0,10);
+  save();refreshPins();renderDashboard();
+ });
+ window.addEventListener('connect:pins-changed',refreshPins);
  function choose(item,{focusPanel=false}={}){
   if(!item||current===item)return;
   if(current)source.append(current.node);
@@ -1063,6 +1098,7 @@ function initToolsTabs(){
    button.setAttribute('aria-pressed',String(chosen));
    if(chosen&&focusPanel)button.scrollIntoView({block:'nearest',inline:'nearest'});
   });
+  refreshPins();
   if(focusPanel&&matchMedia('(max-width: 700px)').matches){
    $('#qt-active-title').scrollIntoView({behavior:'smooth',block:'start'});
   }

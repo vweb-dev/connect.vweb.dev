@@ -7,7 +7,7 @@ This release improves the whole VWEB.DEV Connect experience while preserving the
 - **Find everything:** global search and Ctrl+K now index all ten individual Quick Utilities; choosing a result opens the correct active tool, without losing its existing input.
 - **App Directory:** purpose shortcuts plus grid/list view, with official publisher links, saved apps and pagination intact.
 - **Windows & PC Help:** WinGet pack builder now displays up to seven removable package chips with an accurate selection count and compact overflow indicator. Script generation remains local.
-- **My Workspace:** one-click links for utilities, software, learning and file conversion.
+- **My Workspace:** one-click links for utilities, software, learning and file conversion. Saved Quick Utilities now persist beside favorite apps in the same local workspace; export/import accepts old files without pins.
 - **PWA:** static cache v19, revised asset URLs and native route-title focus. Embedded catalog remains available if the network is slow.
 - **Quality:** new cross-page source tests. Anonymous visitors do not incur new PHP calls, no additional paid tools/API keys or hardware are required.
 
