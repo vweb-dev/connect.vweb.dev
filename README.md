@@ -84,3 +84,8 @@ AI integration is now in **assets/puter-ai.js**, independent of the main PWA bun
 ## Visible Puter generation feedback (October 2026)
 
 The standalone AI Studio script maintains a per-tool, in-page **indeterminate** animated bar, real elapsed wall time, status messages for unusually long waits, and a floating activity tray that stays visible when navigating across PWA pages. Buttons cannot re-submit the same task until the current request resolves. Text and media output show completed time or a real provider error. No fake completion percent, cost, or invented job status is reported. A user-selectable video **test mode** calls `puter.ai.txt2vid(prompt,true)` as documented by Puter; the returned sample is **not** a real generated clip and does not consume generation credits. Regular video calls can take several minutes and Puter returns the Promise when the clip is ready. Leaving/reloading the page may lose the in-browser result while a provider request is still processing; the interface avoids implying it can stop remote processing.
+
+
+## AI Studio media layout containment
+
+Media outputs from Puter are mounted in a bounded responsive frame rather than directly inside a grid card. Video players (including SDK HTMLVideoElement returns with intrinsic dimensions or inline styles) are constrained to the card, preserving 16:9, portrait, or square orientation via metadata when available. Image results are similarly bounded. Small-screen playback uses a compact player, and versioned asset URLs plus the v8 service worker invalidate stale PWA CSS and AI JavaScript.

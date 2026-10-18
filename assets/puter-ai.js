@@ -344,9 +344,16 @@
           image=new Image();image.src=src;
         }
         image.alt='AI-generated image';
-        image.classList.add('ai-media-output');
+        image.removeAttribute('width');
+        image.removeAttribute('height');
+        image.style.removeProperty('width');
+        image.style.removeProperty('height');
+        image.classList.add('ai-media-output','ai-image');
         image.loading='eager';
-        target.replaceChildren(image);
+        const frame=document.createElement('div');
+        frame.className='ai-image-frame';
+        frame.append(image);
+        target.replaceChildren(frame);
         return 'Image generated';
       });
   });
@@ -369,19 +376,41 @@
             throw new Error('Puter returned an unsupported video format.');
           video=document.createElement('video');video.src=src;
         }
-        video.controls=true;
-        video.playsInline=true;
-        video.preload='metadata';
-        video.classList.add('ai-media-output');
-        target.replaceChildren(video);
+        // Some Puter SDK versions return an HTMLVideoElement with large
+        // intrinsic dimensions / inline styles. Always isolate it within a
+        // responsive frame; never append the raw video directly to the card.
+        video.controls = true;
+        video.playsInline = true;
+        video.preload = 'metadata';
+        video.removeAttribute('width');
+        video.removeAttribute('height');
+        video.style.removeProperty('width');
+        video.style.removeProperty('height');
+        video.style.removeProperty('min-width');
+        video.style.removeProperty('min-height');
+        video.classList.add('ai-media-output','ai-video');
+        const frame=document.createElement('div');
+        frame.className='ai-video-frame';
+        frame.setAttribute('aria-label','Generated video preview');
+        frame.append(video);
+        target.replaceChildren(frame);
         const note=document.createElement('small');
         note.className='ai-media-note';
         note.textContent=test?
           'Puter test-mode sample returned. This is not a newly generated video.' :
-          'Puter returned a video. Press Play; preview buffering depends on your connection.';
+          'Puter returned a video. Use Play or fullscreen to preview.';
         target.append(note);
+        function fitVideo(){
+          // Respect portrait or square clips without letting a large source
+          // enlarge either card, the CSS grid, or the viewport.
+          const w=video.videoWidth,h=video.videoHeight;
+          frame.classList.toggle('is-portrait',w>0&&h>0&&h>w*1.15);
+          frame.classList.toggle('is-square',w>0&&h>0&&Math.abs(w/h-1)<.15);
+        }
+        video.addEventListener('loadedmetadata',fitVideo);
+        if(video.readyState>=1)fitVideo();
         video.addEventListener('error',()=>{
-          note.textContent='Video returned, but your browser could not load/play it. Check connectivity and media permissions.';
+          note.textContent='Video was returned, but your browser could not play it. Check video format, network and permissions.';
         },{once:true});
         return test?'Video test sample ready':'Video generated — preview ready';
       });

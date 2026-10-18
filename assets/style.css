@@ -81,3 +81,46 @@
 @keyframes ai-indeterminate{0%{transform:translateX(-110%)}50%{transform:translateX(140%)}100%{transform:translateX(315%)}}
 @media(max-width:800px){.ai-job-tray{bottom:calc(80px + env(safe-area-inset-bottom));right:12px;width:min(340px,calc(100vw - 24px))}}
 @media(prefers-reduced-motion:reduce){.ai-loader,.ai-activity-track span{animation:none}.ai-activity-track span{left:33%}}
+
+/* Responsive, constrained Puter media — SDK may return intrinsically huge video elements. */
+#page-ai, #page-ai .tools-grid, #page-ai .tool-card,
+#page-ai .ai-result {min-width:0;max-width:100%}
+#page-ai .tool-card{overflow:hidden}
+#page-ai .ai-result {
+  display:block;width:100%;min-width:0;max-width:100%;
+  overflow:hidden;overflow-wrap:anywhere;
+  contain:layout;
+}
+.ai-video-frame{
+  position:relative;isolation:isolate;
+  display:block;width:100%;max-width:100%;
+  aspect-ratio:16/9;min-width:0;max-height:440px;
+  overflow:hidden;border:1px solid #39424a;border-radius:12px;
+  background:#070b0e;margin:8px 0 12px;
+}
+.ai-video-frame video,
+.ai-video-frame .ai-video {
+  position:absolute!important;inset:0!important;
+  display:block!important;
+  width:100%!important;height:100%!important;
+  min-width:0!important;min-height:0!important;
+  max-width:100%!important;max-height:100%!important;
+  margin:0!important;object-fit:contain!important;
+  border-radius:0!important;
+}
+.ai-video-frame.is-portrait {aspect-ratio:9/16;max-width:250px;margin-left:auto;margin-right:auto;max-height:none}
+.ai-video-frame.is-square {aspect-ratio:1/1;max-width:385px;margin-left:auto;margin-right:auto;max-height:none}
+.ai-image-frame{
+  display:flex;align-items:center;justify-content:center;
+  width:100%;min-width:0;max-width:100%;
+  overflow:hidden;border-radius:12px;
+  margin:8px 0 12px;background:#0c1118;
+}
+.ai-image-frame .ai-image{display:block;max-width:100%!important;width:auto!important;max-height:430px;height:auto!important;margin:0!important;object-fit:contain}
+@media(max-width:590px){
+  #page-ai .tool-card{padding:18px}
+  .ai-video-frame{max-height:260px}
+  .ai-video-frame.is-portrait{max-width:190px;max-height:none}
+  .ai-video-frame.is-square{max-width:min(100%,295px);max-height:none}
+  .ai-image-frame .ai-image{max-height:360px}
+}
