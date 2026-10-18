@@ -765,3 +765,6 @@ body.drawer-open{overflow:hidden}
 @media(max-width:680px){#page-tools .hub-tools-tabpanel>.tools-grid{grid-template-columns:1fr}.hub-tools-tabs button{padding:12px 13px;font-size:11px}.hub-tools-search-status{margin:0;width:100%}.hub-tools-hero-side{padding:17px}}
 @media(max-width:420px){#page-tools .hub-tools-hero{padding:19px}.hub-tools-tabs-head h2{font-size:21px}.hub-tools-total{font-size:9px}#page-tools .hub-tools-tabpanel>.tools-grid>.tool-card{padding:18px}.hub-tools-hero h1{font-size:36px}}
 @media(prefers-reduced-motion:reduce){.hub-tools-tabs button{transition:none}}
+
+/* Retain legacy contrast controls for app.js but avoid duplicate visible cards even when tab enhancement fails. */
+#page-tools .tool-card:has(#contrast-fg){display:none!important}

@@ -67,3 +67,12 @@ test('quick utility categories, keyboard tabs and local developer tools',()=>{
  assert.match(hub,/new TextDecoder\('utf-8'/);
  assert.match(css,/hub-tools-tabs button\[aria-selected=true\]/);
 });
+
+// Regression: a single-element query returns Element/null, not a collection.
+// Tool category initialization requires all tab buttons to be iterable.
+test('utility tabs use multi-element selector and avoid duplicate contrast widgets',()=>{
+ assert.match(hub,/const buttons=\$\$\('#page-tools \[data-tools-tab\]'\);/);
+ assert.doesNotMatch(hub,/const buttons=\$\('#page-tools \[data-tools-tab\]'\);/);
+ assert.match(css,/#page-tools \.tool-card:has\(#contrast-fg\)\{display:none!important\}/);
+ assert.match(html,/hub\.js\?v=tools-tabs-/);
+});

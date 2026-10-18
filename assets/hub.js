@@ -964,7 +964,7 @@ function addExtraUtilities(){
 function initToolsTabs(){
  const root=$('#page-tools'),source=$('#hub-tools-source'),controls=$('#hub-tools-controls');
  if(!root||!source||!controls)return;
- const buttons=$('#page-tools [data-tools-tab]');
+ const buttons=$$('#page-tools [data-tools-tab]');
  const keys=['all','everyday','developer','creative'];
  const panels=Object.fromEntries(keys.map(k=>[k,$('#hub-tools-panel-'+k)]));
  if(buttons.length!==keys.length||keys.some(k=>!panels[k]))return;
