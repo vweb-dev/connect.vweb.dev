@@ -6,3 +6,14 @@
 @media(max-width:800px){.shell{display:block}.side{display:none}.top{height:65px;padding:0 20px}.top-copy{font-size:10px}.top-actions{gap:9px}main{padding:20px 16px 105px}.hero{grid-template-columns:1fr;padding:33px 24px;min-height:410px}.hero h1{font-size:clamp(36px,8vw,58px)}.hero-art{display:none}.tiles.three{grid-template-columns:repeat(2,minmax(0,1fr))}.mobile-nav{display:flex;position:fixed;z-index:20;bottom:0;left:0;right:0;justify-content:space-around;background:rgba(19,24,32,.97);border-top:1px solid var(--line);padding:9px 4px calc(8px + env(safe-area-inset-bottom));box-shadow:0 -8px 22px #0004}.mobile-nav a{font-size:22px;color:#919aa6;display:flex;flex-direction:column;align-items:center;min-width:55px;gap:2px}.mobile-nav a small{font-size:10px;font-weight:700}.mobile-nav a.active{color:var(--gold)}footer{padding:23px 16px 100px}}
 @media(max-width:590px){.tiles.three,.tiles.two,.feature-banners,.offer-grid,.cards-row{grid-template-columns:1fr}.top-copy{letter-spacing:.07em;font-size:9px}.live-dot{display:none}.hero{border-radius:16px;min-height:0}.hero h1{line-height:1.09}.hero-meta{gap:8px}.hero-actions .button{flex:1}.section-title{margin-top:34px}.section-title.spaced{margin-top:40px}.tile{padding:21px}.tile p{min-height:0}.spotlight{min-height:325px}.tool-card{padding:20px}.filter-bar input{max-width:none}.ai-info{flex-direction:column;gap:2px}.unavailable{min-height:0;padding:38px 20px}.unavailable h2{font-size:25px}footer{flex-direction:column;gap:7px}.top-actions .button{font-size:10px;padding:7px 8px}.card-heading h2{font-size:20px}}
 @media(prefers-reduced-motion:reduce){*,*:before,*:after{animation:none!important;transition:none!important;scroll-behavior:auto!important}}
+/* Phase 2: intentionally restrained first-party sponsored cards and coupon codes */
+.cms-sponsored{margin:19px 0 24px;max-width:780px;padding:23px 26px;border-radius:16px;border:1px solid #725837;background:linear-gradient(120deg,#24231e,#181e25);display:flex;flex-direction:column;align-items:flex-start}
+.cms-sponsored small{font-size:10px;font-weight:800;letter-spacing:.15em;color:#d4b270}
+.cms-sponsored h3{font-size:22px;margin:11px 0 6px}
+.cms-sponsored p{font-size:12px;margin:0 0 12px}
+.cms-sponsored a{font-size:12px;font-weight:800;color:#efca80}
+.cms-news{margin:25px 0 40px}
+.cms-news h2{margin:8px 0 20px}
+.coupon-code{display:flex;flex-wrap:wrap;align-items:center;gap:9px;background:#101820;border:1px dashed #8a7047;border-radius:9px;padding:10px 12px}
+.coupon-code code{color:#f3d69c;font-size:13px;font-weight:700;overflow-wrap:anywhere}
+.coupon-code button{border:1px solid #836b44;background:#2a261e;border-radius:7px;color:#ead0a1;padding:6px 10px;font-size:11px;margin-left:auto}

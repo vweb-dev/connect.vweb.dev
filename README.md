@@ -47,3 +47,16 @@ No new paid hosting or API credentials required. Existing Hostinger and ISP band
 Phase 2: private PHP/MySQL APIs, approved coupon and own ads CMS, customer authentication/linked PPPoE accounts, opt-in notifications. Phase 3: read-only MikroTik/RADIUS synchronization, outdoor free Wi-Fi gateway quota rewards, merchant integrations.
 
 © VWEB.DEV
+
+## Phase 2 — CMS, verified coupons, news and own ads
+
+CMS backend is included under api/, admin/, db/ and docs/. It stays disabled until you configure Hostinger MySQL and an outside-webroot private configuration file. Read docs/phase2-setup.md for the one-time install; do not put actual secrets in GitHub.
+
+- Secure administrator sign-in and one-time setup.
+- Publish/schedule/expire coupon, local news and first-party sponsored content.
+- Public API for dynamically adding live CMS items to static-first PWA.
+- Click counts for sponsored destinations (approximate, not billable or confirmed conversions).
+- Draft/published review states, minimal sponsored placements, external source URLs.
+- PWA gracefully falls back to Phase 1 content when the database is unavailable.
+
+Note: This release does **not** connect PPPoE usernames, MikroTik SSH, RADIUS, ISP billing data, Wi-Fi quota redemption or real push subscription. These require further authorized private integration.

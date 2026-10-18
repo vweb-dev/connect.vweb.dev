@@ -58,12 +58,89 @@ function renderOffers(){
   var a=document.createElement('a');a.href=o.url;a.target='_blank';a.rel='noopener noreferrer';a.textContent=o.cta+' ↗';
   var save=document.createElement('button');save.type='button';save.className='save-offer'+(saved.includes(o.id)?' saved':'');save.textContent=saved.includes(o.id)?'♥':'♡';save.setAttribute('aria-label',(saved.includes(o.id)?'Remove saved ':'Save ')+o.title);save.setAttribute('aria-pressed',saved.includes(o.id)?'true':'false');
   save.addEventListener('click',function(){saved=saved.includes(o.id)?saved.filter(function(s){return s!==o.id;}):saved.concat(o.id);try{localStorage.setItem('vweb-saved-offers',JSON.stringify(saved));}catch(e){}renderOffers();});
-  footer.append(a,save);article.append(header,title,p,footer);grid.append(article);
+  footer.append(a,save);article.append(header,title,p);
+  if(o.code){var codebox=document.createElement('div');codebox.className='coupon-code';
+   var codeText=document.createElement('code');codeText.textContent=o.code;
+   var codeBtn=document.createElement('button');codeBtn.type='button';codeBtn.textContent='Copy code';
+   codeBtn.setAttribute('aria-label','Copy '+o.title+' coupon code');
+   codeBtn.addEventListener('click',function(){copy(o.code,codeBtn);});
+   codebox.append(codeText,codeBtn);article.append(codebox);
+  }
+  article.append(footer);grid.append(article);
  });
 }
 var cats=['All'].concat(Array.from(new Set(offers.map(function(o){return o.category;}))));
 cats.forEach(function(cat){var b=document.createElement('button');b.type='button';b.textContent=cat;b.addEventListener('click',function(){chosen=cat;$$('#offers-filters button').forEach(function(n){n.classList.toggle('active',n===b);});renderOffers();});if(cat==='All')b.classList.add('active');$('#offers-filters').append(b);});
 $('#offers-search').addEventListener('input',renderOffers);renderOffers();
+
+// Optional free CMS. The existing curated cards remain fully usable until
+// the private Hostinger backend is configured. No private data in this payload.
+async function loadPublishedContent(){
+ try{
+  var response=await fetch('/api/public.php',{headers:{'Accept':'application/json'}});
+  if(!response.ok)return;
+  var data=await response.json();
+  if(!data||!data.ok)return;
+  var coupons=Array.isArray(data.coupons)?data.coupons:[];
+  var news=Array.isArray(data.news)?data.news:[];
+  var ads=Array.isArray(data.ads)?data.ads:[];
+  coupons.forEach(function(item){
+   var id=Number(item.id);
+   if(!Number.isSafeInteger(id)||id<=0)return;
+   var entry={id:'cms-'+id,title:String(item.title||''),category:String(item.category||'Deals'),
+      description:String(item.summary||''),code:String(item.code||''),
+      url:'/api/go.php?id='+id,cta:'View verified offer',
+      note:String(item.brand||'Verified source')};
+   if(!entry.title||offers.some(function(o){return o.id===entry.id;}))return;
+   offers.push(entry);
+  });
+  // Extend category filters to include admin-published categories.
+  Array.from(new Set(offers.map(function(o){return o.category;}))).forEach(function(cat){
+   if(cats.includes(cat))return;cats.push(cat);
+   var button=document.createElement('button');button.type='button';button.textContent=cat;
+   button.addEventListener('click',function(){chosen=cat;$('#offers-filters button').forEach(function(n){n.classList.toggle('active',n===button);});renderOffers();});
+   $('#offers-filters').append(button);
+  });
+  renderOffers();
+  if(news.length){
+   var newsBox=document.createElement('section');newsBox.className='cms-news';
+   var label=document.createElement('div');label.className='overline';label.textContent='VERIFIED LOCAL UPDATES';
+   var heading=document.createElement('h2');heading.textContent='Latest from your community';
+   var list=document.createElement('div');list.className='tiles two';
+   news.slice(0,6).forEach(function(item){
+    var id=Number(item.id);if(!Number.isSafeInteger(id)||id<=0)return;
+    var card=document.createElement('article');card.className='guide-card';
+    var origin=document.createElement('div');origin.className='overline';origin.textContent=String(item.brand||'Community update');
+    var title=document.createElement('h3');title.textContent=String(item.title||'');
+    var desc=document.createElement('p');desc.textContent=String(item.summary||'');
+    var link=document.createElement('a');link.href='/api/go.php?id='+id;link.textContent='View source ↗';
+    link.target='_blank';link.rel='noopener noreferrer';
+    card.append(origin,title,desc,link);list.append(card);
+   });newsBox.append(label,heading,list);
+   $('#page-community .page-header').after(newsBox);
+   var placeholder=$('#page-community .informative');if(placeholder)placeholder.hidden=true;
+  }
+  // Maximum one featured new sponsor placement per section, avoiding ad-heavy UI.
+  ['home','offers','news'].forEach(function(placement){
+   var item=ads.find(function(ad){return ad.placement===placement;});
+   if(!item)return;
+   var id=Number(item.id);if(!Number.isSafeInteger(id)||id<=0)return;
+   var card=document.createElement('article');card.className='cms-sponsored';
+   var label=document.createElement('small');label.textContent='SPONSORED • '+String(item.brand||'PARTNER');
+   var title=document.createElement('h3');title.textContent=String(item.title||'');
+   var desc=document.createElement('p');desc.textContent=String(item.summary||'');
+   var link=document.createElement('a');link.href='/api/go.php?id='+id;link.target='_blank';link.rel='noopener noreferrer';link.textContent='Discover offer ↗';
+   card.append(label,title,desc,link);
+   var anchor=placement==='home'?$('#home-promotions'):placement==='offers'?$('#offers-grid'):$('#guides');
+   if(anchor){if(placement==='offers'||placement==='news')anchor.before(card);else anchor.after(card);}
+  });
+ }catch(e){
+  // CMS is optional and may not be installed; offline tools must still function.
+  if(location.hostname==='localhost')console.info('CMS not connected:',e.message);
+ }
+}
+loadPublishedContent();
+
 
 // Local learning resources: source-linked, evergreen and not represented as live news.
 var guides=[
