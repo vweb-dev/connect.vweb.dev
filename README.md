@@ -99,3 +99,19 @@ AI Studio now has four proper ARIA tabs: Ask AI, Images, Videos and Captions. Ea
 ## VWEB Entertainment (October 2026)
 
 The PWA now includes **VWEB TV, Watch, Radio & Podcasts, Play & Learn, and Discover**, with a new mobile browse drawer, an official source directory, Radio Browser integration, Spotify official embeds, local favorites, Open Trivia DB plus offline games, Open Library search, and optional admin-curated media/first-party sponsorship. All provider streams play directly in the browser, never proxied by Hostinger. Use `/admin/media.php` for optional database-backed content curation after database setup. Review `docs/all-modules-setup.md` for licensing, configuration and testing instructions. Not every official channel permits embedding; VWEB opens their official source when it does not. No newly added content is asserted live unless the publisher has verified it.
+
+
+## Convert Studio: VERT-inspired, independently implemented (2026-10)
+
+Open \`/#convert\` for four local file-processing workspaces:
+
+| Module | What actually works on device | Important limitations |
+| --- | --- | --- |
+| Image Lab | Batch PNG/JPEG/WebP conversion, resize, quality, rotation, AVIF only if browser supports it, individual downloads or single ZIP | 20 files per batch, max 40 megapixels/image, canvas output 8192 px max |
+| PDF Studio | Merge PDFs, extract page ranges, split PDFs to per-page ZIP, images to A4 PDF | pdf-lib 1.17.1 downloads from jsDelivr on demand; encrypted PDFs may fail; max 120 pages for ZIP split |
+| Audio Studio | Decode browser-compatible audio, trim, export PCM 16-bit WAV | MP3/M4A/OGG decode support varies; WAV is **larger** than compressed input, max 30-minute track |
+| Video Studio | Capture individual JPEG/PNG/WebP still frames from browser-playable video at a chosen time | This is frame extraction **not** MP4/WEBM transcoding; advanced conversions link out to VERT |
+
+These are original VWEB.DEV JavaScript implementations and **do not copy VERT's AGPL source**. VERT is linked as an independent external tool for advanced video/file codecs. No customer file is uploaded to our API, Hotspot, PHP/MySQL or Puter. Browser CPU/RAM/storage usage still applies; a third-party PDF library is fetched as code, not as an upload of your files.
+
+Entertainment reliability: official radio listening destinations remain available even if the community directory, stream codec, geo-rights or insecure feed prevents in-page playback; TV cards always expose provider links. This does not imply any third-party channel stream is guaranteed live.

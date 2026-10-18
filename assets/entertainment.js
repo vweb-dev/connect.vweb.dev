@@ -36,6 +36,7 @@ function clearTv(){
   holder.append(textNode('div','▶','ent-play-mark'),textNode('h2','Choose something to watch.'),textNode('p','Select an authorized official stream below.'));
   stage.append(holder);tvPlayer=null;
   $('#tv-stop').hidden=true;
+  $('#tv-official-link').hidden=true;
 }
 function clearPodcast(){const p=$('#podcast-player');p.replaceChildren();p.hidden=true;podcastIframe=null;}
 function stopRadio(){
@@ -85,9 +86,14 @@ function playTv(item){
   const link=safeUrl(item.source_url);
   if(!link)return;
   if(!item.permission || !['official_embed','licensed_stream','official_link'].includes(item.permission))return;
-  if(item.provider==='external'){window.open(link,'_blank','noopener,noreferrer');return;}
-  if(item.permission==='official_link'){window.open(link,'_blank','noopener,noreferrer');return;}
+  if(item.provider==='external'){$('#tv-official-link').href=link;$('#tv-official-link').hidden=false;
+    window.open(link,'_blank','noopener,noreferrer');
+    setNow(item,'Opens at the publisher site because an official third-party embed is not confirmed.');return;}
+  if(item.permission==='official_link'){$('#tv-official-link').href=link;$('#tv-official-link').hidden=false;
+    window.open(link,'_blank','noopener,noreferrer');
+    setNow(item,'This content plays on its official site.');return;}
   clearPodcast();stopRadio();clearTv();
+  $('#tv-official-link').href=link;$('#tv-official-link').hidden=false;
   const stage=$('#tv-player');
   let video=null;
   if(item.provider==='youtube'&&/^[A-Za-z0-9_-]{11}$/.test(item.external_id)){
@@ -115,7 +121,7 @@ function playTv(item){
       setNow(item,'Licensed HLS stream unavailable in this browser. Use the official source button below.');
     });
   }
-  setNow(item,'Playback comes directly from '+(item.source_name||'the publisher')+'. If embedding is restricted, use Open Official Source.');
+  setNow(item,'Publisher-controlled player. If it is blank, unavailable or blocked, use Watch on official site.');
   // The player is never proxied through Hostinger.
 }
 $('#tv-stop').addEventListener('click',()=>{clearTv();setNow(null,'Video player stopped.');});
@@ -182,7 +188,7 @@ function makeMediaCard(item,mode){
     podcastIframe=embed;player.append(embed);player.scrollIntoView({behavior:'smooth',block:'center'});
   });actions.append(play);
  }
- const link=externalLink(item.source_url,item.provider==='external'?'Open official site ↗':'Official source ↗');
+ const link=externalLink(item.source_url,mode==='tv'?'Watch official site ↗':item.provider==='external'?'Open official site ↗':'Official source ↗');
  actions.append(link);
  if(mode==='tv'){
   const fav=document.createElement('button');fav.className='ent-heart';fav.type='button';
@@ -243,9 +249,10 @@ async function renderEntSponsors(){
 }
 renderEntSponsors();
 
+function radioOfficialFallback(show=true){const el=$('#radio-official-fallback');if(el)el.hidden=!show;}
 // Browser-direct public radio directory. Stations/streams may disappear and
 // may have separate licensing terms. Never proxy audio through Hostinger.
-const radioHosts=['https://de1.api.radio-browser.info','https://nl1.api.radio-browser.info','https://at1.api.radio-browser.info'];
+const radioHosts=['https://de1.api.radio-browser.info','https://nl1.api.radio-browser.info','https://at1.api.radio-browser.info','https://all.api.radio-browser.info'];
 async function fetchStations(){
  const query=$('#radio-search').value.trim().slice(0,80),country=$('#radio-country').value;
  const params=new URLSearchParams({hidebroken:'true',order:'votes',reverse:'true',limit:'28'});
@@ -263,12 +270,12 @@ async function fetchStations(){
    clearTimeout(timeout);break;
   }catch(err){error=err;clearTimeout(timeout);}
  }
- if(!stations){$('#radio-feedback').textContent='Radio directory unavailable; retry later. Your own browser/network might block access to the directory.';empty(list,'No stations available right now.');return;}
+ if(!stations){$('#radio-feedback').textContent='Radio directory unavailable here. Please use a verified official broadcaster site below.';empty(list,'Directory unavailable. Try an official radio destination.');radioOfficialFallback(true);return;}
  radioStations=stations.filter(s=>s&&s.stationuuid&&s.name).slice(0,28).map(s=>({
   uuid:String(s.stationuuid),name:String(s.name).slice(0,100),country:String(s.countrycode||''),
   codec:String(s.codec||''),bitrate:Number(s.bitrate||0),stream:s.url_resolved||s.url||'',
-  homepage:s.homepage||'',tags:String(s.tags||'').slice(0,120)}));
- radioResults=radioStations;renderRadio();
+  homepage:safeUrl(s.homepage||'')||'',tags:String(s.tags||'').slice(0,120)}));
+ radioResults=radioStations;renderRadio();radioOfficialFallback(!radioStations.length);
  $('#radio-feedback').textContent=radioStations.length+' directory entries found. Playback availability is not guaranteed.';
 }
 function renderRadio(){
@@ -289,17 +296,22 @@ function renderRadio(){
     radioFavorites=liked?radioFavorites.filter(i=>i.uuid!==station.uuid):radioFavorites.concat(station).slice(-80);
     save(radioFavoriteKey,radioFavorites);renderRadio();
   });
-  row.append(detail,play,fav);root.append(row);
+  const website=safeUrl(station.homepage);
+  if(website){const site=document.createElement('a');site.href=website;site.target='_blank';site.rel='noopener noreferrer';
+    site.className='ent-radio-official';site.textContent='Site ↗';site.setAttribute('aria-label','Open '+station.name+' official website');
+    row.append(detail,play,site,fav);
+  }else row.append(detail,play,fav);
+  root.append(row);
  });
 }
 async function startRadio(station){
  const stream=safeUrl(station.stream);
- if(!stream){$('#radio-feedback').textContent='This station uses an insecure/unsupported stream URL. Open its official homepage instead.';return;}
+ if(!stream){$('#radio-feedback').textContent='This station uses an insecure/unsupported stream. Open its official site instead.';radioOfficialFallback(true);return;}
  clearTv();clearPodcast();stopRadio();
  currentRadio=station;audio.src=stream;dockName.textContent=station.name;radioDock.hidden=false;
  $('#radio-feedback').textContent='Opening '+station.name+' directly from the broadcaster…';
  try{await audio.play();radioPlaying=true;dockPlay.textContent='Pause';$('#radio-feedback').textContent='Listening to '+station.name+'. Stream is supplied by the station.';}
- catch(err){$('#radio-feedback').textContent='Station playback was blocked or its stream is unavailable. Try another station.';dockPlay.textContent='Retry';}
+ catch(err){$('#radio-feedback').textContent='Station playback failed or is blocked. Use Site ↗ or the official broadcasters below.';radioOfficialFallback(true);dockPlay.textContent='Retry';}
 }
 dockPlay.addEventListener('click',async ()=>{
  if(!currentRadio)return;
@@ -307,7 +319,7 @@ dockPlay.addEventListener('click',async ()=>{
  else{try{await audio.play();radioPlaying=true;dockPlay.textContent='Pause';}catch(_){dockPlay.textContent='Retry';}}
 });
 dockClose.addEventListener('click',stopRadio);
-audio.addEventListener('error',()=>{$('#radio-feedback').textContent='Station playback failed or the stream ended. Choose another station.';dockPlay.textContent='Retry';});
+audio.addEventListener('error',()=>{$('#radio-feedback').textContent='Station stream failed. Use Site ↗ or select another.';radioOfficialFallback(true);dockPlay.textContent='Retry';});
 $('#radio-find').addEventListener('click',()=>{radioFilterMode='radio';$('#radio-favorites').setAttribute('aria-pressed','false');fetchStations();});
 $('#radio-favorites').addEventListener('click',function(){
  radioFilterMode=radioFilterMode==='favorites'?'radio':'favorites';

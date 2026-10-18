@@ -19,7 +19,7 @@ jobs:
         run: |
           find api admin ops docs -type f -name '*.php' -print0 | xargs -0 -n 1 php -l
       - name: JavaScript syntax checks
-        run: node --check assets/app.js && node --check assets/puter-ai.js && node --check assets/entertainment.js && node --check sw.js && node --test tests/entertainment.test.mjs
+        run: node --check assets/app.js && node --check assets/converter.js && node --check assets/puter-ai.js && node --check assets/entertainment.js && node --check sw.js && node --test tests/entertainment.test.mjs tests/converter.test.mjs
       - name: Python source checks
         run: python3 -m py_compile ops/radius_agent.py ops/gateway_agent.py
       - name: Validate manifest and Composer metadata

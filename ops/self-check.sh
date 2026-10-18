@@ -9,10 +9,11 @@ done
 if command -v node >/dev/null 2>&1; then
  echo "[Connect] Checking JavaScript and media tests..."
  node --check assets/app.js
+ node --check assets/converter.js
  node --check assets/puter-ai.js
  node --check assets/entertainment.js
  node --check sw.js
- node --test tests/entertainment.test.mjs
+ node --test tests/entertainment.test.mjs tests/converter.test.mjs
 else
  echo "[Connect] Node unavailable: JS syntax check skipped."
 fi

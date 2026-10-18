@@ -221,3 +221,56 @@ embedding. This is an independent media **directory**, not a content owner.
 Production checklist must include permissions review, user-specific external
 API limitations, mobile/browser tests and ISP bandwidth forecasting. Never
 imply partner endorsement by external media providers.
+
+
+## Convert Studio deployment (no additional paid services)
+
+\`https://connect.vweb.dev/#convert\` is a new priority route, with a four-tool
+tab interface optimized for mobile and desktop.
+
+1. Deploy latest GitHub \`main\` to connect.vweb.dev only.
+2. Make sure \`assets/converter.js\` and \`/assets/style.css\` are served, and
+   that service worker cache version \`vweb-connect-static-v11\` is updated.
+3. No MySQL migration, access token, upload endpoint or custom API is needed
+   for converter tools.
+4. PDF tools **lazy-load** the free pdf-lib 1.17.1 JS library from jsDelivr on
+   first use. It receives no file upload; PDF files remain in browser memory.
+   If the library CDN is blocked, show a clear retryable failure state.
+5. Image AVIF encoding depends on actual browser support, not on the file
+   extension alone. PNG/JPEG/WebP are safer interoperability defaults.
+6. Audio decodes only codecs that the user's browser can handle and outputs
+   **uncompressed WAV**, often larger than the source. No MP3 encoder is
+   included and no conversion API is called.
+7. Video Studio extracts still frames locally and does not promise full codec
+   conversion or live video compression. Its external VERT link is independent.
+8. Browser files are not posted to Hostinger. Data may persist temporarily
+   in browser memory until tab close; temporary blob URLs are revoked.
+9. Radio Browser may fail due to CORS, geo, mixed-content streams or a station
+   going offline. Direct broadcaster-site fallbacks are surfaced instead.
+10. TV players may be blocked by publisher iframe policies or live availability.
+    Users always have a visible official-site link. No illegal IPTV feeds.
+
+### Manual test matrix (do not call this a completed test until performed)
+
+- Batch PNG + JPEG → WebP, download both and ZIP, inspect ZIP contents.
+- Unsupported AVIF encoder yields a proper error rather than fake AVIF bytes.
+- Merge two local PDFs, split 3-page PDF to ZIP, extract \`1-2\`, and make A4
+  PDF from JPG photos. Confirm the resulting PDF opens and page order is correct.
+- MP3 → uncompressed WAV with a 2-second trim; preview in a separate app.
+- MP4 frame capture at 1.0s: visually verify exported JPEG/PNG.
+- Mobile: each tab accepts files and shows download action; keyboard tabs work.
+- Offline after first PWA load: image/audio/video work, PDF will work offline
+  only if pdf-lib helper was previously cached/downloaded by the browser.
+- TV: official-source fallback always displayed on embedded streams.
+- Radio: searchable station list and official-site links; no claim all live
+  stations can play within a web page.
+- Verify only one active TV/radio/podcast stream and no server upload calls.
+- Test with slower 8 GB RAM laptops and reduce input size if conversion stalls.
+
+### Source references and license
+
+VERT: https://github.com/VERT-sh/VERT (AGPL-3.0; no source copied)
+pdf-lib: https://github.com/Hopding/pdf-lib (MIT; lazy CDN integration)
+Radio Browser: https://api.radio-browser.info/ (external community API)
+
+The directory and advanced media are separate from this local converter.
