@@ -11,7 +11,7 @@ CREATE TABLE IF NOT EXISTS app_users (
  last_login_at DATETIME NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 CREATE TABLE IF NOT EXISTS isp_accounts (
- username VARCHAR(190) NOT NULL PRIMARY KEY,
+ username VARCHAR(190) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NOT NULL PRIMARY KEY,
  is_online TINYINT(1) NOT NULL DEFAULT 0,
  session_uptime_seconds BIGINT UNSIGNED NULL,
  session_download_bytes BIGINT UNSIGNED NULL,
@@ -28,7 +28,7 @@ CREATE TABLE IF NOT EXISTS isp_accounts (
 CREATE TABLE IF NOT EXISTS isp_account_links (
  id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
  user_id BIGINT UNSIGNED NOT NULL,
- pppoe_username VARCHAR(190) NOT NULL,
+ pppoe_username VARCHAR(190) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NOT NULL,
  status ENUM('pending','approved','rejected') NOT NULL DEFAULT 'pending',
  reviewer_note VARCHAR(255) NOT NULL DEFAULT '',
  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,

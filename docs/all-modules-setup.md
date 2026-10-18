@@ -132,3 +132,8 @@ deployment. These depend on live user-owned services and cannot be faked.
 ### Minimum-necessary RADIUS collection
 
 Set CONNECT_TARGETS_URL=https://connect.vweb.dev/api/isp-targets.php in the authorized ISP agent. It fetches only approved PPPoE usernames through a signed HTTPS request; the SQL query then reads only those accounts. Account-link requests must first be verified independently by ISP staff. Existing router credentials and PPPoE configurations are not modified.
+
+
+### Run source checks without a GitHub runner
+
+From the deployed site document root over SSH, run `bash ops/self-check.sh`. It uses PHP lint, optional Node checks and Python AST parsing without paid services. This does not verify actual MySQL, SSL, push delivery, router management or billing-data accuracy. Configure and smoke-test those separately.
