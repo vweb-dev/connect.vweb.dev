@@ -12,6 +12,8 @@ AddType image/svg+xml .svg
 </IfModule>
 <IfModule mod_rewrite.c>
 RewriteEngine On
+# Retired media catalog: block the old URL even if hosting retains the file.
+RewriteRule ^data/entertainment\.json$ - [G,L,NC]
 RewriteRule ^(?:\.git|vendor|node_modules)(?:/|$) - [F,L,NC]
 </IfModule>
 

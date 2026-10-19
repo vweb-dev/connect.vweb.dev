@@ -91,7 +91,7 @@ if ($configReady && $_SERVER['REQUEST_METHOD']==='POST') {
             $placement=(string)($_POST['placement']??'offers');
             $priority=(int)($_POST['priority']??0);
             if (!in_array($type,['coupon','news','ad'],true) || !in_array($status,['draft','published'],true)
-                 || !in_array($placement,['home','offers','news','tv','watch','listen','play'],true)) throw new InvalidArgumentException('Invalid content settings.');
+                 || !in_array($placement,['home','offers','news','play'],true)) throw new InvalidArgumentException('Invalid content settings.');
             if ($title===''||strlen($title)>500||$summary===''||strlen($summary)>8000) {
                 throw new InvalidArgumentException('Title and summary required; keep content concise.');
             }
@@ -161,7 +161,7 @@ function admin_date_value(?array $row,string $key):string {
 <html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><meta name="robots" content="noindex,nofollow">
 <title>Connect Content Manager | VWEB.DEV</title><link rel="stylesheet" href="/admin/style.css"></head><body>
 <header><div><strong>VWEB.DEV CONNECT</strong><br><small>FIRST-PARTY CONTENT & AD MANAGER</small></div>
-<div><a href="/" class="btn secondary">← Public PWA</a> <a href="/admin/media.php" class="btn secondary">Entertainment CMS ↗</a> <a href="/admin/operations.php" class="btn secondary">Community & Members ↗</a>
+<div><a href="/" class="btn secondary">← Public PWA</a> <a href="/admin/operations.php" class="btn secondary">Community & Members ↗</a>
 <?php if($logged): ?><form method="post" action="/admin/" class="inline-form"><input type="hidden" name="csrf" value="<?= $e(connect_csrf()) ?>"><input type="hidden" name="action" value="logout"><button class="secondary" type="submit">Sign out</button></form><?php endif; ?></div></header>
 <main>
 <?php if ($error): ?><div class="error" role="alert"><?= $e($error) ?></div><?php endif; ?>
@@ -204,7 +204,7 @@ function admin_date_value(?array $row,string $key):string {
 <div><label for="category">Category</label><input id="category" name="category" maxlength="80" value="<?= admin_val($edit,'category','General') ?>"></div>
 <div class="full"><label for="url">Verified destination URL (HTTPS)</label><input id="url" name="url" type="url" maxlength="1024" required placeholder="https://..." value="<?= admin_val($edit,'url') ?>"></div>
 <div><label for="code">Optional verified coupon code</label><input id="code" name="code" maxlength="80" value="<?= admin_val($edit,'code') ?>"></div>
-<div><label for="placement">Placement</label><select name="placement" id="placement"><?php foreach(['home'=>'Home','offers'=>'Offers','news'=>'News','watch'=>'Watch','play'=>'Play & Learn'] as $k=>$label): ?><option value="<?= $e($k) ?>" <?= ($edit['placement']??'offers')===$k?'selected':'' ?>><?= $e($label) ?></option><?php endforeach; ?></select></div>
+<div><label for="placement">Placement</label><select name="placement" id="placement"><?php foreach(['home'=>'Home','offers'=>'Offers','news'=>'News','play'=>'Play & Learn'] as $k=>$label): ?><option value="<?= $e($k) ?>" <?= ($edit['placement']??'offers')===$k?'selected':'' ?>><?= $e($label) ?></option><?php endforeach; ?></select></div>
 <div><label for="priority">Display priority (-100 to 100)</label><input id="priority" type="number" min="-100" max="100" name="priority" value="<?= admin_val($edit,'priority','0') ?>"></div>
 <div><label for="starts">Starts at (UTC, optional)</label><input id="starts" name="starts_at" type="datetime-local" value="<?= admin_date_value($edit,'starts_at') ?>"></div>
 <div><label for="expires">Expires at (UTC, optional)</label><input id="expires" name="expires_at" type="datetime-local" value="<?= admin_date_value($edit,'expires_at') ?>"></div>
