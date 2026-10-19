@@ -1,3 +1,5 @@
+> **Retirement update (October 19, 2026):** Watch & Discover and Discover have been removed. Legacy sections below are historical and must not be activated. The media publisher and API return HTTP 410, the old static entertainment catalog has been removed, and Games & Quizzes remains available. Existing database records are preserved.
+
 # VWEB.DEV Connect — All-Modules Deployment & ISP Integration Guide
 
 This repository contains the **software implementation**, not a claim that the

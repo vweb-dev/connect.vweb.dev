@@ -1,3 +1,9 @@
+## Media retirement completed — October 19, 2026
+
+The public Watch & Discover and Discover sections and their navigation/routes were already retired. Their remaining media publishing entry points are now fully disabled: `/admin/media.php` and `/api/media.php` return HTTP 410 without querying the database; the admin content editor no longer offers retired Watch placements. The obsolete public `data/entertainment.json` file was removed from this repository, and Apache rejects requests to its legacy URL. Installed PWA cache is now v21 to clear stale media assets. Games & Quizzes (`#play`) and its six games remain. **No existing database tables or historical media records were deleted.**
+
+---
+
 ## Watch & Discover / Discover retirement — October 18, 2026
 
 Both public sections were removed from desktop and mobile navigation, app routing, pages, contextual links, and their browser-side media catalog fetches. The Watch page's on-demand collections and podcasts, and Discover's Open Library book finder, are no longer available. Previous `#watch`, `#discover`, `#tv`, and `#listen` URLs redirect to Overview. Games & Quizzes (`#play`) and all six browser games remain operational. The PWA shell was advanced to v20; current public assets use `connect-focus-20261018b`. Existing CMS/database records were not deleted. Historical descriptions below refer to earlier releases, not the active navigation.
