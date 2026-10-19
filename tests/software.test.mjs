@@ -37,5 +37,6 @@ test('TV and radio are retired on frontend and API',()=>{
  assert.ok(!html.includes('page-tv'));
  assert.ok(!html.includes('page-listen'));
  assert.ok(!app.includes("'listen','play'"));
- assert.match(endpoint,/kind IN \('watch','podcast','discover'\)/);
+ assert.match(endpoint,/http_response_code\(410\)/);
+ assert.doesNotMatch(endpoint,/connect_db\(/);
 });

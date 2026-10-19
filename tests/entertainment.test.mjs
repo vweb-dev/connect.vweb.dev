@@ -30,7 +30,7 @@ test('all six games remain accessible and locally initialized',()=>{
 test('retired on-demand media fetching is not part of games or PWA shell',()=>{
  assert.doesNotMatch(runtime,/entertainment\.json|api\/media\.php|spotify\.com\/embed|openlibrary\.org|podcast-player|book-form|openDiscoveryWhenNeeded/);
  assert.doesNotMatch(sw,/entertainment\.json/);
- assert.match(sw,/vweb-connect-static-v20/);
+ assert.match(sw,/vweb-connect-static-v21/);
  assert.match(page,/entertainment\.js\?v=connect-focus-/);
  assert.ok(!page.includes('data-ent-sponsor="watch"'));
  assert.ok(css.includes('ent-game-board'));
@@ -40,4 +40,15 @@ test('games quiz fallback and Sudoku input collection remain usable',()=>{
  assert.match(runtime,/function empty\(root,message\)/);
  assert.match(runtime,/const got=\$\$\('#sudoku-grid input'\)\.map/);
  assert.doesNotMatch(runtime,/const got=\$\('#sudoku-grid input'\)\.map/);
+});
+
+test('retired media API and publisher return 410 without reading the database',()=>{
+ const api=read('api/media.php'),admin=read('admin/media.php'),cms=read('admin/index.php'),apache=read('.htaccess');
+ assert.match(api,/http_response_code\(410\)/);
+ assert.match(admin,/http_response_code\(410\)/);
+ assert.doesNotMatch(api,/connect_db\(/);
+ assert.doesNotMatch(admin,/connect_db\(/);
+ assert.ok(!cms.includes('href="/admin/media.php"'));
+ assert.ok(!cms.includes("'watch'=>'Watch'"));
+ assert.ok(apache.includes("RewriteRule ^data/entertainment\\.json$ - [G,L,NC]"));
 });

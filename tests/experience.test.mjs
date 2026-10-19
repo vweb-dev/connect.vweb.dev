@@ -45,9 +45,9 @@ test('app directory layouts and WinGet selection remain first-party operations',
  assert.doesNotMatch(hub,/child_process|execSync|spawnSync/);
 });
 test('site shell and PWA cache use consistent current revision',()=>{
- assert.match(worker,/vweb-connect-static-v20/);
+ assert.match(worker,/vweb-connect-static-v21/);
  for(const asset of ['app.js','hub.js','converter.js','style.css'])
-  assert.ok(html.includes('/assets/'+asset+'?v=connect-focus-20261018b'),asset);
+  assert.ok(html.includes('/assets/'+asset+'?v=connect-focus-20261019-media-off'),asset);
  assert.match(html,/id="hub-offline-catalog"/);
  assert.match(hub,/restoreStaticCatalog/);
 });
