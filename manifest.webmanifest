@@ -14,5 +14,37 @@
       "type": "image/svg+xml",
       "purpose": "any"
     }
+  ],
+  "id": "/",
+  "categories": [
+    "productivity",
+    "education",
+    "utilities"
+  ],
+  "shortcuts": [
+    {
+      "name": "Quick Utilities",
+      "short_name": "Tools",
+      "url": "/#tools",
+      "description": "Browser-based everyday tools"
+    },
+    {
+      "name": "File Converter",
+      "short_name": "Convert",
+      "url": "/#convert",
+      "description": "Local image, PDF and media tasks"
+    },
+    {
+      "name": "App Directory",
+      "short_name": "Apps",
+      "url": "/#apps",
+      "description": "Verified software and app directory"
+    },
+    {
+      "name": "Video Academy",
+      "short_name": "Academy",
+      "url": "/#academy",
+      "description": "Pick up your courses"
+    }
   ]
 }

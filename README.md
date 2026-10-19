@@ -1,3 +1,11 @@
+## Mobile native-style experience — October 19, 2026
+
+Mobile Connect is now organized like an installed app: persistent five-tab bottom navigation (Home, Tools, Apps, Learn, More), compact app header with previous-screen navigation and global search, and a multi-level bottom-sheet menu that opens from the bottom rather than the side. The More stack groups Tools & Create, Learn & Explore, Windows & Services and My Connect, with a Back control, focus trapping, Escape/backdrop dismissal and a downward swipe gesture on the sheet handle/header. Existing AI Studio, Convert Studio and Quick Utilities tabs remain touch-scrollable. Layout respects phone safe-area insets and reduced motion. Desktop sidebar and all existing application routes remain unchanged. No extra paid APIs, hardware or libraries.
+
+Static assets now include `assets/mobile-app.js` and `assets/mobile-app.css`; service worker static cache v22 precaches both. The PWA manifest adds launch shortcuts. **GitHub push is not proof of Hostinger auto-deployment**: confirm the live URL, Android/iOS Safari/Chrome behavior, installed PWA navigation, keyboard focus and browser Back manually.
+
+---
+
 ## Media retirement completed — October 19, 2026
 
 The public Watch & Discover and Discover sections and their navigation/routes were already retired. Their remaining media publishing entry points are now fully disabled: `/admin/media.php` and `/api/media.php` return HTTP 410 without querying the database; the admin content editor no longer offers retired Watch placements. The obsolete public `data/entertainment.json` file was removed from this repository, and Apache rejects requests to its legacy URL. Installed PWA cache is now v21 to clear stale media assets. Games & Quizzes (`#play`) and its six games remain. **No existing database tables or historical media records were deleted.**

@@ -19,7 +19,7 @@ jobs:
         run: |
           find api admin ops docs -type f -name '*.php' -print0 | xargs -0 -n 1 php -l
       - name: JavaScript syntax checks
-        run: node --check assets/app.js && node --check assets/converter.js && node --check assets/hub.js && node --check assets/puter-ai.js && node --check assets/entertainment.js && node --check sw.js && node --test tests/entertainment.test.mjs tests/converter.test.mjs tests/connect20.test.mjs tests/quality.test.mjs tests/software.test.mjs tests/focus.test.mjs tests/tools-visibility.test.mjs tests/experience.test.mjs
+        run: node --check assets/app.js && node --check assets/mobile-app.js && node --check assets/converter.js && node --check assets/hub.js && node --check assets/puter-ai.js && node --check assets/entertainment.js && node --check sw.js && node --test tests/entertainment.test.mjs tests/converter.test.mjs tests/connect20.test.mjs tests/quality.test.mjs tests/software.test.mjs tests/focus.test.mjs tests/tools-visibility.test.mjs tests/experience.test.mjs tests/mobile-app.test.mjs
       - name: Validate manifest and Composer metadata
         run: |
           python3 -m json.tool manifest.webmanifest >/dev/null

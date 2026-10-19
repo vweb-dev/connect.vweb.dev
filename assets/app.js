@@ -52,23 +52,7 @@ function route(focusHeading){
   window.scrollTo(0,0);
 }
 window.addEventListener('hashchange',function(){route(true);});route(false);
-var drawer=$('#mobile-drawer'),menuBtn=$('#mobile-more'),headMenu=$('#mobile-menu-toggle');
-function toggleDrawer(show){
- if(!drawer)return;drawer.hidden=!show;
- if(menuBtn)menuBtn.setAttribute('aria-expanded',String(show));
- if(headMenu)headMenu.setAttribute('aria-expanded',String(show));
- document.body.classList.toggle('drawer-open',show);
- if(show){var closeBtn=$('#mobile-drawer-close');if(closeBtn)closeBtn.focus();}
- else if(document.activeElement&&drawer.contains(document.activeElement)){(menuBtn||headMenu).focus();}
-}
-if(menuBtn)menuBtn.addEventListener('click',function(){toggleDrawer(drawer.hidden);});
-if(headMenu)headMenu.addEventListener('click',function(){toggleDrawer(drawer.hidden);});
-$('#mobile-drawer-close').addEventListener('click',function(){toggleDrawer(false);});
-drawer.addEventListener('click',function(e){if(e.target===drawer)toggleDrawer(false);});
-drawer.querySelectorAll('nav a').forEach(function(a){a.addEventListener('click',function(){toggleDrawer(false);});});
-window.addEventListener('keydown',function(e){if(e.key==='Escape'&&!drawer.hidden)toggleDrawer(false);});
-window.addEventListener('hashchange',function(){if(!drawer.hidden)toggleDrawer(false);});
-
+// Mobile app navigation is handled independently by assets/mobile-app.js.
 $('#year').textContent=new Date().getFullYear();
 if('serviceWorker' in navigator){window.addEventListener('load',function(){navigator.serviceWorker.register('/sw.js').catch(function(){});});}
 var installEvent=null;window.addEventListener('beforeinstallprompt',function(e){e.preventDefault();installEvent=e;$('#install').hidden=false;});
