@@ -56,3 +56,15 @@
 .connect-social-grid .connect-social-explainer{font-size:12px;line-height:1.6;color:#b7c5cf;margin:10px 0 12px}
 .connect-social-grid .connect-social-card>a{font-size:12px;color:#efd09a;margin-top:auto}
 @media(max-width:680px){.connect-social-grid{grid-template-columns:1fr}}
+
+.connect-network-intel{background:#162630;border:1px solid #596773;border-radius:18px;padding:clamp(18px,3vw,30px);margin:22px 0;color:#f6eee2}
+.connect-network-intel h2{font-size:clamp(23px,3vw,30px);margin:10px 0}
+.connect-network-intel p{font-size:12px;color:#bed0da;line-height:1.65}
+.connect-intel-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;margin:20px 0}
+.connect-intel-grid .network-provider-card{display:flex;flex-direction:column;align-items:flex-start;gap:10px}
+.connect-intel-grid .network-provider-card p{margin:0}
+.connect-intel-grid .network-provider-card a{color:#efd09a;font-size:12px}
+#connect-uptime-results p{font-size:12px;margin:4px 0}
+#connect-radar-results{font-size:12px;color:#e9c797;line-height:1.6}
+#connect-uptime-updated{color:#9fb5c0}
+@media(max-width:700px){.connect-intel-grid{grid-template-columns:1fr}}
