@@ -47,7 +47,7 @@ test('audio and video processing stays browser-side',()=>{
  assert.doesNotMatch(engine,/new XMLHttpRequest|fetch\(.+file\.arrayBuffer|POST.*multipart/);
 });
 test('PWA caches self-hosted converter file with fresh asset revision',()=>{
- assert.match(html,/converter\.js\?v=(convert-lab-|connect20-|(?:tools-(?:recovery|fix|tabs)-|(?:connect-refresh-|(?:connect-focus-|connect-mobile-))))/);
+ assert.match(html,/converter\.js\?v=(convert-lab-|connect20-|(?:tools-(?:recovery|fix|tabs)-|(?:connect-refresh-|(?:connect-focus-|connect-activation-))))/);
  assert.match(sw,/vweb-connect-static-v(11|12|13|14|15|16|17|18|19|20|21|22)/);
  assert.match(sw,/assets\/converter\.js/);
  assert.match(css,/convert-dropzone/);
