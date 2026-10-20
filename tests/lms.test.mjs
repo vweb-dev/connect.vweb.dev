@@ -67,11 +67,24 @@ test('self-marked activity is explicitly not an accredited award',()=>{
  assert.ok(manifest.shortcuts.some(x=>x.url==='/#academy'));
 });
 test('LMS source files are included in the PWA shell and released with matching version',()=>{
- assert.match(worker,/vweb-connect-static-v27/);
+ assert.match(worker,/vweb-connect-static-v28/);
  for(const ext of ['css','js']){
-  assert.ok(html.includes('/assets/lms.'+ext+'?v=connect-lms-20261020a'));
+  assert.ok(html.includes('/assets/lms.'+ext+'?v=connect-ios-focus-20261020a'));
   assert.ok(worker.includes('/assets/lms.'+ext));
  }
  assert.ok(html.includes('/assets/hub.js?v=connect-lms-20261020a'));
  assert.ok(html.includes('/assets/app.js?v=connect-lms-20261020a'));
+});
+
+test('classroom is a single-course focus view with explicit return navigation',()=>{
+ assert.ok(html.includes('id="lms-back-to-courses"'));
+ assert.ok(html.includes('id="lms-syllabus-course"'));
+ assert.match(html,/id="lms-course-switcher-legacy" hidden aria-hidden="true"/);
+ assert.ok(html.includes('id="hub-course-list"'),'legacy course list retained for compatibility');
+ assert.match(css,/#page-academy #lms-course-switcher-legacy\[hidden\]/);
+ assert.match(css,/\.lms-module-accordion/);
+ assert.match(lms,/lms-back-to-courses/);
+ assert.match(lms,/selectView\('catalog'\)/);
+ assert.match(hub,/el\('details','hub-module lms-module-accordion'\)/);
+ assert.match(hub,/el\('summary','hub-module-heading'\)/);
 });

@@ -1,3 +1,13 @@
+## iPhone PWA and focused LMS classroom — October 20, 2026
+
+**Apple installation:** iPhone/iPad standalone metadata, status bar and Home Screen app name are configured. The iPhone Apple touch icon uses the existing, unmodified VWEB.DEV official 180px brand artwork at `https://vweb.dev/Favicon/apple-touch-icon.png`; the manifest also references official branded 192px and 512px favicon artwork from VWEB.DEV. Self-hosted raster Connect icons (180px and 192px) are included as offline fallback assets, alongside the unchanged Connect SVG. Do not recolor or redraw official artwork. Both PNG fallbacks are precached in PWA v28. On iOS, browser installation is user-initiated: open in Safari, Share, Add to Home Screen, enable Open as Web App if shown and tap Add. The mobile stacked menu includes a permanent iOS installation walkthrough; installed-mode detection suppresses the prompt when already launched as a Home Screen app. `beforeinstallprompt` is still used only where supported, such as Chromium.
+
+**Learning experience:** The Classroom now focuses exclusively on the selected course, with the separate all-courses switcher visually and accessibly hidden. A clear “All courses” control returns to the catalog. Only the current course’s curriculum appears in the sidebar; each module is an expandable section, opening at the currently selected lesson. Leaving the Classroom pauses the YouTube iframe to prevent background playback. Existing lesson progress, notes, bookmarks, scores, course enrollment, playlist import and workspace export/import remain intact. No additional paid services or hardware are required.
+
+**QA required on real hardware:** Verify Safari iPhone Add to Home Screen and icon retrieval (the public official VWEB.DEV favicon URLs must be reachable), standalone toolbar appearance, iPad safe-area/landscape, Android manifest image selection, module accordion interaction and LMS back navigation. Source-level tests do not confirm live Hostinger deployment.
+
+---
+
 ## Full Learning / LMS experience — October 20, 2026
 
 Rebuilt the #academy page as a locally tracked learning management experience using the five existing curated YouTube courses. Three native-style screens: **My Learning** (enrollment, progress, resume, recommended courses), **Course Catalog** (search, enrollment and completion filters, course preview cards), and **Classroom** (video player, curriculum, module completion, notes, bookmarks and optional module-level knowledge checks). A self-marked learning record can be printed after all lessons are manually completed; it is explicitly **not an accredited certificate** or proof of watching YouTube.

@@ -54,7 +54,7 @@ test('browser-only workspace data and grouped tools',()=>{
  assert.match(js,/\.toCanvas\(/);
 });
 test('service worker pre-caches static app shell and catalog',()=>{
- assert.match(sw,/vweb-connect-static-v(12|13|14|15|16|17|18|19|20|21|22|23|24|25|26|27)/);
+ assert.match(sw,/vweb-connect-static-v(12|13|14|15|16|17|18|19|20|21|22|23|24|25|26|27|28)/);
  assert.match(sw,/\/assets\/hub\.js/);
  assert.match(sw,/\/data\/connect-hub\.json/);
  assert.match(html,/hub\.js\?v=connect-lms-20261020a/);

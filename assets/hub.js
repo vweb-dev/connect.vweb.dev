@@ -433,13 +433,14 @@ function renderCurriculum(){
  const course=selectedCourse();if(!course)return;
  const all=flatLessons(course),done=completedList(course.id);
  course.modules.forEach((module,mi)=>{
-  const group=el('section','hub-module');
-  const header=el('div','hub-module-heading');
+  const group=el('details','hub-module lms-module-accordion');
+  const offset=course.modules.slice(0,mi).reduce((n,m)=>n+m.lessons.length,0);
+  group.open=lessonIndex>=offset&&lessonIndex<offset+module.lessons.length;
+  const header=el('summary','hub-module-heading');
   const offsetBefore=course.modules.slice(0,mi).reduce((n,m)=>n+m.lessons.length,0);
   const doneInModule=module.lessons.filter((_,i)=>done.includes(offsetBefore+i)).length;
   header.append(el('strong','',module.title),el('small','',doneInModule+'/'+module.lessons.length+' completed'));
   group.append(header);
-  const offset=course.modules.slice(0,mi).reduce((n,m)=>n+m.lessons.length,0);
   module.lessons.forEach((lesson,idx)=>{
    const absolute=offset+idx;
    const button=el('button','hub-lesson-row'+(absolute===lessonIndex?' current':'')+(done.includes(absolute)?' finished':''));

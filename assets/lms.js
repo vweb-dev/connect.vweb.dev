@@ -52,6 +52,14 @@
  };
  function selectView(next){
   if(!viewNames.includes(next))return;
+  if(view==='classroom'&&next!=='classroom'){
+   const player=$('#hub-academy-player');
+   if(player?.querySelector('iframe')){
+    const paused=node('div','hub-player-placeholder');
+    paused.append(node('span','','▶'),node('h2','','Lesson paused'),node('p','','Return to the Classroom and select a lesson to continue.'));
+    player.replaceChildren(paused);
+   }
+  }
   view=next;
   $$('.lms-nav-tab').forEach(b=>{
    const selected=b.dataset.lmsView===view;
@@ -156,6 +164,7 @@
   }
   const p=progress(s,course),badgeHost=$('#lms-classroom-badges');
   $('#lms-classroom-name').textContent=course.title;
+  $('#lms-syllabus-course').textContent=course.title;
   $('#lms-classroom-description').textContent=course.description+' · '+course.provider;
   $('#lms-classroom-percent').textContent=p.pct+'%';
   $('#lms-classroom-meter').style.width=p.pct+'%';
@@ -266,6 +275,7 @@
   if(view==='classroom')renderClassroom();
  }
  $$('.lms-nav-tab').forEach(b=>b.addEventListener('click',()=>selectView(b.dataset.lmsView)));
+ $('#lms-back-to-courses').addEventListener('click',()=>selectView('catalog'));
  $$('[data-lms-open]').forEach(b=>b.addEventListener('click',()=>selectView(b.dataset.lmsOpen)));
  $('#lms-course-search').addEventListener('input',event=>{search=event.target.value.trim().toLocaleLowerCase();renderCatalog()});
  $('#lms-course-filter').addEventListener('change',event=>{filter=event.target.value;renderCatalog()});

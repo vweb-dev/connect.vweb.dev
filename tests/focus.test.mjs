@@ -58,7 +58,7 @@ test('community admin preserves support, merchant and optional notifications',()
  assert.match(privacy,/Retired Internet and Rewards features/);
 });
 test('cache invalidated and updated assets remain static',()=>{
- assert.match(sw,/vweb-connect-static-v27/);
+ assert.match(sw,/vweb-connect-static-v28/);
  assert.match(html,/hub\.js\?v=connect-lms-20261020a/);
  assert.match(read('.github/workflows/checks.yml'),/tests\/focus\.test\.mjs/);
 });

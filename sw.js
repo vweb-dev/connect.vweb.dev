@@ -1,5 +1,5 @@
-const CACHE='vweb-connect-static-v27';
-const APP=['/','/index.html','/assets/style.css','/assets/mobile-app.css','/assets/app.js','/assets/mobile-app.js','/assets/puter-ai.js','/assets/entertainment.js','/assets/converter.js','/assets/hub.js','/assets/lms.js','/assets/lms.css','/assets/qr-studio.css','/assets/qr-studio.js','/data/connect-hub.json','/assets/connect-icon.svg','/manifest.webmanifest'];
+const CACHE='vweb-connect-static-v28';
+const APP=['/','/index.html','/assets/style.css','/assets/mobile-app.css','/assets/app.js','/assets/mobile-app.js','/assets/puter-ai.js','/assets/entertainment.js','/assets/converter.js','/assets/hub.js','/assets/connect-180.png','/assets/connect-192.png','/assets/lms.js','/assets/lms.css','/assets/qr-studio.css','/assets/qr-studio.js','/data/connect-hub.json','/assets/connect-icon.svg','/manifest.webmanifest'];
 self.addEventListener('install',event=>{event.waitUntil(caches.open(CACHE).then(cache=>cache.addAll(APP)));self.skipWaiting();});
 self.addEventListener('activate',event=>{event.waitUntil(caches.keys().then(keys=>Promise.all(keys.filter(k=>k!==CACHE).map(k=>caches.delete(k)))));self.clients.claim();});
 self.addEventListener('fetch',event=>{const request=event.request;if(request.method!=='GET'||new URL(request.url).origin!==self.location.origin)return;

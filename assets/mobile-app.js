@@ -7,7 +7,7 @@
  if(!drawer||!panel||!$('#mobile-app-topbar'))return;
  const titles={home:'Overview',studios:'Workspaces',tools:'Quick Actions',qr:'QR Code Studio',convert:'Convert Studio',apps:'App Directory',academy:'Learn / LMS',ai:'AI Studio',pc:'Windows & Office Help',dashboard:'My Workspace',play:'Games & Quizzes',offers:'Deals',community:'Local & Learn',account:'My Account'};
  const groups={home:'home',studios:'studios',tools:'studios',qr:'studios',convert:'studios',apps:'apps',pc:'apps',academy:'academy',ai:'more',dashboard:'more',play:'more',offers:'more',community:'more',account:'more'};
- const sheetNames={root:'Explore Connect',create:'Workspaces & Actions',learn:'Learn & Explore',services:'Windows & Services',personal:'My Connect'};
+ const sheetNames={root:'Explore Connect',create:'Workspaces & Actions',learn:'Learn & Explore',services:'Windows & Services',personal:'My Connect',install:'Install Connect'};
  const sheetScreens=$$('[data-stack-screen]');
  const mobile=()=>matchMedia('(max-width:800px)').matches;
  let screens=['home'],lastRoute='home',sheetTrail=['root'],returnFocus=null,swipeOrigin=null;
@@ -116,10 +116,26 @@
   },{passive:true});
  }
  const install=$('#mobile-install-app'),oldInstall=$('#install');
- install.addEventListener('click',()=>{closeSheet();oldInstall.click()});
- window.addEventListener('beforeinstallprompt',()=>{install.hidden=false});
- window.addEventListener('appinstalled',()=>{install.hidden=true});
- install.hidden=oldInstall.hidden;
+ const appleDevice=()=>/iPhone|iPad|iPod/i.test(navigator.userAgent)||
+  (navigator.platform==='MacIntel'&&navigator.maxTouchPoints>1);
+ const appInstalled=()=>navigator.standalone===true||
+  matchMedia('(display-mode:standalone)').matches||matchMedia('(display-mode:fullscreen)').matches;
+ function syncInstall(){
+  if(appInstalled()){install.hidden=true;return;}
+  install.hidden=!(appleDevice()||!oldInstall.hidden);
+  install.textContent=appleDevice()?'＋ Install on iPhone / iPad':'↓ Install Connect app';
+ }
+ install.addEventListener('click',()=>{
+  if(appleDevice()){
+   sheetTrail.push('install');
+   selectSheet('install');
+   $('#mobile-stack-back').focus({preventScroll:true});
+  }else{closeSheet();if(!oldInstall.hidden)oldInstall.click();}
+ });
+ window.addEventListener('beforeinstallprompt',syncInstall);
+ window.addEventListener('appinstalled',syncInstall);
+ window.addEventListener('pageshow',syncInstall);
+ syncInstall();
  window.addEventListener('hashchange',updateScreen);
  window.addEventListener('resize',()=>{if(!mobile())closeSheet()});
  updateScreen();

@@ -126,3 +126,24 @@
  #lms-print-record .lms-record-disclaimer{font-size:10pt;margin-top:48pt}
 }
 @media(prefers-reduced-motion:reduce){.lms-meter>span,.lms-course-image img{transition:none}}
+
+/* Single-course LMS focus mode: show only the selected curriculum. */
+#page-academy #lms-course-switcher-legacy[hidden]{display:none!important}
+#page-academy .lms-classroom-top-actions{display:flex;align-items:center;justify-content:space-between;gap:12px;margin:0 0 12px;flex-wrap:wrap}
+#page-academy .lms-back-button{display:inline-flex;align-items:center;justify-content:center;min-height:40px;padding:10px 14px;border:1px solid #806947;border-radius:10px;background:#302b24;color:#f1cf97;font:750 12px Outfit,system-ui,sans-serif;cursor:pointer}
+#page-academy .lms-back-button:hover{background:#463725;border-color:#e0b677}
+#page-academy .lms-focus-caption{font-size:10px;font-weight:800;letter-spacing:.1em;color:#adbdc6}
+#page-academy .lms-syllabus-head{padding:5px 1px 14px;border-bottom:1px solid #45525e;margin-bottom:12px}
+#page-academy .lms-syllabus-head h3{font:750 17px/1.35 Outfit,system-ui,sans-serif;color:#f2e9dd;margin:8px 0 5px}
+#page-academy .lms-syllabus-head p{font-size:11px;line-height:1.6;color:#9fb2c0;margin:0}
+#page-academy .lms-module-accordion{border:1px solid #3e505c;border-radius:11px;overflow:hidden;margin:9px 0;background:#1b2833}
+#page-academy .lms-module-accordion[open]{border-color:#826748;background:#202c35}
+#page-academy .lms-module-accordion>.hub-module-heading{display:flex;align-items:center;justify-content:space-between;gap:8px;padding:13px 11px;cursor:pointer;list-style:none;background:#22303c}
+#page-academy .lms-module-accordion>.hub-module-heading::-webkit-details-marker{display:none}
+#page-academy .lms-module-accordion>.hub-module-heading:after{content:'⌄';font-size:18px;color:#dec08d;transition:transform .2s}
+#page-academy .lms-module-accordion[open]>.hub-module-heading:after{transform:rotate(180deg)}
+#page-academy .lms-module-accordion>.hub-lesson-row{background:#182630;padding:12px}
+#page-academy .lms-module-accordion>.hub-lesson-row.current{background:#3c3328}
+#page-academy .lms-module-accordion>summary:focus-visible{outline:2px solid #e9c38b;outline-offset:-2px}
+@media(max-width:800px){#page-academy .lms-classroom-top-actions{padding:0 2px}#page-academy .lms-focus-caption{font-size:9px}#page-academy .lms-classroom-sidebar{max-height:none!important}}
+@media(prefers-reduced-motion:reduce){#page-academy .lms-module-accordion>.hub-module-heading:after{transition:none}}
