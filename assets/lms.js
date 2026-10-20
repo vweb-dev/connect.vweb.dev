@@ -163,6 +163,7 @@
    return;
   }
   const p=progress(s,course),badgeHost=$('#lms-classroom-badges');
+  $('#lms-syllabus-course').textContent=course.title;
   $('#lms-classroom-name').textContent=course.title;
   $('#lms-syllabus-course').textContent=course.title;
   $('#lms-classroom-description').textContent=course.description+' · '+course.provider;
@@ -288,6 +289,7 @@
  $('#lms-bookmark-lesson').addEventListener('click',()=>{
   const s=snapshot();if(s?.selected&&!s.playlist)bridge()?.bookmark(s.selected,s.lessonIndex);
  });
+ $('#lms-back-to-courses').addEventListener('click',()=>selectView('catalog'));
  $('#lms-learning-record').addEventListener('click',printRecord);
  window.addEventListener('connect:lms-changed',render);
  window.addEventListener('connect:lms-classroom',()=>selectView('classroom'));

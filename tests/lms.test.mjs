@@ -88,3 +88,5 @@ test('classroom is a single-course focus view with explicit return navigation',(
  assert.match(hub,/el\('details','hub-module lms-module-accordion'\)/);
  assert.match(hub,/el\('summary','hub-module-heading'\)/);
 });
+
+test('classroom focuses on a single course',()=>{assert.ok(html.includes('id="lms-course-switcher-legacy" hidden'));assert.ok(html.includes('id="lms-back-to-courses"'));assert.ok(html.includes('id="lms-syllabus-course"'));assert.match(lms,/lms-back-to-courses/);});

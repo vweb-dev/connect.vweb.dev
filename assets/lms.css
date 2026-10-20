@@ -147,3 +147,24 @@
 #page-academy .lms-module-accordion>summary:focus-visible{outline:2px solid #e9c38b;outline-offset:-2px}
 @media(max-width:800px){#page-academy .lms-classroom-top-actions{padding:0 2px}#page-academy .lms-focus-caption{font-size:9px}#page-academy .lms-classroom-sidebar{max-height:none!important}}
 @media(prefers-reduced-motion:reduce){#page-academy .lms-module-accordion>.hub-module-heading:after{transition:none}}
+
+/* Single-course classroom: no unrelated course-switch cards. */
+#page-academy #lms-course-switcher-legacy{display:none!important}
+.lms-classroom-top-actions{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:12px}
+.lms-back-button{background:#2a323a;border:1px solid #8b704b;border-radius:10px;padding:11px 16px;color:#f1ce91;font-weight:800;cursor:pointer;min-height:42px}
+.lms-back-button:hover{background:#40352b}
+.lms-focus-caption{font-size:10px;letter-spacing:.11em;font-weight:800;color:#c7b38e}
+.lms-syllabus-head{padding:0 0 16px;border-bottom:1px solid #43515a}
+.lms-syllabus-head h3{font:750 18px Outfit,system-ui,sans-serif;color:#f2e9dc;margin:7px 0}
+.lms-syllabus-head p{color:#aebec7;font-size:11px;margin:0;line-height:1.6}
+.mobile-ios-brand{display:flex;align-items:center;gap:15px;padding:14px;border:1px solid #564a3c;border-radius:13px;background:#242b2e}
+.mobile-ios-brand img{width:72px;height:72px;border-radius:15px;object-fit:cover}
+.mobile-ios-brand span{display:flex;flex-direction:column;gap:6px}
+.mobile-ios-brand strong{font:750 17px Outfit,system-ui,sans-serif}
+.mobile-ios-brand small,.mobile-ios-note{font-size:11px;line-height:1.6;color:#b9c4ca}
+.mobile-ios-steps{list-style:none;counter-reset:step;display:grid;gap:14px;padding:16px 0;margin:0}
+.mobile-ios-steps li{counter-increment:step;display:flex;flex-direction:column;gap:5px;padding-left:43px;position:relative}
+.mobile-ios-steps li:before{content:counter(step);position:absolute;left:0;top:0;width:30px;height:30px;border-radius:10px;display:grid;place-items:center;background:#453824;color:#f1d29f;font-weight:800}
+.mobile-ios-steps strong{font-size:13px;color:#f0ebdf}
+.mobile-ios-steps span{font-size:11px;color:#b8c4cd;line-height:1.5}
+@media(max-width:620px){.lms-focus-caption{display:none}}

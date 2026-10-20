@@ -7,7 +7,7 @@
  if(!drawer||!panel||!$('#mobile-app-topbar'))return;
  const titles={home:'Overview',studios:'Workspaces',tools:'Quick Actions',qr:'QR Code Studio',convert:'Convert Studio',apps:'App Directory',academy:'Learn / LMS',ai:'AI Studio',pc:'Windows & Office Help',dashboard:'My Workspace',play:'Games & Quizzes',offers:'Deals',community:'Local & Learn',account:'My Account'};
  const groups={home:'home',studios:'studios',tools:'studios',qr:'studios',convert:'studios',apps:'apps',pc:'apps',academy:'academy',ai:'more',dashboard:'more',play:'more',offers:'more',community:'more',account:'more'};
- const sheetNames={root:'Explore Connect',create:'Workspaces & Actions',learn:'Learn & Explore',services:'Windows & Services',personal:'My Connect',install:'Install Connect'};
+ const sheetNames={root:'Explore Connect',create:'Workspaces & Actions',learn:'Learn & Explore',services:'Windows & Services',personal:'My Connect',install:'Install on iPhone',install:'Install Connect'};
  const sheetScreens=$$('[data-stack-screen]');
  const mobile=()=>matchMedia('(max-width:800px)').matches;
  let screens=['home'],lastRoute='home',sheetTrail=['root'],returnFocus=null,swipeOrigin=null;
@@ -116,6 +116,9 @@
   },{passive:true});
  }
  const install=$('#mobile-install-app'),oldInstall=$('#install');
+ const isiOS=/iPad|iPhone|iPod/.test(navigator.userAgent)||(navigator.platform==='MacIntel'&&navigator.maxTouchPoints>1);
+ const standalone=window.navigator.standalone===true||matchMedia('(display-mode:standalone)').matches;
+ if(isiOS&&!standalone){install.hidden=false;install.textContent='Install on iPhone ↗';}
  const appleDevice=()=>/iPhone|iPad|iPod/i.test(navigator.userAgent)||
   (navigator.platform==='MacIntel'&&navigator.maxTouchPoints>1);
  const appInstalled=()=>navigator.standalone===true||

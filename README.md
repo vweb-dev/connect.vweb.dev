@@ -1,3 +1,8 @@
+## iPhone installation and focused classroom — October 20, 2026
+
+Added iPhone Add to Home Screen metadata and official VWEB.DEV PNG touch icon links, PWA manifest icon fallbacks and an iPhone Safari install guide through mobile More. The LMS Classroom now hides the all-courses switcher in favor of just the current syllabus; All courses returns to Course Catalog. Previous notes, quiz records and progress are retained. Cache v28. Verify live iPhone icons/install and classroom before production sign-off.
+
+---
 ## iPhone PWA and focused LMS classroom — October 20, 2026
 
 **Apple installation:** iPhone/iPad standalone metadata, status bar and Home Screen app name are configured. The iPhone Apple touch icon uses the existing, unmodified VWEB.DEV official 180px brand artwork at `https://vweb.dev/Favicon/apple-touch-icon.png`; the manifest also references official branded 192px and 512px favicon artwork from VWEB.DEV. Self-hosted raster Connect icons (180px and 192px) are included as offline fallback assets, alongside the unchanged Connect SVG. Do not recolor or redraw official artwork. Both PNG fallbacks are precached in PWA v28. On iOS, browser installation is user-initiated: open in Safari, Share, Add to Home Screen, enable Open as Web App if shown and tap Add. The mobile stacked menu includes a permanent iOS installation walkthrough; installed-mode detection suppresses the prompt when already launched as a Home Screen app. `beforeinstallprompt` is still used only where supported, such as Chromium.
