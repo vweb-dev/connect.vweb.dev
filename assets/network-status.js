@@ -9,8 +9,7 @@
   {name:'GitHub',endpoint:'https://www.githubstatus.com/api/v2/summary.json',website:'https://www.githubstatus.com/'},
   {name:'OpenAI',endpoint:'https://status.openai.com/api/v2/summary.json',website:'https://status.openai.com/'},
   {name:'Discord',endpoint:'https://discordstatus.com/api/v2/summary.json',website:'https://discordstatus.com/'},
-  {name:'Reddit',endpoint:'https://www.redditstatus.com/api/v2/summary.json',website:'https://www.redditstatus.com/'},
-  {name:'Slack',endpoint:'https://status.slack.com/api/v2.0.0/current',website:'https://status.slack.com/'}
+  {name:'Reddit',endpoint:'https://www.redditstatus.com/api/v2/summary.json',website:'https://www.redditstatus.com/'}
  ];
  let busy=false;
  const make=(tag,cls,text)=>{const el=document.createElement(tag);if(cls)el.className=cls;if(text!==undefined)el.textContent=text;return el;};
