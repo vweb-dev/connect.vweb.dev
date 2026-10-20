@@ -1,0 +1,50 @@
+/* VWEB.DEV Connect · Apple-inspired original visual system v49.
+   Native-feeling materials, accessible typography and refined spacing; no Apple trade dress. */
+:root{--bg:#0b0e13;--panel:#171b23;--panel2:#1d222b;--line:#343a45;--text:#f5f6f9;--muted:#a8b0bd;--gold:#e6bf88;--gold2:#f3d4a5;--radius:22px;--connect-glass:rgba(28,33,43,.83);--connect-shadow:0 16px 46px rgba(0,0,0,.22)}
+html{scroll-padding-top:84px}
+body{background:radial-gradient(ellipse 900px 600px at 78% -210px,rgba(142,168,211,.11),transparent 75%),#0b0e13;color:var(--text);-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility}
+body,button,input,select,textarea{font-family:'DM Sans',-apple-system,BlinkMacSystemFont,system-ui,sans-serif}
+h1,h2,h3,h4{letter-spacing:-.035em;text-wrap:balance}
+h1{letter-spacing:-.052em}
+a,button{-webkit-tap-highlight-color:transparent}
+button,a,input,select,textarea{touch-action:manipulation}
+:where(a,button,input,select,textarea,[role=tab]):focus-visible{outline:3px solid #ecc68b;outline-offset:3px}
+:where(button,.button,[role=tab]){transition:background-color .18s,border-color .18s,box-shadow .18s,transform .18s}
+:where(.button,button).primary{border-radius:13px;font-weight:750}
+:where(.button,button):disabled{opacity:.53;cursor:not-allowed}
+:where(input,select,textarea){border-radius:12px}
+::selection{background:#a27b40;color:#fff}
+.page{animation:connect-appear .22s ease-out}
+.page[hidden]{display:none!important}
+@keyframes connect-appear{from{opacity:.72;transform:translateY(5px)}to{opacity:1;transform:translateY(0)}}
+:where(.hub-page-title,.page-header,.convert-intro,.qr-hero,.qt-heading-copy) h1{font-size:clamp(31px,4.6vw,62px);line-height:1.06}
+:where(.hub-page-title,.page-header,.convert-intro,.qr-hero,.qt-heading-copy) p{line-height:1.65;max-width:72ch}
+:where(.card,.hub-card,.connect-network-card,.network-provider-card,.studio48-spotlight,.connect-upgrade-panel,.qr-editor-card,.qr-preview-card,.qt-active-area,.convert-pane,.speed45-plot,.speed45-side){box-shadow:0 6px 28px rgba(0,0,0,.10);backdrop-filter:saturate(125%)}
+:where(.card,.hub-card,.qr-editor-card,.qr-preview-card,.convert-pane,.studio48-spotlight){border-radius:20px}
+:where(.card,.hub-card,.app-card,.product-card):hover{box-shadow:var(--connect-shadow)}
+:where(.studio48-switcher,.qt-tabs,.network-revamp-tabs,.convert-rail){scrollbar-width:thin}
+:where(.studio48-switcher a,.qt-tabs button,.convert-tool-choice){border-radius:13px}
+:where(.studio48-spotlight,.connect-native-speed,.connect-network-live){isolation:isolate}
+.studio48-switcher{background:#161a21;border-color:#303846}
+.studio48-switcher a.current{background:#333037;color:#ffe3b6}
+.studio48-spotlight{background:radial-gradient(circle at 90% 8%,rgba(205,170,126,.15),transparent 51%),linear-gradient(130deg,#242a35,#141922);border:1px solid #444650}
+.studio48-actions button,.studio48-actions a{background:#30343d;border-radius:12px}
+.studio48-actions button:active,.studio48-actions a:active{transform:scale(.98)}
+#page-home :where(.hub-page-title,.page-header),#page-dashboard :where(.hub-page-title,.page-header){margin-bottom:22px}
+#page-ai,#page-convert,#page-tools,#page-qr,#page-network,#page-academy,#page-pc{max-width:1280px;margin-inline:auto}
+#page-ai .puter-auth,#page-qr .qr-workbench,#page-convert .convert-tools{border-radius:20px}
+#page-network .speed-v46{border-radius:20px;background:#12151c}
+#page-network .speed45-plot,#page-network .speed45-side,#page-network .speed45-stats article{border-radius:15px}
+#page-network .speed45-plot-head strong{letter-spacing:-.065em}
+@media(min-width:801px){.workspace{min-width:0}.workspace>.top{backdrop-filter:blur(18px) saturate(135%);-webkit-backdrop-filter:blur(18px) saturate(135%)}}
+@media(max-width:800px){
+ html{scroll-padding-top:80px}
+ .page{animation:none}
+ :where(.hub-page-title,.page-header,.convert-intro,.qr-hero,.qt-heading-copy) h1{font-size:clamp(31px,8vw,46px)}
+ :where(.card,.hub-card,.qr-editor-card,.qr-preview-card,.convert-pane){border-radius:17px}
+ .mobile-app-topbar{background:rgba(19,23,31,.86)!important;backdrop-filter:blur(22px) saturate(145%);-webkit-backdrop-filter:blur(22px) saturate(145%);border-bottom:1px solid rgba(255,255,255,.08)}
+ .mobile-app-bottom-nav,.mobile-bottom-nav{backdrop-filter:blur(24px) saturate(150%);-webkit-backdrop-filter:blur(24px) saturate(150%)}
+ .studio48-spotlight{border-radius:18px}
+ .studio48-switcher{border-radius:15px}
+}
+@media(prefers-reduced-motion:reduce){*,*::before,*::after{scroll-behavior:auto!important;animation-duration:.01ms!important;transition-duration:.01ms!important}}
