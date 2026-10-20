@@ -45,9 +45,10 @@ test('global search and native PWA install remain connected without new APIs',()
  assert.ok(manifest.shortcuts.length>=4);
 });
 test('mobile assets use the same deploy cache version',()=>{
- assert.match(worker,/vweb-connect-static-v26/);
+ assert.match(worker,/vweb-connect-static-v27/);
  for(const asset of ['mobile-app.js','mobile-app.css']){
-  assert.ok(html.includes('/assets/'+asset+'?v=connect-qr-route-20261020b'),asset);
+  const version=asset==='mobile-app.js'?'connect-lms-20261020a':'connect-qr-route-20261020b';
+  assert.ok(html.includes('/assets/'+asset+'?v='+version),asset);
   assert.ok(worker.includes('/assets/'+asset),asset);
  }
 });

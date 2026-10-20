@@ -41,10 +41,10 @@
       "description": "Verified software and app directory"
     },
     {
-      "name": "Video Academy",
-      "short_name": "Academy",
+      "name": "Connect Learning",
+      "short_name": "Learn",
       "url": "/#academy",
-      "description": "Pick up your courses"
+      "description": "Your courses, modules, notes and progress"
     },
     {
       "name": "Quick Actions",

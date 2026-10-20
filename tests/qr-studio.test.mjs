@@ -66,7 +66,7 @@ test('mobile QR editor remains responsive and app assets use the current cache',
  assert.match(css,/@media\(max-width:800px\)/);
  assert.match(css,/order:-1/);
  assert.match(css,/scroll-snap-type:x proximity/);
- assert.match(sw,/vweb-connect-static-v26/);
+ assert.match(sw,/vweb-connect-static-v27/);
  for(const asset of ['qr-studio.css','qr-studio.js']){
   assert.ok(sw.includes('/assets/'+asset),asset);
   assert.ok(html.includes('/assets/'+asset+'?v=qr-route-20261020b'),asset);
@@ -78,5 +78,5 @@ test('new QR route remains available with a cached old router',()=>{
   assert.ok(html.includes('/assets/'+asset+'?v=connect-qr-route-20261020b'),asset);
  assert.match(js,/function ensureQrVisible\(\)/);
  assert.match(js,/qr-code-styling\.min\.js/);
- assert.match(sw,/vweb-connect-static-v26/);
+ assert.match(sw,/vweb-connect-static-v27/);
 });

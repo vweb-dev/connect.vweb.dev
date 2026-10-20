@@ -11,7 +11,7 @@ const el=(tag,cls,txt)=>{
 const safeUrl=s=>{try{const u=new URL(s);return u.protocol==='https:'?u.href:null;}catch(_){return null;}};
 const STORAGE='vweb.connect20.v1';
 let data={courses:[],apps:[],studios:[],help:[]},appFilter='All',appSearch='',appKind='All',appSort='featured',appLimit=12,courseId=null,lessonIndex=0,playlistId=null;
-const emptyState=()=>({favorites:[],pinnedTools:[],completed:{},position:{},notes:{},recent:[]});
+const emptyState=()=>({favorites:[],pinnedTools:[],enrolled:[],bookmarks:{},assessments:{},completed:{},position:{},notes:{},recent:[]});
 function loadStore(){
  try{
   const p=JSON.parse(localStorage.getItem(STORAGE)||'null');
@@ -19,6 +19,9 @@ function loadStore(){
   return {
    favorites:Array.isArray(p.favorites)?p.favorites.filter(x=>typeof x==='string').slice(0,150):[],
    pinnedTools:Array.isArray(p.pinnedTools)?[...new Set(p.pinnedTools.filter(x=>typeof x==='string'))].slice(0,10):[],
+   enrolled:Array.isArray(p.enrolled)?[...new Set(p.enrolled.filter(x=>typeof x==='string'))].slice(0,100):[],
+   bookmarks:p.bookmarks&&typeof p.bookmarks==='object'&&!Array.isArray(p.bookmarks)?p.bookmarks:{},
+   assessments:p.assessments&&typeof p.assessments==='object'&&!Array.isArray(p.assessments)?p.assessments:{},
    completed:p.completed&&typeof p.completed==='object'&&!Array.isArray(p.completed)?p.completed:{},
    position:p.position&&typeof p.position==='object'&&!Array.isArray(p.position)?p.position:{},
    notes:p.notes&&typeof p.notes==='object'&&!Array.isArray(p.notes)?p.notes:{},
@@ -349,6 +352,47 @@ function flatLessons(course){
 function completedList(id){
  const items=state.completed[id];return Array.isArray(items)?items:[];
 }
+function emitLearning(){window.dispatchEvent(new Event('connect:lms-changed'));}
+function lmsSnapshot(){
+ return {courses:data.courses,selected:courseId,lessonIndex,playlist:playlistId,
+  enrolled:state.enrolled.slice(),completed:state.completed,position:state.position,
+  notes:state.notes,bookmarks:state.bookmarks,assessments:state.assessments};
+}
+window.ConnectLMS={
+ snapshot:lmsSnapshot,
+ open(id,index){
+  const course=data.courses.find(c=>c.id===id);if(!course)return;
+  if(!state.enrolled.includes(id)){state.enrolled.push(id);save();}
+  setCourse(id,true);
+  const chosen=Number.isInteger(index)?index:(Number.isInteger(state.position[id])?state.position[id]:0);
+  location.hash='#academy';
+  startLesson(Math.max(0,Math.min(flatLessons(course).length-1,chosen)));
+  emitLearning();
+ },
+ enroll(id){
+  if(!data.courses.some(c=>c.id===id))return;
+  if(!state.enrolled.includes(id)){state.enrolled.push(id);save();}
+  emitLearning();
+ },
+ unenroll(id){state.enrolled=state.enrolled.filter(x=>x!==id);save();emitLearning();},
+ bookmark(id,index){
+  const course=data.courses.find(c=>c.id===id);
+  if(!course||!Number.isInteger(index)||index<0||index>=flatLessons(course).length)return;
+  const before=Array.isArray(state.bookmarks[id])?state.bookmarks[id]:[];
+  state.bookmarks[id]=before.includes(index)?before.filter(n=>n!==index):[...before,index].slice(0,150);
+  save();emitLearning();
+ },
+ assess(id,moduleIndex,score,total){
+  const course=data.courses.find(c=>c.id===id);
+  if(!course||!Number.isInteger(moduleIndex)||moduleIndex<0||moduleIndex>=course.modules.length||
+    !Number.isInteger(score)||!Number.isInteger(total)||total<1||total>12||score<0||score>total)return;
+  const prev=state.assessments[id]&&typeof state.assessments[id]==='object'?state.assessments[id]:{};
+  const earlier=prev[moduleIndex];
+  prev[moduleIndex]={score:Math.max(score,Number(earlier?.score)||0),total,updated:Date.now()};
+  state.assessments[id]=prev;save();emitLearning();
+ },
+ flat:flatLessons
+};
 function progressUpdate(course,items){
  const all=flatLessons(course),done=completedList(course.id).length;
  $('#hub-lesson-progress').textContent=done+' of '+all.length+' lessons marked completed ('+Math.round(done/Math.max(1,all.length)*100)+'%). Completion is marked by you, not tracked by YouTube.';
@@ -368,6 +412,7 @@ function setCourse(id,restore=false){
  renderCourses();renderCurriculum();progressUpdate(next);
  $('#hub-lesson-complete').disabled=false;
  $('#hub-lesson-complete').textContent=completedList(next.id).includes(lessonIndex)?'✓ Completed — undo':'✓ Mark lesson complete';
+ emitLearning();
 }
 function playerPlaceholder(title,description){
  const div=el('div','hub-player-placeholder');div.append(el('span','','▶'),el('h2','',title),el('p','',description));return div;
@@ -390,7 +435,9 @@ function renderCurriculum(){
  course.modules.forEach((module,mi)=>{
   const group=el('section','hub-module');
   const header=el('div','hub-module-heading');
-  header.append(el('strong','',module.title),el('small','',module.lessons.length+' lessons'));
+  const offsetBefore=course.modules.slice(0,mi).reduce((n,m)=>n+m.lessons.length,0);
+  const doneInModule=module.lessons.filter((_,i)=>done.includes(offsetBefore+i)).length;
+  header.append(el('strong','',module.title),el('small','',doneInModule+'/'+module.lessons.length+' completed'));
   group.append(header);
   const offset=course.modules.slice(0,mi).reduce((n,m)=>n+m.lessons.length,0);
   module.lessons.forEach((lesson,idx)=>{
@@ -426,7 +473,8 @@ function startLesson(index){
  $('#hub-video-official').href='https://www.youtube.com/watch?v='+course.videoId+'&t='+current.seconds+'s';
  $('#hub-video-official').hidden=false;
  $('#hub-lesson-complete').textContent=completedList(course.id).includes(index)?'✓ Completed — undo':'✓ Mark lesson complete';
- renderCurriculum();renderHome();renderDashboard();
+ renderCurriculum();renderHome();renderDashboard();emitLearning();
+ window.dispatchEvent(new Event('connect:lms-classroom'));
 }
 function changeLesson(amount){
  const c=selectedCourse(),all=flatLessons(c);if(!all.length)return;
@@ -438,7 +486,7 @@ $('#hub-lesson-complete').addEventListener('click',()=>{
  const c=selectedCourse();if(!c||playlistId)return;
  const done=completedList(c.id);
  state.completed[c.id]=done.includes(lessonIndex)?done.filter(x=>x!==lessonIndex):[...done,lessonIndex];
- save();renderCurriculum();renderHome();renderDashboard();
+ save();renderCurriculum();renderHome();renderDashboard();emitLearning();
  $('#hub-lesson-complete').textContent=state.completed[c.id].includes(lessonIndex)?'✓ Completed — undo':'✓ Mark lesson complete';
 });
 $('#hub-course-note').addEventListener('input',e=>{
@@ -468,6 +516,8 @@ $('#hub-playlist-open').addEventListener('click',()=>{
  $('#hub-video-official').href='https://www.youtube.com/playlist?list='+encodeURIComponent(list);
  $('#hub-video-official').hidden=false;
  playerIframe('https://www.youtube-nocookie.com/embed/videoseries?list='+encodeURIComponent(list)+'&rel=0','YouTube playlist');
+ emitLearning();window.dispatchEvent(new Event('connect:lms-classroom'));
+
 });
 $('#hub-playlist-url').addEventListener('input',e=>e.target.setCustomValidity(''));
 // A custom playlist uses YouTube's native playlist UI. Its private/listing
@@ -655,7 +705,7 @@ async function copy(value,selector,defaultText){
  }
 }
 // Dashboard, privacy and recent use
-const pageNames={home:'Overview',studios:'Workspaces',academy:'Video Academy',pc:'Windows Help',apps:'App Directory',qr:'QR Code Studio',
+const pageNames={home:'Overview',studios:'Workspaces',academy:'Learn / LMS',pc:'Windows Help',apps:'App Directory',qr:'QR Code Studio',
  dashboard:'My Workspace',convert:'Convert Studio',tools:'Quick Actions',ai:'AI Studio',play:'Games',offers:'Deals',community:'Local & Learn'};
 function trackVisit(){
  const route=(location.hash||'#home').slice(1)||'home';
@@ -728,7 +778,8 @@ $('#hub-data-import').addEventListener('change',async e=>{
   const toolIds=new Set(quickToolIndex.map(item=>item.tool));
   state.pinnedTools=Array.isArray(p.pinnedTools)?[...new Set(p.pinnedTools.filter(x=>toolIds.has(x)))].slice(0,10):[];
   state.recent=p.recent.filter(x=>pageNames[x]).slice(0,15);
-  state.completed={};state.position={};state.notes={};
+  state.completed={};state.position={};state.notes={};state.enrolled=[];state.bookmarks={};state.assessments={};
+  state.enrolled=Array.isArray(p.enrolled)?[...new Set(p.enrolled.filter(x=>courseIds.has(x)))].slice(0,100):[];
   for(const course of courseIds){
    const size=flatLessons(data.courses.find(c=>c.id===course)).length;
    const done=p.completed[course];
@@ -737,16 +788,29 @@ $('#hub-data-import').addEventListener('change',async e=>{
    if(Number.isInteger(position)&&position>=0&&position<size)state.position[course]=position;
    const note=p.notes[course];
    if(typeof note==='string')state.notes[course]=note.slice(0,12000);
+   const marked=p.bookmarks?.[course];
+   state.bookmarks[course]=Array.isArray(marked)?[...new Set(marked.filter(n=>Number.isInteger(n)&&n>=0&&n<size))].slice(0,150):[];
+   const grades=p.assessments?.[course];
+   if(grades&&typeof grades==='object'&&!Array.isArray(grades)){
+    state.assessments[course]={};
+    const moduleCount=data.courses.find(c=>c.id===course).modules.length;
+    for(const [module,entry] of Object.entries(grades)){
+     const mi=Number(module),score=Number(entry?.score),total=Number(entry?.total);
+     if(Number.isInteger(mi)&&mi>=0&&mi<moduleCount&&Number.isInteger(score)&&
+        Number.isInteger(total)&&total>=1&&total<=12&&score>=0&&score<=total)
+      state.assessments[course][mi]={score,total,updated:Number(entry.updated)||0};
+    }
+   }
   }
   save();renderApps();renderHome();renderDashboard();if(courseId)setCourse(courseId,true);
-  window.dispatchEvent(new Event('connect:pins-changed'));
+  window.dispatchEvent(new Event('connect:pins-changed'));emitLearning();
   $('#hub-data-message').textContent='Workspace restored in this browser.';
  }catch(err){$('#hub-data-message').textContent='Could not import: '+err.message;}
 });
 $('#hub-data-reset').addEventListener('click',()=>{
  if(!window.confirm('Clear locally saved favorite apps, pinned tools, course progress, notes and recent sections?'))return;
  state=emptyState();save();renderApps();renderHome();renderDashboard();
- window.dispatchEvent(new Event('connect:pins-changed'));
+ window.dispatchEvent(new Event('connect:pins-changed'));emitLearning();
  if(courseId)setCourse(courseId);
  $('#hub-data-message').textContent='Local workspace data cleared.';
 });
@@ -1217,6 +1281,7 @@ function applyCatalog(payload){
  }
  restoreStaticCatalog();
  catalogReady=true;
+ emitLearning();
  if(failures.length)catalogStatus('Some tools could not initialize ('+failures.join(', ')+'). Refresh or retry the catalog.');
  return failures.length===0;
 }

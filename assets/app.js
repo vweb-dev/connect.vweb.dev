@@ -5,7 +5,7 @@ var $$ = function (s) { return Array.from(document.querySelectorAll(s)); };
 var routes=['home','studios','academy','pc','apps','dashboard','convert','tools','qr','ai','play','offers','community','account'];
 
 var contextTitles={
- home:'Overview',studios:'Workspaces',academy:'Video Academy',pc:'Windows & Office Help',
+ home:'Overview',studios:'Workspaces',academy:'Learn / LMS',pc:'Windows & Office Help',
  apps:'App Directory',dashboard:'My Workspace',convert:'File Converter',tools:'Quick Actions',qr:'QR Code Studio',
  ai:'AI Studio',play:'Games & Quizzes',
  offers:'Deals',community:'Local & Learn',account:'My Account'

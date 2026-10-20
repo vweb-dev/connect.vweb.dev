@@ -1,3 +1,13 @@
+## Full Learning / LMS experience — October 20, 2026
+
+Rebuilt the #academy page as a locally tracked learning management experience using the five existing curated YouTube courses. Three native-style screens: **My Learning** (enrollment, progress, resume, recommended courses), **Course Catalog** (search, enrollment and completion filters, course preview cards), and **Classroom** (video player, curriculum, module completion, notes, bookmarks and optional module-level knowledge checks). A self-marked learning record can be printed after all lessons are manually completed; it is explicitly **not an accredited certificate** or proof of watching YouTube.
+
+The existing `vweb.connect20.v1` workspace key is preserved, and old course notes, saved progress, recent learning positions, app favorites and tools remain compatible. New optional fields: `enrolled`, `bookmarks` and `assessments`; these are retained in the existing workspace JSON export/import. Knowledge-check scores are stored on-device, not by a school or YouTube. No additional paid APIs, hosting, hardware or dependencies.
+
+New first-party `assets/lms.js` and `assets/lms.css` load on the Academy screen, are included in the PWA v27 offline cache and are regression-tested. Verify the latest deploy, mobile and desktop screen interactions, video permissions, print styling, local persistence and workspace migration before final production acceptance.
+
+---
+
 ## QR Studio route hotfix — October 20, 2026
 
 QR Studio existed in the HTML, but previously updated router scripts kept the old cache query string, so some browsers served a router that did not recognize `#qr`. This release gives app, hub and mobile scripts fresh URL versions, bumps the PWA static cache to v26, adds a narrowly scoped QR route recovery for stale routers, and uses jsDelivr's documented minified styling bundle first. No user or database records were modified.

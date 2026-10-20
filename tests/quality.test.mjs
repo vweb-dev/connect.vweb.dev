@@ -52,7 +52,7 @@ test('WinGet presets never execute installation on website server',()=>{
  assert.doesNotMatch(hub,/kmsauto|keygen|activation bypass/i);
 });
 test('service worker uses network-first static catalog with safe offline fallback',()=>{
- assert.match(sw,/vweb-connect-static-v26/);
+ assert.match(sw,/vweb-connect-static-v27/);
  assert.match(sw,/path==='\/data\/connect-hub\.json'/);
  assert.match(sw,/caches\.match\(path\)/);
  assert.match(html,/id="hub-network-status"/);

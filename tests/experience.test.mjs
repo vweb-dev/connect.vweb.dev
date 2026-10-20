@@ -45,9 +45,10 @@ test('app directory layouts and WinGet selection remain first-party operations',
  assert.doesNotMatch(hub,/child_process|execSync|spawnSync/);
 });
 test('site shell and PWA cache use consistent current revision',()=>{
- assert.match(worker,/vweb-connect-static-v26/);
- for(const asset of ['app.js','hub.js','converter.js'])
-  assert.ok(html.includes('/assets/'+asset+'?v=connect-qr-route-20261020b'),asset);
+ assert.match(worker,/vweb-connect-static-v27/);
+ for(const asset of ['app.js','hub.js'])
+  assert.ok(html.includes('/assets/'+asset+'?v=connect-lms-20261020a'),asset);
+ assert.ok(html.includes('/assets/converter.js?v=connect-qr-route-20261020b'));
  assert.ok(html.includes('/assets/style.css?v=connect-mas-first-20261020b'));
  assert.match(html,/id="hub-offline-catalog"/);
  assert.match(hub,/restoreStaticCatalog/);
