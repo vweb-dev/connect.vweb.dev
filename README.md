@@ -1,3 +1,13 @@
+## MAS-first Windows & Office activation experience — October 20, 2026
+
+The #pc screen now opens with a detailed, high-priority Massgrave Microsoft Activation Scripts (MAS) section before Microsoft-supported license recovery or WinGet tools. It explains four upstream methods (HWID, Ohook, TSforge and Online KMS), links the original PowerShell and BAT/CMD documentation, upstream troubleshooting and GitHub issues, and clearly identifies MAS as an independent third-party project. The page does not mirror or auto-execute third-party activation scripts. Built-in Windows status-check controls keep their existing IDs and behavior.
+
+The new responsive section uses 4-column desktop, 2-column tablet and 1-column mobile method layouts. It includes source-first calls to action, prominent security and licensing context, and a separate Microsoft-supported diagnostics area. PWA cache v24 and the CSS asset query string ensure the updated layout can reach existing installations.
+
+**Deployment caution:** Merge to GitHub is not proof of automatic Hostinger deployment. Verify https://connect.vweb.dev/#pc in desktop and mobile browsers, PWA update, external docs links, and working WinGet/diagnostic controls.
+
+---
+
 ## Windows and Office activation + clearer navigation — October 20, 2026
 
 - Renamed **Tool Studios** to **Workspaces** (#studios) and **Quick Utilities** to **Quick Actions** (#tools) in desktop, mobile, search, contextual navigation and PWA shortcuts. Existing routes, IDs and working tools remain unchanged.
