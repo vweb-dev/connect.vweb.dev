@@ -68,3 +68,28 @@
 #connect-radar-results{font-size:12px;color:#e9c797;line-height:1.6}
 #connect-uptime-updated{color:#9fb5c0}
 @media(max-width:700px){.connect-intel-grid{grid-template-columns:1fr}}
+
+/* Network Lab V43: original responsive editorial dashboard */
+#page-network{max-width:1240px;margin-inline:auto}
+#page-network [data-network-panel][hidden]{display:none!important}
+#page-network .network-revamp-hero{display:flex;justify-content:space-between;align-items:center;gap:28px;background:radial-gradient(circle at 90% 20%,#af885b4a,transparent 45%),linear-gradient(135deg,#273741,#131f29);border:1px solid #816c50;border-radius:24px;padding:clamp(24px,4vw,46px);margin-bottom:17px}
+.network-revamp-hero h1{font:800 clamp(38px,5vw,66px)/1.03 Outfit,system-ui,sans-serif;letter-spacing:-.05em;margin:13px 0;color:#fff6e8}
+.network-revamp-hero h1 em{font-style:normal;color:#e8ba79}
+.network-revamp-hero p{font-size:14px;line-height:1.7;color:#c4d0d6;max-width:670px}
+.network-revamp-pills{display:flex;flex-wrap:wrap;gap:8px;margin-top:21px}
+.network-revamp-pills span{font-size:11px;padding:8px 11px;border:1px solid #725e40;background:#342f2a;color:#f0d5a7;border-radius:50px}
+.network-revamp-hero-mark{flex:0 0 160px;aspect-ratio:1;border-radius:24px;border:1px solid #816d4d;background:#312f2b;color:#edc487;display:flex;flex-direction:column;align-items:center;justify-content:center;font:800 86px/1 Outfit,system-ui,sans-serif}
+.network-revamp-hero-mark small{font-size:11px;letter-spacing:.17em;margin-top:9px}
+.network-revamp-tabs{display:flex;gap:8px;overflow-x:auto;padding:5px 0 14px;margin:0 0 6px;scrollbar-width:thin}
+.network-revamp-tabs button{white-space:nowrap;flex:none;border:1px solid #465867;border-radius:12px;background:#1c2b36;color:#d0dce3;padding:14px 17px;font-weight:750;font-size:13px;cursor:pointer}
+.network-revamp-tabs button[aria-pressed=true]{background:#42372a;color:#ffe1ae;border-color:#bc9053;box-shadow:inset 0 -3px #d0a461}
+.network-revamp-tabs button:focus-visible{outline:2px solid #e9bc7d;outline-offset:2px}
+#page-network .connect-native-speed{margin:0 0 24px;min-height:490px;padding:clamp(24px,4vw,48px)}
+#page-network .connect-native-speed h2{font-size:clamp(28px,3.8vw,42px)}
+#page-network .connect-network-live,#page-network .connect-social-directory,#page-network .connect-network-intel{margin:0 0 24px;min-height:440px}
+#page-network .connect-network-live-grid{align-items:stretch}
+#page-network .connect-speed-stage{margin-top:26px}
+#page-network .connect-speed-metrics>div{background:#13212b}
+#page-network .connect-social-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+@media(max-width:850px){.network-revamp-hero-mark{display:none}}
+@media(max-width:680px){#page-network .network-revamp-hero{padding:25px 19px;border-radius:17px}.network-revamp-hero h1{font-size:43px}.network-revamp-tabs button{padding:12px 13px;font-size:12px}#page-network .connect-social-grid{grid-template-columns:1fr}#page-network .connect-native-speed,#page-network .connect-network-live,#page-network .connect-social-directory,#page-network .connect-network-intel{min-height:0}}
