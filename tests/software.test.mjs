@@ -30,8 +30,11 @@ test('genuine CMD diagnostic and externally labeled GitHub source',()=>{
  assert.match(hub,/windows-activation-status\.cmd/);
  assert.match(hub,/slmgr \/xpr/);
  assert.match(html,/data-act-cmd="slmgr \/ato"/);
+ for(const name of ["HWID","Ohook","TSforge","Online KMS"])assert.ok(html.includes(name),name);
+ for(const id of ["office-account","office-subscription"])assert.ok(html.includes('value="'+id+'"'),id);
+ assert.match(html,/microsoft-365-activation-licensing\/reactivate-microsoft-365-or-office/);
  assert.doesNotMatch(hub,/get\.activated\.win|irm .* \| iex/);
- assert.match(html,/Connect does not host or auto-run these scripts/);
+ assert.match(html,/Connect does not mirror, download or automatically execute third-party scripts/);
 });
 test('TV and radio are retired on frontend and API',()=>{
  assert.ok(!html.includes('page-tv'));
