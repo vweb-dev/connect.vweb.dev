@@ -7,7 +7,7 @@
   badges.forEach(badge=>{
    if(allowed.get(badge.dataset.statusName)!==item.name)return;
    badge.textContent=item.message;
-   badge.className='connect-social-status '+(item.kind==='ok'?'is-ok':item.kind==='outage'?'is-outage':item.kind==='warning'?'is-warning':'');
+   badge.className='network-provider-state connect-social-status '+(item.kind==='ok'?'ok':item.kind==='outage'?'outage':item.kind==='warning'?'warning':'unknown');
   });
  });
 })();
