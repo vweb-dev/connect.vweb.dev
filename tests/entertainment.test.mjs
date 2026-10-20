@@ -31,7 +31,7 @@ test('retired on-demand media fetching is not part of games or PWA shell',()=>{
  assert.doesNotMatch(runtime,/entertainment\.json|api\/media\.php|spotify\.com\/embed|openlibrary\.org|podcast-player|book-form|openDiscoveryWhenNeeded/);
  assert.doesNotMatch(sw,/entertainment\.json/);
  assert.match(sw,/vweb-connect-static-v27/);
- assert.match(page,/entertainment\.js\?v=(?:connect-focus-|connect-activation-)/);
+ assert.match(page,/entertainment\.js\?v=(?:connect-focus-|connect-activation-|connect-qr-route-|connect-lms-)/);
  assert.ok(!page.includes('data-ent-sponsor="watch"'));
  assert.ok(css.includes('ent-game-board'));
 });

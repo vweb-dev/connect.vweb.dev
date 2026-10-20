@@ -75,7 +75,7 @@ test('mobile QR editor remains responsive and app assets use the current cache',
 
 test('new QR route remains available with a cached old router',()=>{
  for(const asset of ['app.js','hub.js','mobile-app.js'])
-  assert.ok(html.includes('/assets/'+asset+'?v=connect-qr-route-20261020b'),asset);
+  assert.ok(html.includes('/assets/'+asset+'?v=connect-lms-20261020a'),asset);
  assert.match(js,/function ensureQrVisible\(\)/);
  assert.match(js,/qr-code-styling\.min\.js/);
  assert.match(sw,/vweb-connect-static-v27/);
