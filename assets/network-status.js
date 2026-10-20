@@ -6,7 +6,10 @@
  if(!root||!trigger)return;
  const providers=[
   {name:'Cloudflare',endpoint:'https://www.cloudflarestatus.com/api/v2/summary.json',website:'https://www.cloudflarestatus.com/'},
-  {name:'GitHub',endpoint:'https://www.githubstatus.com/api/v2/summary.json',website:'https://www.githubstatus.com/'}
+  {name:'GitHub',endpoint:'https://www.githubstatus.com/api/v2/summary.json',website:'https://www.githubstatus.com/'},
+  {name:'OpenAI',endpoint:'https://status.openai.com/api/v2/summary.json',website:'https://status.openai.com/'},
+  {name:'Discord',endpoint:'https://discordstatus.com/api/v2/summary.json',website:'https://discordstatus.com/'},
+  {name:'Reddit',endpoint:'https://www.redditstatus.com/api/v2/summary.json',website:'https://www.redditstatus.com/'}
  ];
  let busy=false;
  const make=(tag,cls,text)=>{const el=document.createElement(tag);if(cls)el.className=cls;if(text!==undefined)el.textContent=text;return el;};
@@ -23,7 +26,7 @@
    const response=await fetch(provider.endpoint,{signal:controller.signal,cache:'no-store',headers:{Accept:'application/json'}});
    if(!response.ok)throw new Error('status request failed');
    const data=await response.json();
-   if(!data||!data.status||typeof data.status.indicator!=='string')throw new Error('invalid status feed');
+   if(!data||!data.status||typeof data.status.indicator!=='string')throw new Error('unsupported feed response');
    const indicator=data.status.indicator;
    const labels={none:'Operational',minor:'Minor disruption',major:'Service disruption',critical:'Critical outage'};
    const label=labels[indicator]||'Status unknown';
