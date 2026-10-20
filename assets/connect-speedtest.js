@@ -1,43 +1,13 @@
 import SpeedTest from 'https://cdn.skypack.dev/@cloudflare/speedtest';
-const start=document.getElementById('connect-speed-start'),stop=document.getElementById('connect-speed-stop'),message=document.getElementById('connect-speed-message'),bar=document.getElementById('connect-speed-progress');
+const $=id=>document.getElementById(id), start=$('connect-speed-start'),stop=$('connect-speed-stop'),message=$('connect-speed-message'),progress=$('connect-speed-progress');
 if(start&&stop){
- let engine=null,run=0;
- const output=(key,value,scale=1)=>{const node=document.getElementById('connect-speed-'+key);if(node)node.textContent=Number.isFinite(value)&&value>=0?(value/scale).toFixed(1):'—';};
- const dial=document.getElementById('connect-speed-dial-value'),arc=document.getElementById('connect-speed-dial-progress'),dialLabel=document.getElementById('connect-speed-dial-label');
- const updateDial=value=>{if(!dial)return;dial.textContent=Number.isFinite(value)&&value>=0?value.toFixed(1):'—';if(arc)arc.style.strokeDasharray=(Number.isFinite(value)?Math.min(100,Math.max(0,value/300*100)):0)+' 100';};
- const display=results=>{
-  if(!results)return;
-  const read=fn=>{try{return fn();}catch{return undefined;}};
-  const down=read(()=>results.getDownloadBandwidth());output('down',down,1e6);updateDial(Number.isFinite(down)?down/1e6:NaN);
-  output('up',read(()=>results.getUploadBandwidth()),1e6);
-  output('latency',read(()=>results.getUnloadedLatency()));
-  output('jitter',read(()=>results.getUnloadedJitter()));
- };
- const clean=()=>{engine=null;start.disabled=false;stop.disabled=true;};
- start.addEventListener('click',()=>{
-  if(engine)return;
-  const token=++run;
-  ['down','up','latency','jitter'].forEach(k=>output(k,NaN));updateDial(NaN);if(dialLabel)dialLabel.textContent='DOWNLOAD SPEED';
-  message.textContent='Measuring connection to Cloudflare · please keep this tab open…';
-  bar.style.width='8%';start.disabled=true;stop.disabled=false;
-  try{
-   const test=new SpeedTest({autoStart:false,
-    measurements:[
-     {type:'latency',numPackets:20},
-     {type:'download',bytes:100000,count:4},
-     {type:'download',bytes:1000000,count:6},
-     {type:'download',bytes:10000000,count:4},
-     {type:'upload',bytes:100000,count:4},
-     {type:'upload',bytes:1000000,count:6},
-     {type:'upload',bytes:10000000,count:4}
-    ]
-   });
-   engine=test;
-   test.onResultsChange=()=>{if(token!==run)return;display(test.results);bar.style.width='65%';};
-   test.onFinish=results=>{if(token!==run)return;display(results);bar.style.width='100%';message.textContent='Test completed · measured against Cloudflare servers. Results can differ from ISP package speed.';clean();};
-   test.onError=error=>{if(token!==run)return;message.textContent='Speed test failed: '+String(error).slice(0,140);bar.style.width='0%';clean();};
-   test.play();
-  }catch(error){message.textContent='Cannot start measurement: '+String(error.message||error);clean();}
- });
- stop.addEventListener('click',()=>{if(!engine)return;run++;try{engine.pause();}catch{}clean();bar.style.width='0%';message.textContent='Test paused. Start a new test when ready.';});
+let current=null,run=0,down=[],up=[];
+const numeric=(fn)=>{try{const v=fn();return Number.isFinite(v)&&v>=0?v:null;}catch{return null;}};
+function put(id,value,digits=1){const e=$(id);if(e)e.textContent=value===null?'—':value.toFixed(digits);}
+function plot(id,values,color){const canvas=$(id);if(!canvas)return;const ctx=canvas.getContext('2d');if(!ctx)return;const dpr=Math.min(2,window.devicePixelRatio||1),w=canvas.clientWidth||300,h=canvas.clientHeight||150;canvas.width=Math.floor(w*dpr);canvas.height=Math.floor(h*dpr);ctx.scale(dpr,dpr);ctx.clearRect(0,0,w,h);ctx.strokeStyle='#50606a';ctx.lineWidth=1;for(let i=1;i<=3;i++){ctx.beginPath();ctx.moveTo(0,h*i/4);ctx.lineTo(w,h*i/4);ctx.stroke();}if(values.length<2)return;const max=Math.max(1,...values)*1.15;ctx.beginPath();values.forEach((v,i)=>{const x=i/(Math.max(1,values.length-1))*w,y=h-12-v/max*(h-24);if(i===0)ctx.moveTo(x,y);else ctx.lineTo(x,y);});ctx.strokeStyle=color;ctx.lineWidth=3;ctx.stroke();}
+function update(results){if(!results)return;const d=numeric(()=>results.getDownloadBandwidth()),u=numeric(()=>results.getUploadBandwidth()),l=numeric(()=>results.getUnloadedLatency()),j=numeric(()=>results.getUnloadedJitter());put('connect-speed-down',d===null?null:d/1e6);put('connect-speed-up',u===null?null:u/1e6);put('connect-speed-latency',l);put('connect-speed-jitter',j);if(d!==null){const value=d/1e6;if(down.length===0||Math.abs(value-down[down.length-1])>.01){down.push(value);if(down.length>55)down.shift();plot('speed45-download-chart',down,'#ff993b');$('speed45-down-count').textContent=String(down.length);$('speed45-down-detail').textContent='Latest: '+value.toFixed(1)+' Mbps';}}if(u!==null){const value=u/1e6;if(up.length===0||Math.abs(value-up[up.length-1])>.01){up.push(value);if(up.length>55)up.shift();plot('speed45-upload-chart',up,'#c8a2ff');$('speed45-up-count').textContent=String(up.length);$('speed45-up-detail').textContent='Latest: '+value.toFixed(1)+' Mbps';}}}
+function end(){current=null;start.disabled=false;stop.disabled=true;}
+start.addEventListener('click',()=>{if(current)return;const token=++run;down=[];up=[];['down','up','latency','jitter'].forEach(k=>put('connect-speed-'+k,null));['speed45-down-count','speed45-up-count'].forEach(id=>$(id).textContent='0');$('speed45-down-detail').textContent='Waiting for samples';$('speed45-up-detail').textContent='Waiting for samples';$('speed45-test-time').textContent='Running…';plot('speed45-download-chart',[],'#ff993b');plot('speed45-upload-chart',[],'#c8a2ff');progress.style.width='10%';start.disabled=true;stop.disabled=false;message.textContent='Testing latency, download and upload against Cloudflare…';try{const test=new SpeedTest({autoStart:false,measurements:[{type:'latency',numPackets:20},{type:'download',bytes:100000,count:4},{type:'download',bytes:1000000,count:6},{type:'download',bytes:10000000,count:4},{type:'upload',bytes:100000,count:4},{type:'upload',bytes:1000000,count:6},{type:'upload',bytes:10000000,count:4}]});current=test;test.onResultsChange=()=>{if(token!==run)return;update(test.results);progress.style.width='70%';};test.onFinish=results=>{if(token!==run)return;update(results);progress.style.width='100%';$('speed45-test-time').textContent=new Date().toLocaleString();message.textContent='Completed · Results measured against Cloudflare; packet loss not tested.';end();};test.onError=error=>{if(token!==run)return;message.textContent='Unable to complete test: '+String(error).slice(0,140);progress.style.width='0%';end();};test.play();}catch(e){message.textContent='Speed test engine unavailable: '+String(e.message||e);end();}});
+stop.addEventListener('click',()=>{if(!current)return;run++;try{current.pause();}catch{}end();message.textContent='Test stopped.';progress.style.width='0%';});
+window.addEventListener('resize',()=>{plot('speed45-download-chart',down,'#ff993b');plot('speed45-upload-chart',up,'#c8a2ff');});
 }
