@@ -58,7 +58,7 @@ test('community admin preserves support, merchant and optional notifications',()
  assert.match(privacy,/Retired Internet and Rewards features/);
 });
 test('cache invalidated and updated assets remain static',()=>{
- assert.match(sw,/vweb-connect-static-v25/);
- assert.match(html,/hub\.js\?v=(?:connect20-focus-|(?:tools-(?:recovery|fix|tabs)-|(?:connect-refresh-|(?:connect-focus-|connect-activation-))))/);
+ assert.match(sw,/vweb-connect-static-v26/);
+ assert.match(html,/hub\.js\?v=(?:connect20-focus-|(?:tools-(?:recovery|fix|tabs)-|(?:connect-refresh-|(?:connect-focus-|(?:connect-activation-|connect-qr-route-)))))/);
  assert.match(read('.github/workflows/checks.yml'),/tests\/focus\.test\.mjs/);
 });

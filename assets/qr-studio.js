@@ -103,6 +103,7 @@
   if(typeof window.QRCodeStyling==='function')return window.QRCodeStyling;
   if(loadPromise)return loadPromise;
   const urls=[
+   'https://cdn.jsdelivr.net/npm/qr-code-styling@1.9.2/lib/qr-code-styling.min.js',
    'https://cdn.jsdelivr.net/npm/qr-code-styling@1.9.2/lib/qr-code-styling.js',
    'https://unpkg.com/qr-code-styling@1.9.2/lib/qr-code-styling.js'
   ];
@@ -284,7 +285,21 @@
  $('#qr-copy-data').addEventListener('click',copyText);
  $('#qr-copy-image').addEventListener('click',copyImage);
  $('#qr-retry').addEventListener('click',render);
- window.addEventListener('hashchange',()=>{if(location.hash==='#qr'&&(!qr||!payload))render();});
+ // Recover when an older cached app.js does not know the new QR route.
+ function ensureQrVisible(){
+  if(location.hash!=='#qr'||!root.hidden)return;
+  document.querySelectorAll('.page').forEach(page=>{page.hidden=page!==root;});
+  document.querySelectorAll('[data-nav]').forEach(link=>{
+   const active=link.dataset.nav==='qr';
+   link.classList.toggle('active',active);
+   if(active)link.setAttribute('aria-current','page');else link.removeAttribute('aria-current');
+  });
+  document.title='QR Code Studio | VWEB.DEV Connect';
+  const header=document.querySelector('#mobile-app-title');
+  if(header)header.textContent='QR Code Studio';
+ }
+ window.addEventListener('hashchange',()=>{ensureQrVisible();if(location.hash==='#qr'&&(!qr||!payload))render();});
  updateFrame();setReady(false);
+ ensureQrVisible();
  if(location.hash==='#qr')render();
 })();

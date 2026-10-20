@@ -1,3 +1,11 @@
+## QR Studio route hotfix — October 20, 2026
+
+QR Studio existed in the HTML, but previously updated router scripts kept the old cache query string, so some browsers served a router that did not recognize `#qr`. This release gives app, hub and mobile scripts fresh URL versions, bumps the PWA static cache to v26, adds a narrowly scoped QR route recovery for stale routers, and uses jsDelivr's documented minified styling bundle first. No user or database records were modified.
+
+Hostinger deployment still needs confirmation. Test `https://connect.vweb.dev/?refresh=qr-route-20261020b#qr` after publishing main.
+
+---
+
 ## Dedicated QR Code Studio — October 20, 2026
 
 Route `#qr` is a standalone browser-side QR designer reachable through desktop sidebar, Workspaces, mobile stacked menu, homepage, command search and PWA shortcuts. Includes 10 content types (Website, Text, Wi-Fi, WhatsApp, vCard, Email, SMS, Phone, Geo, Calendar Event); theme presets; single-color/linear/radial gradients; six module styles; corner eye/pupil styling; independent colors; optional PNG/JPG/WebP logo; sizing, high error correction with logo, quiet zone, caption and frame; live preview; PNG/SVG/JPEG/WebP downloads; and QR data/image copy where supported.

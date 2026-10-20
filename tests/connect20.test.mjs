@@ -57,6 +57,6 @@ test('service worker pre-caches static app shell and catalog',()=>{
  assert.match(sw,/vweb-connect-static-v(12|13|14|15|16|17|18|19|20|21|22|23|24|25)/);
  assert.match(sw,/\/assets\/hub\.js/);
  assert.match(sw,/\/data\/connect-hub\.json/);
- assert.match(html,/hub\.js\?v=(?:connect20-|(?:tools-(?:recovery|fix|tabs)-|(?:connect-refresh-|(?:connect-focus-|connect-activation-))))/);
+ assert.match(html,/hub\.js\?v=(?:connect20-|(?:tools-(?:recovery|fix|tabs)-|(?:connect-refresh-|(?:connect-focus-|(?:connect-activation-|connect-qr-route-)))))/);
  assert.match(style,/hub-academy-layout/);
 });
