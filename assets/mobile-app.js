@@ -5,9 +5,9 @@
  const $$=s=>Array.from(document.querySelectorAll(s));
  const drawer=$('#mobile-drawer'),panel=$('.mobile-drawer-panel');
  if(!drawer||!panel||!$('#mobile-app-topbar'))return;
- const titles={home:'Overview',studios:'Tool Studios',tools:'Quick Utilities',convert:'Convert Studio',apps:'App Directory',academy:'Video Academy',ai:'AI Studio',pc:'Windows & PC Help',dashboard:'My Workspace',play:'Games & Quizzes',offers:'Deals',community:'Local & Learn',account:'My Account'};
+ const titles={home:'Overview',studios:'Workspaces',tools:'Quick Actions',convert:'Convert Studio',apps:'App Directory',academy:'Video Academy',ai:'AI Studio',pc:'Windows & Office Help',dashboard:'My Workspace',play:'Games & Quizzes',offers:'Deals',community:'Local & Learn',account:'My Account'};
  const groups={home:'home',studios:'studios',tools:'studios',convert:'studios',apps:'apps',pc:'apps',academy:'academy',ai:'more',dashboard:'more',play:'more',offers:'more',community:'more',account:'more'};
- const sheetNames={root:'Explore Connect',create:'Tools & Create',learn:'Learn & Explore',services:'Windows & Services',personal:'My Connect'};
+ const sheetNames={root:'Explore Connect',create:'Workspaces & Actions',learn:'Learn & Explore',services:'Windows & Services',personal:'My Connect'};
  const sheetScreens=$$('[data-stack-screen]');
  const mobile=()=>matchMedia('(max-width:800px)').matches;
  let screens=['home'],lastRoute='home',sheetTrail=['root'],returnFocus=null,swipeOrigin=null;
@@ -62,7 +62,7 @@
   $('#mobile-app-screen-name').hidden=home;
   $('#mobile-app-back').hidden=home;
   $('#mobile-app-title').textContent=titles[key];
-  $('#mobile-app-category').textContent='CONNECT / '+({studios:'TOOLS',tools:'TOOLS',convert:'TOOLS',apps:'SOFTWARE',pc:'SOFTWARE',academy:'LEARN'}[key]||'EXPLORE');
+  $('#mobile-app-category').textContent='CONNECT / '+({studios:'WORKSPACES',tools:'ACTIONS',convert:'FILES',apps:'SOFTWARE',pc:'SOFTWARE',academy:'LEARN'}[key]||'EXPLORE');
   $$('.mobile-app-tabs [data-mobile-tab]').forEach(el=>{
    const active=groups[key]===el.dataset.mobileTab;
    el.classList.toggle('is-active',active);
