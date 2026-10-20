@@ -43,3 +43,17 @@ test('TV and radio are retired on frontend and API',()=>{
  assert.match(endpoint,/http_response_code\(410\)/);
  assert.doesNotMatch(endpoint,/connect_db\(/);
 });
+
+test('MAS reference is the featured first section of Windows and Office Help',()=>{
+ const pc=html.indexOf('id="page-pc"');
+ const mas=html.indexOf('id="mas-guide"',pc);
+ const official=html.indexOf('id="official-license-help"',pc);
+ const winget=html.indexOf('id="windows-software-builder"',pc);
+ assert.ok(pc>=0&&mas>pc&&official>mas&&winget>official,'MAS must be before official support and WinGet');
+ assert.ok(html.includes('id="mas-guide-title"'));
+ for(const method of ['HWID','Ohook','TSforge','Online KMS'])assert.ok(html.includes('<h4>'+method+'</h4>'),method);
+ for(const id of ['mas-methods','mas-documentation','mas-support'])assert.ok(html.includes('id="'+id+'"'),id);
+ for(const action of ['PowerShell documentation','traditional-method documentation','Project troubleshooting'])assert.ok(html.includes(action),action);
+ assert.match(html,/THIRD-PARTY GITHUB PROJECT · NOT MICROSOFT/);
+ assert.ok(html.includes('Connect does not mirror, download or automatically execute'));
+});
