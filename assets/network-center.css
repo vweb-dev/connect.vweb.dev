@@ -47,3 +47,12 @@
 .connect-social-status.is-warning{color:#f7d4a3;border-color:#977643;background:#45351e}
 .connect-social-status.is-outage{color:#ffd0ca;border-color:#b8635a;background:#412626}
 @media(max-width:570px){.connect-speed-dial{max-width:310px}.connect-speed-dial-reading strong{font-size:58px}}
+
+/* Unify social service tiles with official incident dashboard cards */
+.connect-social-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;margin:18px 0}
+.connect-social-grid .connect-social-card{display:flex;flex-direction:column;align-items:flex-start;min-height:150px;padding:20px;background:#20313d;border:1px solid #4f626b;border-radius:14px}
+.connect-social-grid .connect-social-card h3{font-size:18px;margin:0 0 12px;color:#f7efe5}
+.connect-social-grid .network-provider-state{font-size:13px;padding:7px 11px}
+.connect-social-grid .connect-social-explainer{font-size:12px;line-height:1.6;color:#b7c5cf;margin:10px 0 12px}
+.connect-social-grid .connect-social-card>a{font-size:12px;color:#efd09a;margin-top:auto}
+@media(max-width:680px){.connect-social-grid{grid-template-columns:1fr}}
