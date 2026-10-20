@@ -14,6 +14,7 @@
  let busy=false;
  const make=(tag,cls,text)=>{const el=document.createElement(tag);if(cls)el.className=cls;if(text!==undefined)el.textContent=text;return el;};
  function card(provider,message,kind,incidents){
+  window.dispatchEvent(new CustomEvent('connect:provider-status',{detail:{name:provider.name,message,kind}}));
   const item=make('article','network-provider-card');
   const title=make('h3','',provider.name),status=make('strong','network-provider-state '+kind,message);
   item.append(title,status);

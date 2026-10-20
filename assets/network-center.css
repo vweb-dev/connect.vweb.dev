@@ -23,3 +23,27 @@
 .connect-social-list a small{color:#b5c2cb;font-size:11px;font-weight:500}
 .connect-social-list a:hover{border-color:#d3ab6d;background:#2e3941}
 @media(max-width:650px){.connect-social-list{grid-template-columns:repeat(2,minmax(0,1fr))}}
+
+/* Speedometer inspired by familiar speed-test dashboards; original Connect styling */
+.connect-native-speed{text-align:center}
+.connect-native-speed>p,.connect-native-speed>.connect-network-note{margin-inline:auto}
+.connect-speed-stage{max-width:390px;margin:14px auto 0}
+.connect-speed-dial{position:relative;max-width:390px;aspect-ratio:300/185;margin:auto}
+.connect-speed-dial svg{display:block;width:100%;height:100%;overflow:visible}
+.connect-speed-dial path{fill:none;stroke-width:12;stroke-linecap:round}
+.connect-speed-dial .speed-track{stroke:#3b4b57}
+.connect-speed-dial .speed-arc{stroke:#e9bc78;stroke-dasharray:0 100;transition:stroke-dasharray .3s}
+.connect-speed-dial-reading{position:absolute;left:0;right:0;bottom:0;display:flex;flex-direction:column;align-items:center;gap:2px}
+.connect-speed-dial-reading span{font-size:11px;letter-spacing:.14em;font-weight:800;color:#eac58b}
+.connect-speed-dial-reading strong{font:800 clamp(48px,8vw,78px)/1 Outfit,system-ui,sans-serif;color:#fff8ec;letter-spacing:-.05em;font-variant-numeric:tabular-nums}
+.connect-speed-dial-reading small{font-size:14px;color:#d2dce0}
+.connect-speed-caption{font-size:11px!important;color:#b3c3c9!important}
+.connect-speed-metrics{margin:22px auto;max-width:880px}
+.connect-speed-controls{justify-content:center}
+.connect-speed-meter{max-width:580px;margin:18px auto}
+.connect-social-list a{gap:6px}
+.connect-social-status{display:inline-flex;align-self:start;padding:5px 8px;border-radius:30px;background:#354450;border:1px solid #596775;color:#c3cbd1;font-size:11px;font-weight:650}
+.connect-social-status.is-ok{color:#a8e9c8;border-color:#38805e;background:#17372c}
+.connect-social-status.is-warning{color:#f7d4a3;border-color:#977643;background:#45351e}
+.connect-social-status.is-outage{color:#ffd0ca;border-color:#b8635a;background:#412626}
+@media(max-width:570px){.connect-speed-dial{max-width:310px}.connect-speed-dial-reading strong{font-size:58px}}
