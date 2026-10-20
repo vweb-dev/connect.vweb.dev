@@ -93,3 +93,21 @@
 #page-network .connect-social-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
 @media(max-width:850px){.network-revamp-hero-mark{display:none}}
 @media(max-width:680px){#page-network .network-revamp-hero{padding:25px 19px;border-radius:17px}.network-revamp-hero h1{font-size:43px}.network-revamp-tabs button{padding:12px 13px;font-size:12px}#page-network .connect-social-grid{grid-template-columns:1fr}#page-network .connect-native-speed,#page-network .connect-network-live,#page-network .connect-social-directory,#page-network .connect-network-intel{min-height:0}}
+
+/* Network Lab refinement v44 */
+#page-network .network-revamp-tabs{position:relative;scroll-padding:12px}
+#page-network .network-revamp-tabs button{min-height:48px;transition:background .15s,border-color .15s}
+#page-network .network-revamp-tabs button:hover{border-color:#b49770;color:#fff}
+#page-network .connect-speed-dial-reading strong{font-variant-numeric:tabular-nums}
+#page-network .connect-speed-controls .button{min-height:46px}
+#page-network .network-source-note{font-size:11px;line-height:1.5;color:#c2cdd4;background:#243541;border:1px solid #4b5d68;padding:10px 13px;border-radius:10px;margin-top:16px}
+#page-network .network-social-toolbar{display:flex;align-items:center;flex-wrap:wrap;gap:10px;margin:18px 0}
+#page-network .network-social-toolbar label{font-size:12px;color:#ebd0a7;font-weight:750}
+#page-network .network-social-toolbar input{min-height:44px;flex:1 1 240px;min-width:0;background:#14212d;border:1px solid #5a6972;border-radius:10px;padding:10px 14px;color:#fff;font-size:14px}
+#page-network .network-social-toolbar input:focus-visible{outline:2px solid #e9bc7d;outline-offset:2px}
+#page-network .network-social-toolbar span{font-size:11px;color:#aebfc8}
+#page-network .connect-social-card[hidden]{display:none!important}
+#page-network .connect-social-card{transition:border-color .2s,transform .2s}
+#page-network .connect-social-card:hover{border-color:#a89069;transform:translateY(-2px)}
+@media(max-width:680px){#page-network .network-social-toolbar{align-items:stretch;flex-direction:column}#page-network .network-social-toolbar input{flex:auto;width:100%}#page-network .network-social-toolbar span{align-self:flex-end}#page-network .connect-social-card:hover{transform:none}}
+@media(prefers-reduced-motion:reduce){#page-network .connect-social-card,#page-network .network-revamp-tabs button{transition:none}}
