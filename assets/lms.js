@@ -163,6 +163,15 @@
    return;
   }
   const p=progress(s,course),badgeHost=$('#lms-classroom-badges');
+   // Keep a single course in focus and provide a direct route to unfinished work.
+   let nextAction=$('#lms-next-incomplete');
+   if(!nextAction){nextAction=button('Continue next lesson →','lms-back-button',()=>{
+     const current=snapshot(),active=courseById(current,current?.selected);
+     if(!active)return;
+     const next=flat(active).findIndex((_,i)=>!(current.completed[active.id]||[]).includes(i));
+     bridge()?.open(active.id,next<0?0:next);selectView('classroom');
+   });nextAction.id='lms-next-incomplete';$('#lms-back-to-courses').insertAdjacentElement('afterend',nextAction);}
+   nextAction.textContent=p.pct===100?'Review from start →':'Continue next lesson →';
   $('#lms-syllabus-course').textContent=course.title;
   $('#lms-classroom-name').textContent=course.title;
   $('#lms-syllabus-course').textContent=course.title;
@@ -207,7 +216,12 @@
   c.modules.forEach((m,i)=>{
    const option=node('option','',m.title);option.value=String(i);select.append(option);
   });
-  if(quizCourse!==c.id){quizCourse=c.id;quizModule=0;quizSession=null;}
+  if(quizCourse!==c.id){
+     quizCourse=c.id;quizSession=null;
+     const currentLesson=Math.max(0,s.lessonIndex||0);
+     let offset=0;quizModule=0;
+     c.modules.forEach((m,i)=>{if(currentLesson>=offset&&currentLesson<offset+m.lessons.length)quizModule=i;offset+=m.lessons.length;});
+   }
   quizModule=Math.min(quizModule,c.modules.length-1);select.value=String(quizModule);
   select.addEventListener('change',()=>{quizModule=Number(select.value);quizSession=null;renderQuiz(snapshot(),c)});
   host.append(node('p','lms-quiz-detail','Test your understanding with a short, optional self-assessment for each course module.'),select);
