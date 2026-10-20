@@ -908,3 +908,68 @@ body.drawer-open{overflow:hidden}
 #qt-pin-tool:hover,#qt-pin-tool[aria-pressed=true]{border-color:#d6af72;background:#493724;color:#ffdfac}
 .qt-tool-choice.pinned .qt-tool-arrow{opacity:1;color:#e5be7d}
 @media(max-width:560px){.qt-workspace-header{gap:8px}.qt-workspace-actions{align-items:flex-end;gap:5px}#qt-pin-tool{padding:8px 9px;font-size:10px}}
+
+
+/* MAS-first Windows & Office activation guide — independent resource, source-first navigation */
+#page-pc .hub-page-title{padding-bottom:17px}
+.mas-focus{position:relative;isolation:isolate;overflow:hidden;margin:0 0 26px;padding:clamp(20px,3vw,38px);background:linear-gradient(137deg,#24251f 0%,#171f28 45%,#121b25 100%);border:1px solid #73613e;border-radius:24px;box-shadow:0 20px 60px rgba(0,0,0,.16)}
+.mas-focus:before{content:"";position:absolute;z-index:-1;right:-180px;top:-260px;width:560px;height:560px;background:radial-gradient(circle,rgba(225,184,105,.13),transparent 63%);pointer-events:none}
+.mas-focus-bar,.mas-focus .mas-method-head,.mas-section-heading,.mas-hero-actions,.mas-support-links a{display:flex;align-items:center;justify-content:space-between;gap:14px}
+.mas-focus-bar{flex-wrap:wrap;margin-bottom:24px}
+.mas-kicker,.mas-section-kicker{font-weight:800;letter-spacing:.16em;font-size:10px;color:#e8bd71}
+.mas-external-badge{border:1px solid #66533a;border-radius:100px;padding:7px 12px;color:#d8c39a;background:rgba(12,18,24,.55);font-size:10px;font-weight:700;letter-spacing:.04em}
+.mas-lead{display:grid;grid-template-columns:minmax(0,1.6fr) minmax(220px,.65fr);gap:clamp(18px,4vw,60px);align-items:center;margin-bottom:34px}
+.mas-brand-name{display:flex;align-items:center;gap:10px;color:#d7c1a0;font-size:12px;font-weight:750}
+.mas-brand-icon{display:inline-flex;align-items:center;justify-content:center;position:relative;width:40px;height:40px;border-radius:12px;color:#191912;background:linear-gradient(145deg,#f2d499,#cda05c);font:800 24px Outfit,sans-serif}
+.mas-brand-icon span{font-size:13px;position:absolute;top:0;right:2px;color:#4b3b1c}
+.mas-lead h2{font-family:Outfit,system-ui,sans-serif;font-size:clamp(36px,4.7vw,67px);line-height:1.04;letter-spacing:-.046em;margin:15px 0 15px;color:#f9f6f0}
+.mas-lead h2 em{font-style:normal;color:#e9c783}
+.mas-lead-copy>p{color:#cbd1d3;font-size:clamp(12px,1.2vw,14px);line-height:1.8;max-width:660px}
+.mas-lead-copy>p strong{color:#f6e5be}
+.mas-hero-actions{justify-content:flex-start;flex-wrap:wrap;margin-top:22px}
+.mas-hero-actions .button{min-height:44px;display:inline-flex;align-items:center;justify-content:center;font-weight:800}
+.mas-at-a-glance{padding:22px;background:rgba(8,15,21,.64);border:1px solid rgba(227,190,127,.23);border-radius:17px;display:grid;gap:16px;align-self:stretch;align-content:center}
+.mas-at-a-glance>div:not(.mas-source-note){padding:0 0 13px;border-bottom:1px solid #39404a;display:grid;gap:3px}
+.mas-at-a-glance>div>span{font:800 32px Outfit,sans-serif;color:#eac984}
+.mas-at-a-glance strong{font-size:13px;color:#f4f0e9}
+.mas-at-a-glance small{font-size:11px;color:#aeb7bf}
+.mas-at-a-glance .mas-source-note{display:flex;align-items:flex-start;gap:10px}
+.mas-at-a-glance .mas-source-note>span{font-size:23px;line-height:1}
+.mas-source-note p{font-size:11px;margin:0;color:#c3ccc8;line-height:1.65}
+.mas-section-heading{align-items:flex-end;flex-wrap:wrap;margin:30px 0 15px}
+.mas-section-heading h3{font:750 clamp(20px,2.3vw,29px) Outfit,sans-serif;margin:5px 0 4px;letter-spacing:-.02em}
+.mas-section-heading p{font-size:12px;color:#acb9bf;line-height:1.7;margin:0;max-width:650px}
+.mas-section-heading>a{font-size:11px;font-weight:800;color:#f0d092}
+.mas-method-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px}
+.mas-method-card{min-width:0;display:flex;flex-direction:column;min-height:216px;padding:18px;border:1px solid #49505a;border-radius:15px;background:linear-gradient(140deg,rgba(30,41,50,.95),rgba(15,25,33,.9));transition:border-color .2s ease,transform .2s ease}
+.mas-method-card:hover{border-color:#b69560;transform:translateY(-3px)}
+.mas-method-num{color:#dec18b;font-size:11px;font-weight:800}
+.mas-method-target{padding:5px 7px;border:1px solid #665b4a;background:#332e27;color:#e0c58f;border-radius:6px;font-size:9px;font-weight:800;letter-spacing:.06em}
+.mas-method-card h4{font:800 25px Outfit,sans-serif;letter-spacing:-.025em;margin:12px 0 6px}
+.mas-method-card p{font-size:11px;color:#bfcbcd;line-height:1.68;margin:0 0 16px}
+.mas-method-foot{font-size:10px;font-weight:750;color:#d4b57b;margin-top:auto;padding-top:12px;border-top:1px solid #3a4248}
+.mas-document-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+.mas-document-card{display:flex;align-items:flex-start;gap:15px;border:1px solid #4d565d;border-radius:15px;background:#1a2731;padding:19px}
+.mas-document-icon{display:flex;align-items:center;justify-content:center;flex:none;min-width:46px;height:46px;padding:0 4px;border:1px solid #a78c59;border-radius:12px;background:#393322;color:#f0d18e;font:800 15px Outfit,sans-serif}
+.mas-document-card h4{font-size:16px;margin:0 0 5px;color:#f1f0ec}
+.mas-document-card p{font-size:11px;line-height:1.75;color:#b9c5c8;margin:0 0 13px}
+.mas-document-card a{font-size:11px;font-weight:800;color:#e8c78e;text-decoration:underline;text-underline-offset:3px}
+.mas-support-links{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
+.mas-support-links a{gap:10px;justify-content:flex-start;padding:13px;border-radius:12px;background:rgba(17,29,38,.8);border:1px solid #404a51;min-width:0;transition:border-color .2s}
+.mas-support-links a:hover{border-color:#bb9b68}
+.mas-support-links a>span:first-child{font-size:20px;color:#e3c586}
+.mas-support-links a>span:nth-child(2){min-width:0;flex:1}
+.mas-support-links strong,.mas-support-links small{display:block}
+.mas-support-links strong{color:#f1e9dd;font-size:11px}
+.mas-support-links small{font-size:10px;color:#afb9c0;line-height:1.55}
+.mas-support-links b{color:#ecc789;font-size:13px}
+.mas-caution{display:flex;gap:12px;background:rgba(102,72,33,.19);border:1px solid #796038;border-radius:12px;padding:14px 16px;margin-top:23px}
+.mas-caution>span{display:flex;align-items:center;justify-content:center;flex:none;width:26px;height:26px;border-radius:50%;border:1px solid #b99356;color:#f3cd80;font-weight:850}
+.mas-caution p{margin:0;color:#ddd3c0;font-size:11px;line-height:1.8}
+.mas-caution strong{color:#f5dcac}
+#page-pc .hub-activation-grid:has(> .hub-act-option:only-child){grid-template-columns:1fr}
+#page-pc .hub-activation-scripts .hub-act-option{max-width:100%}
+@media(max-width:1050px){.mas-method-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.mas-support-links{grid-template-columns:1fr 1fr}.mas-support-links a:last-child{grid-column:1/-1}}
+@media(max-width:720px){.mas-focus{border-radius:17px;padding:20px 16px}.mas-lead{grid-template-columns:1fr;gap:20px}.mas-at-a-glance{grid-template-columns:repeat(2,minmax(0,1fr));gap:15px;padding:16px}.mas-at-a-glance>div:not(.mas-source-note){padding-bottom:0;border:0}.mas-at-a-glance .mas-source-note{grid-column:1/-1;border-top:1px solid #39404a;padding-top:12px}.mas-lead h2{font-size:clamp(35px,8vw,54px)}.mas-section-heading{margin-top:25px}.mas-document-grid{grid-template-columns:1fr}}
+@media(max-width:520px){.mas-external-badge{font-size:9px}.mas-focus-bar{margin-bottom:13px}.mas-hero-actions{display:grid;grid-template-columns:1fr}.mas-method-grid{grid-template-columns:1fr}.mas-method-card{min-height:0}.mas-support-links{grid-template-columns:1fr}.mas-support-links a:last-child{grid-column:auto}.mas-lead h2{font-size:37px}.mas-brand-name{font-size:11px}.mas-caution{padding:12px}.mas-at-a-glance>div>span{font-size:26px}}
+@media(prefers-reduced-motion:reduce){.mas-method-card{transition:none}.mas-method-card:hover{transform:none}}

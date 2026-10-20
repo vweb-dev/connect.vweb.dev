@@ -11,7 +11,7 @@
 <meta property="og:description" content="Browser-first file tools, trusted software links, genuine Windows help and organized free YouTube courses in one lightweight digital hub.">
 <meta name="twitter:card" content="summary">
 <link rel="manifest" href="/manifest.webmanifest"><link rel="apple-touch-icon" href="/assets/connect-icon.svg"><link rel="icon" type="image/svg+xml" href="/assets/connect-icon.svg">
-<link rel="preconnect" href="https://i.ibb.co"><link rel="stylesheet" href="/assets/style.css?v=connect-activation-20261020a"><link rel="stylesheet" href="/assets/mobile-app.css?v=connect-activation-20261020a">
+<link rel="preconnect" href="https://i.ibb.co"><link rel="stylesheet" href="/assets/style.css?v=connect-mas-first-20261020b"><link rel="stylesheet" href="/assets/mobile-app.css?v=connect-activation-20261020a">
 <script src="/assets/app.js?v=connect-activation-20261020a" defer></script>
 <script src="/assets/puter-ai.js?v=connect-activation-20261020a" defer></script>
 <script src="/assets/entertainment.js?v=connect-activation-20261020a" defer></script>
@@ -420,34 +420,65 @@
  <p class="hub-footnote">VWEB.DEV curates links to third-party YouTube videos. Video rights, advertisements, embedding permissions and availability remain controlled by the creators and YouTube. No downloadable course copies are provided.</p>
 </section>
 <section class="page hub-page" id="page-pc" hidden>
- <div class="hub-page-title"><div class="overline">LICENSE SUPPORT · TRUSTED SOURCES · SOFTWARE SETUP</div><h1>Windows &amp; Office Help<span class="accent">.</span></h1><p>Diagnose Windows and Microsoft Office activation, compare official support with independent open-source documentation, and build WinGet software packs. No scripts run automatically.</p></div>
- <div class="hub-pc-feature"><div><span class="overline">OFFICIAL MICROSOFT GUIDANCE</span><h2>Windows &amp; Office licensing</h2><p>For Windows, check Settings → System → Activation. For Microsoft 365 or Office, sign in with the account that owns your license and check an Office app’s File → Account page. Unofficial projects are listed separately below.</p><div class="hub-pc-actions"><a class="button primary" href="https://support.microsoft.com/en-us/windows/activate-windows" target="_blank" rel="noopener noreferrer">Microsoft activation guide ↗</a><a class="button secondary" href="https://www.microsoft.com/software-download/windows11" target="_blank" rel="noopener noreferrer">Windows 11 download ↗</a></div></div><div class="hub-pc-feature-art" aria-hidden="true">▦</div></div>
+ <div class="hub-page-title"><div class="overline">WINDOWS / OFFICE / ACTIVATION</div><h1>Windows &amp; Office Activation<span class="accent">.</span></h1><p>Explore Microsoft Activation Scripts (MAS) first, then official licensing diagnostics, recovery help and the Windows software installer builder.</p></div>
+
+ <section class="mas-focus" id="mas-guide" aria-labelledby="mas-guide-title">
+  <div class="mas-focus-bar"><span class="mas-kicker">FEATURED WINDOWS &amp; OFFICE RESOURCE</span><span class="mas-external-badge">THIRD-PARTY GITHUB PROJECT · NOT MICROSOFT</span></div>
+  <div class="mas-lead">
+   <div class="mas-lead-copy">
+    <div class="mas-brand-name"><span class="mas-brand-icon" aria-hidden="true">M<span>✳</span></span><span>Massgrave / Open-source project</span></div>
+    <h2 id="mas-guide-title">Microsoft<br><em>Activation Scripts.</em></h2>
+    <p>Explore the source and documentation for MAS, a community-developed Windows and Office activation toolkit covering HWID, Ohook, TSforge, Online KMS and troubleshooting. It is an independent project, <strong>not a Microsoft-approved licensing solution</strong>.</p>
+    <div class="mas-hero-actions"><a class="button primary" href="https://github.com/massgravel/Microsoft-Activation-Scripts" target="_blank" rel="noopener noreferrer">Explore original GitHub ↗</a><a class="button secondary" href="https://github.com/massgravel/Microsoft-Activation-Scripts#method-2---traditional-windows-vista-and-later" target="_blank" rel="noopener noreferrer">BAT / CMD documentation ↗</a></div>
+   </div>
+   <aside class="mas-at-a-glance" aria-label="MAS project overview">
+    <div><span>04</span><strong>Documented methods</strong><small>HWID / Ohook / TSforge / KMS</small></div>
+    <div><span>02</span><strong>Script entry formats</strong><small>PowerShell and traditional CMD</small></div>
+    <div class="mas-source-note"><span aria-hidden="true">◎</span><p>Source-first directory. No scripts are hosted or executed by Connect.</p></div>
+   </aside>
+  </div>
+  <div class="mas-section-heading" id="mas-methods"><div><span class="mas-section-kicker">01 / ACTIVATION METHODS</span><h3>Understand the four methods</h3><p>Method availability, supported editions and behavior vary. Consult the maintained upstream documentation for current compatibility.</p></div><a href="https://github.com/massgravel/Microsoft-Activation-Scripts" target="_blank" rel="noopener noreferrer">View upstream method list ↗</a></div>
+  <div class="mas-method-grid">
+   <article class="mas-method-card"><div class="mas-method-head"><span class="mas-method-num">01</span><span class="mas-method-target">WINDOWS</span></div><h4>HWID</h4><p>Windows-focused digital license activation approach documented by MAS. Check your Windows edition and license rights rather than assuming compatibility.</p><span class="mas-method-foot">Digital licensing · Windows</span></article>
+   <article class="mas-method-card"><div class="mas-method-head"><span class="mas-method-num">02</span><span class="mas-method-target">OFFICE</span></div><h4>Ohook</h4><p>Office-oriented activation approach. It is unrelated to signing in with a licensed Microsoft 365 account and is not Microsoft-supported.</p><span class="mas-method-foot">Office applications</span></article>
+   <article class="mas-method-card"><div class="mas-method-head"><span class="mas-method-num">03</span><span class="mas-method-target">WINDOWS + OFFICE</span></div><h4>TSforge</h4><p>An activation method documented for certain Windows and Office products. Consult MAS compatibility notes for specific product versions and limitations.</p><span class="mas-method-foot">Version-dependent support</span></article>
+   <article class="mas-method-card"><div class="mas-method-head"><span class="mas-method-num">04</span><span class="mas-method-target">KMS-BASED</span></div><h4>Online KMS</h4><p>Uses a KMS-style activation workflow. Legitimate Microsoft KMS licensing is intended for eligible organizational volume-license environments; third-party servers carry licensing and trust risks.</p><span class="mas-method-foot">Organizational licensing context</span></article>
+  </div>
+  <div class="mas-section-heading" id="mas-documentation"><div><span class="mas-section-kicker">02 / ORIGINAL DOCUMENTATION</span><h3>Two ways the project is distributed</h3><p>Use the maintained README to review setup requirements, code and release notes before considering any external script.</p></div></div>
+  <div class="mas-document-grid">
+   <article class="mas-document-card"><div class="mas-document-icon" aria-hidden="true">PS</div><div><h4>PowerShell method</h4><p>The upstream README describes an internet-fetched PowerShell script. Commands that download and immediately execute remote code can be risky; inspect the original source first.</p><a href="https://github.com/massgravel/Microsoft-Activation-Scripts#method-1---powershell-" target="_blank" rel="noopener noreferrer">Read PowerShell documentation ↗</a></div></article>
+   <article class="mas-document-card"><div class="mas-document-icon" aria-hidden="true">CMD</div><div><h4>Traditional BAT / CMD method</h4><p>The upstream README also documents a local all-in-one CMD script and downloadable archive, including the project's own compatibility instructions.</p><a href="https://github.com/massgravel/Microsoft-Activation-Scripts#method-2---traditional-windows-vista-and-later" target="_blank" rel="noopener noreferrer">Read traditional-method documentation ↗</a></div></article>
+  </div>
+  <div class="mas-section-heading" id="mas-support"><div><span class="mas-section-kicker">03 / SUPPORT &amp; TRANSPARENCY</span><h3>Check compatibility and provenance</h3></div></div>
+  <div class="mas-support-links">
+   <a href="https://github.com/massgravel/Microsoft-Activation-Scripts" target="_blank" rel="noopener noreferrer"><span aria-hidden="true">⌘</span><span><strong>Original source repository</strong><small>Review README, source, releases and licensing claims</small></span><b aria-hidden="true">↗</b></a>
+   <a href="https://massgrave.dev/troubleshoot" target="_blank" rel="noopener noreferrer"><span aria-hidden="true">◇</span><span><strong>Project troubleshooting</strong><small>Community-maintained compatibility and common problems</small></span><b aria-hidden="true">↗</b></a>
+   <a href="https://github.com/massgravel/Microsoft-Activation-Scripts/issues" target="_blank" rel="noopener noreferrer"><span aria-hidden="true">◌</span><span><strong>GitHub issues</strong><small>Known limitations, reports and source discussions</small></span><b aria-hidden="true">↗</b></a>
+  </div>
+  <div class="mas-caution" role="note"><span aria-hidden="true">!</span><p><strong>Important licensing and security note.</strong> MAS is a third-party project, not affiliated with or endorsed by Microsoft. Unofficial activation may violate applicable license conditions and may affect device security. Verify the repository and source; never run commands from impersonation sites. Connect does not mirror, download or automatically execute third-party scripts or collect keys. For a valid Windows/Office license, use the official methods below.</p></div>
+ </section>
+ <div class="hub-pc-feature" id="official-license-help"><div><span class="overline">OFFICIAL MICROSOFT GUIDANCE</span><h2>Windows &amp; Office licensing</h2><p>For Windows, check Settings → System → Activation. For Microsoft 365 or Office, sign in with the account that owns your license and check an Office app’s File → Account page. Unofficial projects are listed separately below.</p><div class="hub-pc-actions"><a class="button primary" href="https://support.microsoft.com/en-us/windows/activate-windows" target="_blank" rel="noopener noreferrer">Microsoft activation guide ↗</a><a class="button secondary" href="https://www.microsoft.com/software-download/windows11" target="_blank" rel="noopener noreferrer">Windows 11 download ↗</a></div></div><div class="hub-pc-feature-art" aria-hidden="true">▦</div></div>
  <div class="hub-pc-two-col">
   <section class="hub-panel"><div class="hub-pane-heading"><strong>Find an activation fix</strong></div><label for="hub-activation-case">Which problem are you seeing?</label><select id="hub-activation-case"><option value="digital">Digital license not activated</option><option value="hardware">Activation lost after hardware changes</option><option value="edition">Wrong Windows edition or key</option><option value="no-key">No valid Windows product key</option><option value="office-account">Office shows Unlicensed Product</option><option value="office-subscription">Microsoft 365 subscription issue</option></select><div id="hub-activation-advice" class="hub-fix-advice"></div><button id="hub-activation-copy" class="button secondary" type="button">Copy safe status-check command</button><p class="hub-small-note">Only checks status; cannot activate an unlicensed copy.</p></section>
   <section class="hub-panel"><div class="hub-pane-heading"><strong>Official downloads & tutorials</strong></div><div id="hub-pc-guides" class="hub-guide-links"></div></section>
  </div>
  
- <section class="hub-panel hub-activation-scripts">
-  <div class="hub-pane-heading"><div><span class="overline">WINDOWS &amp; OFFICE ACTIVATION RESOURCES</span><h2>Official checks &amp; open-source references</h2></div><span class="hub-mini-pill">Windows 10/11 · Office</span></div>
+
+ <section class="hub-panel hub-activation-scripts" id="windows-license-diagnostics">
+  <div class="hub-pane-heading"><div><span class="overline">OFFICIAL WINDOWS LICENSE DIAGNOSTICS</span><h2>Check Windows activation status</h2></div><span class="hub-mini-pill">Windows 10 / 11</span></div>
+  <p>These built-in Windows tools inspect an existing installation and can request activation only when you already hold valid licensing. They do not provide an alternative license.</p>
   <div class="hub-activation-grid">
    <div class="hub-act-option">
     <span class="hub-act-overline">MICROSOFT SUPPORTED</span>
-    <h3>Genuine activation & CMD checks</h3>
-    <p>Already own a valid license? Open Windows activation settings, inspect activation status, or request activation with your existing licensed key. These commands do not bypass licensing.</p>
+    <h3>Windows CMD status and licensed activation</h3>
+    <p>Open Windows activation settings or inspect detailed license status. You can also request activation with an existing valid license.</p>
     <div class="hub-cmd-block"><code id="hub-act-cmd-text">slmgr /xpr</code><button id="hub-act-cmd-copy" type="button" class="button secondary">Copy CMD</button></div>
     <div class="hub-cmd-choices"><button type="button" data-act-cmd="slmgr /xpr">Check expiry</button><button type="button" data-act-cmd="slmgr /dlv">License details</button><button type="button" data-act-cmd="slmgr /ato">Activate licensed copy</button><button type="button" data-act-cmd="start ms-settings:activation">Open activation settings</button></div>
     <div class="hub-action-row"><button id="hub-act-check-download" class="button secondary" type="button">Windows status .cmd ↓</button><a class="button secondary" href="https://support.microsoft.com/en-us/windows/activation/activate-windows-online-or-offline-using-installation-and-confirmation-id" target="_blank" rel="noopener noreferrer">Windows activation ↗</a><a class="button secondary" href="https://support.microsoft.com/en-us/microsoft-365-activation-licensing/reactivate-microsoft-365-or-office" target="_blank" rel="noopener noreferrer">Office activation ↗</a></div>
    </div>
-   <div class="hub-act-option hub-act-unofficial">
-    <span class="hub-act-overline">THIRD-PARTY GITHUB PROJECT · NOT MICROSOFT</span>
-    <h3>Microsoft Activation Scripts (MAS)</h3>
-    <p>Massgrave’s independent open-source project documents Windows and Microsoft Office activation scripts. Its README lists HWID, Ohook, TSforge and Online KMS; availability depends on the installed edition. These are <strong>not Microsoft-supported activation methods</strong> and may conflict with license terms.</p><div class="hub-studio-tags hub-mas-methods" aria-label="Methods documented by MAS"><span class="hub-pill">HWID · Windows</span><span class="hub-pill">Ohook · Office</span><span class="hub-pill">TSforge · Windows / Office</span><span class="hub-pill">Online KMS · Edition dependent</span></div>
-    <div class="hub-action-row"><a class="button primary" href="https://github.com/massgravel/Microsoft-Activation-Scripts" target="_blank" rel="noopener noreferrer">Source &amp; PowerShell guide ↗</a><a class="button secondary" href="https://github.com/massgravel/Microsoft-Activation-Scripts#method-2---traditional-windows-vista-and-later" target="_blank" rel="noopener noreferrer">BAT / CMD guide ↗</a></div>
-    <p class="hub-small-note">Source: massgravel/Microsoft-Activation-Scripts on GitHub. Connect does not mirror, download or automatically execute third-party scripts or collect keys. Check code provenance, security and licensing before running anything.</p>
-   </div>
   </div>
  </section>
- <section class="hub-panel hub-winget"><div class="hub-pane-heading"><div><span class="overline">NO EXECUTABLE UPLOADS OR HOSTING</span><h2>Windows Software Pack Builder</h2></div><span class="hub-mini-pill">WinGet</span></div>
+ <section class="hub-panel hub-winget" id="windows-software-builder"><div class="hub-pane-heading"><div><span class="overline">NO EXECUTABLE UPLOADS OR HOSTING</span><h2>Windows Software Pack Builder</h2></div><span class="hub-mini-pill">WinGet</span></div>
  <p>Select individual software or ready-made packs, then copy installation commands or download a Windows CMD/PowerShell installer file. No installer is hosted by Connect. Verify each package with <code>winget show --id PACKAGE_ID --exact</code> before running.</p>
  <div class="hub-pack-presets" role="group" aria-label="Software pack presets">
 <button type="button" data-pack="essential">◈ Essentials</button><button type="button" data-pack="creator">✦ Creator</button><button type="button" data-pack="developer">⌘ Developer</button><button type="button" data-pack="creative">✎ Creative</button><button type="button" data-pack="privacy">◆ Privacy & Security</button><button type="button" data-pack="media">▶ Media</button><button type="button" data-pack="clear">Clear selection</button></div>
