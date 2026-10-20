@@ -1643,14 +1643,15 @@
     },
     {
       "id": "qr",
-      "title": "QR & Quick Studio",
-      "subtitle": "QR for links, Wi-Fi and sharing",
+      "title": "QR Code Studio",
+      "subtitle": "Create branded QR codes with logo, colors and vector exports",
       "icon": "▦",
-      "page": "tools",
+      "page": "qr",
       "features": [
-        "QR",
-        "Passwords",
-        "Contrast"
+        "10 content types",
+        "Gradients",
+        "Logo",
+        "PNG / SVG"
       ]
     },
     {

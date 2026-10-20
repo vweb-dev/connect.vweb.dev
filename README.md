@@ -1,3 +1,13 @@
+## Dedicated QR Code Studio — October 20, 2026
+
+Route `#qr` is a standalone browser-side QR designer reachable through desktop sidebar, Workspaces, mobile stacked menu, homepage, command search and PWA shortcuts. Includes 10 content types (Website, Text, Wi-Fi, WhatsApp, vCard, Email, SMS, Phone, Geo, Calendar Event); theme presets; single-color/linear/radial gradients; six module styles; corner eye/pupil styling; independent colors; optional PNG/JPG/WebP logo; sizing, high error correction with logo, quiet zone, caption and frame; live preview; PNG/SVG/JPEG/WebP downloads; and QR data/image copy where supported.
+
+All QR generation and personal data processing runs inside the browser. The free MIT-licensed qr-code-styling library is loaded from pinned CDN URLs only when the QR Studio is used; a first-time connection is required. Codes are **static** and do not enable tracking, redirect management, analytics or remote edits. QR scan compatibility depends on contrast, complexity and scanner; verify with multiple phones before print. Existing basic QR Quick Action remains as a small, secondary entry point.
+
+The PWA cache is v25; the embedded offline studio catalog and JSON catalog are synchronized. Automated source-level tests cover the new route and exports; real mobile/browser generation and scanning remain required for production acceptance.
+
+---
+
 ## MAS-first Windows & Office activation experience — October 20, 2026
 
 The #pc screen now opens with a detailed, high-priority Massgrave Microsoft Activation Scripts (MAS) section before Microsoft-supported license recovery or WinGet tools. It explains four upstream methods (HWID, Ohook, TSforge and Online KMS), links the original PowerShell and BAT/CMD documentation, upstream troubleshooting and GitHub issues, and clearly identifies MAS as an independent third-party project. The page does not mirror or auto-execute third-party activation scripts. Built-in Windows status-check controls keep their existing IDs and behavior.

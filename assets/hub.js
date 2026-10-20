@@ -204,7 +204,7 @@ const quickToolIndex=[
  {title:'Text Encoder',detail:'URL and Unicode Base64 encode / decode',destination:'#tools',tool:'encode',icon:'↔'},
  {title:'SHA-256 Hash',detail:'Generate SHA-256 text fingerprints',destination:'#tools',tool:'hash',icon:'⌁'},
  {title:'UUID Generator',detail:'Create random UUID identifiers',destination:'#tools',tool:'uuid',icon:'#'},
- {title:'QR Code Studio',detail:'QR for website, Wi-Fi, WhatsApp and contact',destination:'#tools',tool:'qr',icon:'▦'},
+ {title:'QR Code Studio',detail:'Full QR designer with logo, gradients, SVG and PNG',destination:'#qr',tool:'qr',icon:'▦'},
  {title:'Color Contrast',detail:'Check accessible WCAG text contrast',destination:'#tools',tool:'contrast',icon:'◐'}
 ];
 function openIndexedResult(item){
@@ -213,6 +213,7 @@ function openIndexedResult(item){
   appFilter='All';appSearch=item.app.toLowerCase();appKind='All';appLimit=12;
   $('#hub-app-search').value=item.app;$('#hub-app-kind').value='All';renderApps();
  }
+ if(item.tool==='qr'){location.hash='#qr';return;}
  if(item.tool){
   if(location.hash!=='#tools')location.hash='#tools';
   requestAnimationFrame(()=>window.dispatchEvent(new CustomEvent('connect:open-tool',{detail:{id:item.tool}})));
@@ -654,7 +655,7 @@ async function copy(value,selector,defaultText){
  }
 }
 // Dashboard, privacy and recent use
-const pageNames={home:'Overview',studios:'Workspaces',academy:'Video Academy',pc:'Windows Help',apps:'App Directory',
+const pageNames={home:'Overview',studios:'Workspaces',academy:'Video Academy',pc:'Windows Help',apps:'App Directory',qr:'QR Code Studio',
  dashboard:'My Workspace',convert:'Convert Studio',tools:'Quick Actions',ai:'AI Studio',play:'Games',offers:'Deals',community:'Local & Learn'};
 function trackVisit(){
  const route=(location.hash||'#home').slice(1)||'home';
@@ -696,6 +697,7 @@ function renderDashboard(){
   if(!item)return;
   const button=el('button','hub-dashboard-row','⌘ '+item.title+' ↗');button.type='button';
   button.addEventListener('click',()=>{
+   if(id==='qr'){location.hash='#qr';return;}
    location.hash='#tools';
    requestAnimationFrame(()=>window.dispatchEvent(new CustomEvent('connect:open-tool',{detail:{id}})));
   });
@@ -767,6 +769,7 @@ function addQR(){
  const download=el('a','button secondary','Download PNG ↓');download.hidden=true;download.download='vweb-qr.png';
  const copyButton=el('button','button secondary','Copy QR content');copyButton.type='button';copyButton.disabled=true;
  actions.append(gen,download,copyButton);
+ const advanced=el('a','button secondary','Open full QR Studio ↗');advanced.href='#qr';actions.append(advanced);
  function field(name,label,type='text',placeholder=''){
   const wrapper=el('label','hub-qr-field');
   wrapper.append(el('span','',label));

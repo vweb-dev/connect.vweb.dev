@@ -23,10 +23,10 @@
   ],
   "shortcuts": [
     {
-      "name": "Quick Actions",
-      "short_name": "Actions",
-      "url": "/#tools",
-      "description": "Browser-based everyday tools"
+      "name": "QR Code Studio",
+      "short_name": "QR Studio",
+      "url": "/#qr",
+      "description": "Build customized QR codes with logo and export"
     },
     {
       "name": "File Converter",
@@ -45,6 +45,12 @@
       "short_name": "Academy",
       "url": "/#academy",
       "description": "Pick up your courses"
+    },
+    {
+      "name": "Quick Actions",
+      "short_name": "Actions",
+      "url": "/#tools",
+      "description": "Password, text and developer utilities"
     }
   ]
 }

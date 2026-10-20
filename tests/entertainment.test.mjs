@@ -30,7 +30,7 @@ test('all six games remain accessible and locally initialized',()=>{
 test('retired on-demand media fetching is not part of games or PWA shell',()=>{
  assert.doesNotMatch(runtime,/entertainment\.json|api\/media\.php|spotify\.com\/embed|openlibrary\.org|podcast-player|book-form|openDiscoveryWhenNeeded/);
  assert.doesNotMatch(sw,/entertainment\.json/);
- assert.match(sw,/vweb-connect-static-v24/);
+ assert.match(sw,/vweb-connect-static-v25/);
  assert.match(page,/entertainment\.js\?v=(?:connect-focus-|connect-activation-)/);
  assert.ok(!page.includes('data-ent-sponsor="watch"'));
  assert.ok(css.includes('ent-game-board'));

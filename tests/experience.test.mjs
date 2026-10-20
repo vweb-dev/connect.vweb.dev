@@ -4,9 +4,9 @@ import {readFileSync} from 'node:fs';
 const read=p=>readFileSync(new URL('../'+p,import.meta.url),'utf8');
 const html=read('index.html'),app=read('assets/app.js'),hub=read('assets/hub.js'),
  style=read('assets/style.css'),worker=read('sw.js'),catalog=JSON.parse(read('data/connect-hub.json'));
-test('all 13 active routes remain navigable with unique DOM IDs',()=>{
+test('all 14 active routes remain navigable with unique DOM IDs',()=>{
  const pages=[...html.matchAll(/\bid="page-([\w-]+)"/g)].map(m=>m[1]);
- assert.equal(new Set(pages).size,13);
+ assert.equal(new Set(pages).size,14);
  for(const page of pages)assert.ok(app.includes("'"+page+"'"),page+' missing in router');
  const ids=[...html.matchAll(/\bid="([^"]+)"/g)].map(m=>m[1]);
  assert.equal(ids.length,new Set(ids).size,'duplicate DOM IDs');
@@ -45,7 +45,7 @@ test('app directory layouts and WinGet selection remain first-party operations',
  assert.doesNotMatch(hub,/child_process|execSync|spawnSync/);
 });
 test('site shell and PWA cache use consistent current revision',()=>{
- assert.match(worker,/vweb-connect-static-v24/);
+ assert.match(worker,/vweb-connect-static-v25/);
  for(const asset of ['app.js','hub.js','converter.js'])
   assert.ok(html.includes('/assets/'+asset+'?v=connect-activation-20261020a'),asset);
  assert.ok(html.includes('/assets/style.css?v=connect-mas-first-20261020b'));
@@ -68,4 +68,11 @@ test('removed media pages have no navigation links or broken routes',()=>{
  assert.ok(!html.includes('href="#watch"')&&!html.includes('href="#discover"'));
  assert.ok(!html.includes('id="page-watch"')&&!html.includes('id="page-discover"'));
  assert.match(app,/key='home';history\.replaceState\(null,'','#home'\)/);
+});
+
+test('QR studio is an independent route with complete navigation',()=>{
+ assert.ok(html.includes('id="page-qr"'));
+ assert.ok(html.includes('href="#qr"'));
+ assert.ok(read('assets/app.js').includes("'qr'"));
+ assert.ok(read('assets/hub.js').includes("destination:'#qr'"));
 });

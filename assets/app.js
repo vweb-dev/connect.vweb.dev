@@ -2,11 +2,11 @@
 (function () {
 var $ = function (s) { return document.querySelector(s); };
 var $$ = function (s) { return Array.from(document.querySelectorAll(s)); };
-var routes=['home','studios','academy','pc','apps','dashboard','convert','tools','ai','play','offers','community','account'];
+var routes=['home','studios','academy','pc','apps','dashboard','convert','tools','qr','ai','play','offers','community','account'];
 
 var contextTitles={
  home:'Overview',studios:'Workspaces',academy:'Video Academy',pc:'Windows & Office Help',
- apps:'App Directory',dashboard:'My Workspace',convert:'File Converter',tools:'Quick Actions',
+ apps:'App Directory',dashboard:'My Workspace',convert:'File Converter',tools:'Quick Actions',qr:'QR Code Studio',
  ai:'AI Studio',play:'Games & Quizzes',
  offers:'Deals',community:'Local & Learn',account:'My Account'
 };
@@ -17,7 +17,8 @@ var contextRelated={
  apps:[['#pc','WinGet builder'],['#studios','Workspaces'],['#dashboard','Saved apps']],
  dashboard:[['#academy','Continue learning'],['#apps','Find apps'],['#tools','Quick actions']],
  convert:[['#tools','Quick actions'],['#studios','Workspaces'],['#dashboard','My workspace']],
- tools:[['#convert','File converter'],['#studios','Workspaces'],['#apps','App directory']],
+ tools:[['#qr','QR Code Studio'],['#convert','File converter'],['#apps','App directory']],
+ qr:[['#tools','Quick actions'],['#convert','File converter'],['#studios','Workspaces']],
  ai:[['#tools','Free utilities'],['#academy','Video academy'],['#studios','Workspaces']],
  play:[['#academy','Academy'],['#tools','Quick actions'],['#apps','App directory']],
  offers:[['#apps','App directory'],['#community','Community'],['#studios','Workspaces']],
