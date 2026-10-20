@@ -2,7 +2,7 @@
 (function () {
 var $ = function (s) { return document.querySelector(s); };
 var $$ = function (s) { return Array.from(document.querySelectorAll(s)); };
-var routes=['home','studios','academy','pc','apps','dashboard','convert','tools','qr','ai','play','offers','community','account'];
+var routes=['home','studios','academy','network','pc','apps','dashboard','convert','tools','qr','ai','play','offers','community','account'];
 
 var contextTitles={
  home:'Overview',studios:'Workspaces',academy:'Learn / LMS',pc:'Windows & Office Help',
