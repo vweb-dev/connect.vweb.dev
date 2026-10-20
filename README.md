@@ -1,3 +1,13 @@
+## Windows and Office activation + clearer navigation — October 20, 2026
+
+- Renamed **Tool Studios** to **Workspaces** (#studios) and **Quick Utilities** to **Quick Actions** (#tools) in desktop, mobile, search, contextual navigation and PWA shortcuts. Existing routes, IDs and working tools remain unchanged.
+- Windows & Office Help (#pc) now includes Office account/subscription troubleshooting, official Microsoft Windows/Office help links, and an explicitly third-party Massgrave MAS reference describing HWID, Ohook, TSforge and Online KMS with original GitHub/PowerShell and BAT/CMD guides. Connect neither hosts nor executes the scripts.
+- Updated static asset query version and PWA service-worker cache v23.
+
+**Production verification:** GitHub changes must be deployed to Hostinger, then #pc, #studios and #tools checked on desktop, mobile and installed PWA. A GitHub commit does not prove a live deployment.
+
+---
+
 ## Mobile native-style experience — October 19, 2026
 
 Mobile Connect is now organized like an installed app: persistent five-tab bottom navigation (Home, Tools, Apps, Learn, More), compact app header with previous-screen navigation and global search, and a multi-level bottom-sheet menu that opens from the bottom rather than the side. The More stack groups Tools & Create, Learn & Explore, Windows & Services and My Connect, with a Back control, focus trapping, Escape/backdrop dismissal and a downward swipe gesture on the sheet handle/header. Existing AI Studio, Convert Studio and Quick Utilities tabs remain touch-scrollable. Layout respects phone safe-area insets and reduced motion. Desktop sidebar and all existing application routes remain unchanged. No extra paid APIs, hardware or libraries.
