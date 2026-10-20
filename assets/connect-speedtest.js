@@ -1,15 +1,41 @@
 import SpeedTest from 'https://cdn.skypack.dev/@cloudflare/speedtest';
 const start=document.getElementById('connect-speed-start'),stop=document.getElementById('connect-speed-stop'),message=document.getElementById('connect-speed-message'),bar=document.getElementById('connect-speed-progress');
-if(start&&stop){let engine=null;
-const write=(key,value,unit)=>{const el=document.getElementById('connect-speed-'+key);if(el&&Number.isFinite(value))el.textContent=(value/unit).toFixed(1);};
-const show=summary=>{if(!summary)return;write('down',summary.download,1000000);write('up',summary.upload,1000000);write('latency',summary.latency,1);write('jitter',summary.jitter,1);};
-const reset=()=>{start.disabled=false;stop.disabled=true;bar.style.width='0%';engine=null;};
-start.addEventListener('click',()=>{if(engine)return;['down','up','latency','jitter'].forEach(key=>document.getElementById('connect-speed-'+key).textContent='—');start.disabled=true;stop.disabled=false;message.textContent='Running measurement against Cloudflare…';bar.style.width='14%';
-try{engine=new SpeedTest({autoStart:false,measurements:[{type:'latency',numPackets:12},{type:'download',bytes:1e5,count:6},{type:'download',bytes:1e6,count:5},{type:'upload',bytes:1e5,count:6},{type:'upload',bytes:1e6,count:5}]});
-engine.onResultsChange=()=>{if(!engine)return;try{show(engine.results.getSummary());bar.style.width='65%';}catch{}};
-engine.onFinish=results=>{show(results.getSummary());bar.style.width='100%';message.textContent='Completed · Measurements reflect performance to Cloudflare.';start.disabled=false;stop.disabled=true;engine=null;};
-engine.onError=error=>{message.textContent='Measurement failed: '+String(error).slice(0,140);reset();};
-engine.play();}catch(error){message.textContent='Speed engine unavailable: '+error.message;reset();}
-});
-stop.addEventListener('click',()=>{if(engine){try{engine.pause();}catch{}reset();message.textContent='Test stopped.';}});
+if(start&&stop){
+ let engine=null,run=0;
+ const output=(key,value,scale=1)=>{const node=document.getElementById('connect-speed-'+key);if(node)node.textContent=Number.isFinite(value)&&value>=0?(value/scale).toFixed(1):'—';};
+ const display=results=>{
+  if(!results)return;
+  const read=fn=>{try{return fn();}catch{return undefined;}};
+  output('down',read(()=>results.getDownloadBandwidth()),1e6);
+  output('up',read(()=>results.getUploadBandwidth()),1e6);
+  output('latency',read(()=>results.getUnloadedLatency()));
+  output('jitter',read(()=>results.getUnloadedJitter()));
+ };
+ const clean=()=>{engine=null;start.disabled=false;stop.disabled=true;};
+ start.addEventListener('click',()=>{
+  if(engine)return;
+  const token=++run;
+  ['down','up','latency','jitter'].forEach(k=>output(k,NaN));
+  message.textContent='Measuring connection to Cloudflare · please keep this tab open…';
+  bar.style.width='8%';start.disabled=true;stop.disabled=false;
+  try{
+   const test=new SpeedTest({autoStart:false,
+    measurements:[
+     {type:'latency',numPackets:20},
+     {type:'download',bytes:100000,count:4},
+     {type:'download',bytes:1000000,count:6},
+     {type:'download',bytes:10000000,count:4},
+     {type:'upload',bytes:100000,count:4},
+     {type:'upload',bytes:1000000,count:6},
+     {type:'upload',bytes:10000000,count:4}
+    ]
+   });
+   engine=test;
+   test.onResultsChange=()=>{if(token!==run)return;display(test.results);bar.style.width='65%';};
+   test.onFinish=results=>{if(token!==run)return;display(results);bar.style.width='100%';message.textContent='Test completed · measured against Cloudflare servers. Results can differ from ISP package speed.';clean();};
+   test.onError=error=>{if(token!==run)return;message.textContent='Speed test failed: '+String(error).slice(0,140);bar.style.width='0%';clean();};
+   test.play();
+  }catch(error){message.textContent='Cannot start measurement: '+String(error.message||error);clean();}
+ });
+ stop.addEventListener('click',()=>{if(!engine)return;run++;try{engine.pause();}catch{}clean();bar.style.width='0%';message.textContent='Test paused. Start a new test when ready.';});
 }
