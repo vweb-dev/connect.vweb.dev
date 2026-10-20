@@ -1,0 +1,41 @@
+/* Windows Command Center — standalone visual redesign */
+#page-pc{max-width:1250px;margin-inline:auto;padding-bottom:30px}
+#page-pc .win-command-hero{position:relative;display:grid;grid-template-columns:minmax(0,1fr) 245px;gap:30px;align-items:stretch;padding:clamp(26px,4vw,48px);margin:0 0 20px;overflow:hidden;border-radius:23px;background:radial-gradient(circle at 90% 0%,#98753c44,transparent 43%),linear-gradient(135deg,#25323c,#141e27 75%);border:1px solid #87704e}
+#page-pc .win-command-hero h1{font:800 clamp(34px,4.7vw,59px)/1.05 Outfit,system-ui,sans-serif;letter-spacing:-.05em;max-width:790px;margin:12px 0 16px}
+#page-pc .win-command-hero h1 span{color:#e8bc78}
+#page-pc .win-command-hero p{font-size:14px;line-height:1.7;color:#c9d4d9;max-width:610px}
+#page-pc .win-hero-links{display:flex;flex-wrap:wrap;gap:9px;margin-top:23px}
+#page-pc .win-hero-links a{padding:10px 13px;border:1px solid #746c60;border-radius:9px;color:#f4d5a3;font-weight:700;font-size:12px;text-decoration:none;background:#ffffff08}
+#page-pc .win-hero-links a:hover{background:#40382d}
+#page-pc .win-hero-side{border:1px solid #84704d;border-radius:16px;padding:22px;background:linear-gradient(145deg,#38372e,#1e2a32);display:flex;flex-direction:column;justify-content:space-between;gap:17px}
+#page-pc .win-side-kicker{font-size:10px;letter-spacing:.12em;color:#efc688;font-weight:800}
+#page-pc .win-hero-side>strong{font:800 55px/1 Outfit,system-ui,sans-serif;color:#f5d9aa}
+#page-pc .win-hero-side>strong small{font-size:19px;color:#aeb9be}
+#page-pc .win-hero-side>span:not(.win-side-kicker){font-size:12px;line-height:1.6;color:#d5dbdc}
+#page-pc .win-hero-side>a{font-size:12px;color:#f4c685;line-height:1.4}
+#page-pc .connect-mas-command{border:1px solid #9f7840;background:linear-gradient(110deg,#312b25,#171f29);border-radius:18px;padding:clamp(22px,3vw,30px)}
+#page-pc .connect-mas-command h3{font-size:clamp(22px,2.5vw,31px);margin:7px 0 10px}
+#page-pc .connect-mas-command .connect-command{background:#0c141c;border-color:#9b7944;padding:16px 18px}
+#page-pc .connect-mas-command .connect-command code{font-size:clamp(14px,1.7vw,21px)}
+#page-pc .win-deep-dive{margin:0 0 24px;border:1px solid #51616a;border-radius:16px;overflow:hidden;background:#1a2731}
+#page-pc .win-deep-dive>summary{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:18px 23px;list-style:none;cursor:pointer;color:#f8e6c5}
+#page-pc .win-deep-dive>summary::-webkit-details-marker{display:none}
+#page-pc .win-deep-dive>summary strong{font-size:16px}
+#page-pc .win-deep-dive>summary small{display:block;margin-top:6px;font-size:12px;color:#b8c8d0;line-height:1.5}
+#page-pc .win-summary-arrow{font-size:26px;transition:transform .2s}
+#page-pc .win-deep-dive[open] .win-summary-arrow{transform:rotate(180deg)}
+#page-pc .win-deep-dive .mas-focus{margin:0;border:0;border-top:1px solid #54606b;border-radius:0;box-shadow:none}
+#page-pc .hub-panel,#page-pc .hub-pc-feature{border-radius:16px}
+#page-pc .hub-pc-two-col>.hub-panel{height:auto;align-self:start}
+#page-pc .hub-guide-links{max-height:320px}
+#page-pc .hub-winget-grid{max-height:450px}
+#page-pc .hub-winget{margin-top:23px}
+#page-pc .hub-winget h2{font-size:clamp(22px,3vw,30px)}
+#page-pc .hub-pack-presets{display:flex;flex-wrap:wrap;gap:8px}
+#page-pc .hub-pack-presets button{border-radius:8px;min-height:36px}
+#page-pc .hub-winget-option{border-radius:11px}
+#page-pc .hub-win-get-results{margin-top:15px}
+#page-pc :is(.mas-method-card p,.mas-document-card p,.hub-fix-advice p,.hub-guide-links a){font-size:12px}
+@media(max-width:840px){#page-pc .win-command-hero{grid-template-columns:1fr}#page-pc .win-hero-side{display:none}}
+@media(max-width:520px){#page-pc .win-command-hero{padding:23px 18px;border-radius:16px}#page-pc .win-command-hero h1{font-size:36px}#page-pc .win-hero-links{display:grid;grid-template-columns:repeat(2,minmax(0,1fr))}#page-pc .win-hero-links a{font-size:11px;text-align:center;padding:10px 5px}#page-pc .win-deep-dive>summary{padding:17px}#page-pc .connect-mas-command .connect-command{padding:12px}}
+@media(prefers-reduced-motion:reduce){#page-pc .win-summary-arrow{transition:none}}
