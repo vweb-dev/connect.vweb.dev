@@ -264,13 +264,13 @@ $('#hub-global-form').addEventListener('submit',event=>{
 const palette=$('#hub-command-dialog'),paletteQuery=$('#hub-command-query'),paletteResults=$('#hub-command-results');
 let paletteRows=[],palettePos=0;
 const quickSections=[
- {title:'Tool Studios',detail:'Image, PDF, Media, QR, Design and developer tools',destination:'#studios',icon:'⇄'},
+ {title:'Workspaces',detail:'Image, PDF, Media, QR, Design and developer tools',destination:'#studios',icon:'⇄'},
  {title:'Video Academy',detail:'Organized YouTube courses and full playlists',destination:'#academy',icon:'▶'},
- {title:'Windows & PC Help',detail:'Activation, repairs and official installers',destination:'#pc',icon:'▦'},
+ {title:'Windows & Office Help',detail:'Activation, repairs and official installers',destination:'#pc',icon:'▦'},
  {title:'App Directory',detail:'Curated Windows downloads, web apps and PWAs',destination:'#apps',icon:'◧'},
  {title:'My Workspace',detail:'Saved apps, notes, progress and recent activities',destination:'#dashboard',icon:'◇'},
  {title:'Convert Studio',detail:'On-device image, PDF, video and audio converters',destination:'#convert',icon:'▤'},
- {title:'Quick Utilities',detail:'QR code, passwords, text and everyday tools',destination:'#tools',icon:'⌘'},
+ {title:'Quick Actions',detail:'QR code, passwords, text and everyday tools',destination:'#tools',icon:'⌘'},
  {title:'AI Studio',detail:'Puter AI chat, images, video and captions',destination:'#ai',icon:'✦'}
 ];
 function paletteOptions(query){
@@ -476,12 +476,15 @@ const advice={
  digital:['Digital license not activated','Confirm your PC is online, sign into the Microsoft account linked to the license, then open Settings → System → Activation. Use Troubleshoot if available.'],
  hardware:['Activation lost after a hardware change','Use the Activation troubleshooter and “I changed hardware on this device recently”, using the Microsoft account previously linked to the license. Some license types cannot transfer.'],
  edition:['Edition or key does not match','Check whether Windows Home or Pro is installed, and compare against your legitimate license. A Home key generally does not activate Pro.'],
- 'no-key':['No genuine license available','Windows needs a valid product key or digital license. Purchase one from Microsoft or an authorized retailer. Do not run unofficial activation scripts.']
+ 'no-key':['No genuine license available','Windows needs a valid product key or digital license. Purchase one from Microsoft or an authorized retailer.'],
+ 'office-account':['Office shows Unlicensed Product','In Word or Excel, open File → Account and sign in with the Microsoft account assigned your Office license. Check which account purchased or was assigned the product.'],
+ 'office-subscription':['Microsoft 365 subscription issue','Review your Services & subscriptions page, confirm the subscription is active, and use Microsoft’s Office activation troubleshooter if the apps still show Unlicensed Product.']
 };
 function renderActivation(){
  const [title,desc]=advice[$('#hub-activation-case').value]||advice.digital;
  const area=$('#hub-activation-advice');clear(area);area.append(el('h3','',title),el('p','',desc));
- area.append(link('Microsoft activation help ↗','https://support.microsoft.com/en-us/windows/activate-windows','hub-card-link',true));
+ const office=$('#hub-activation-case').value.startsWith('office-');
+ area.append(link(office?'Microsoft Office activation help ↗':'Microsoft Windows activation help ↗',office?'https://support.microsoft.com/en-us/microsoft-365-activation-licensing/reactivate-microsoft-365-or-office':'https://support.microsoft.com/en-us/windows/activate-windows','hub-card-link',true));
 }
 $('#hub-activation-case').addEventListener('change',renderActivation);
 $('#hub-activation-copy').addEventListener('click',()=>copy('slmgr /xpr','#hub-activation-copy','Copy safe status-check command'));
@@ -651,8 +654,8 @@ async function copy(value,selector,defaultText){
  }
 }
 // Dashboard, privacy and recent use
-const pageNames={home:'Overview',studios:'Tool Studios',academy:'Video Academy',pc:'Windows Help',apps:'App Directory',
- dashboard:'My Workspace',convert:'Convert Studio',tools:'Quick Utilities',ai:'AI Studio',play:'Games',offers:'Deals',community:'Local & Learn'};
+const pageNames={home:'Overview',studios:'Workspaces',academy:'Video Academy',pc:'Windows Help',apps:'App Directory',
+ dashboard:'My Workspace',convert:'Convert Studio',tools:'Quick Actions',ai:'AI Studio',play:'Games',offers:'Deals',community:'Local & Learn'};
 function trackVisit(){
  const route=(location.hash||'#home').slice(1)||'home';
  if(!pageNames[route])return;
@@ -683,7 +686,7 @@ function renderDashboard(){
   learning.append(b);
  });
  const saved=$('#hub-dashboard-saved');clear(saved);
- if(!favorites.length&&!pinned.length)saved.append(el('p','hub-muted','Save useful apps or pin Quick Utilities to find them here.'));
+ if(!favorites.length&&!pinned.length)saved.append(el('p','hub-muted','Save useful apps or pin Quick Actions to find them here.'));
  favorites.forEach(id=>{
   const item=data.apps.find(a=>a.id===id);
   if(item)saved.append(link('◧ '+item.name+' ↗',item.open,'hub-dashboard-row',true));
@@ -1028,8 +1031,8 @@ function addExtraUtilities(){
  uuidCopy.addEventListener('click',()=>copyText(uuidOut.value,uuidOut,uuidStatus));
 }
 // Progressive enhancement: if this script fails or is blocked, the original
-// quick utilities remain visible as ordinary cards.
-// Quick Utilities 4.0 — single-tool workbench and compact searchable launcher.
+// quick actions remain visible as ordinary cards.
+// Quick Actions 4.0 — single-tool workbench and compact searchable launcher.
 // Move the original tool DOM node rather than cloning it: listeners and form state survive.
 function initToolsTabs(){
  const root=$('#page-tools'),source=$('#hub-tools-source'),controls=$('#hub-tools-controls');
@@ -1171,7 +1174,7 @@ function initToolsTabs(){
  activate('all');
 }
 
-// Critical Tool Studios and App Directory must never be empty because a
+// Critical Workspaces and App Directory must never be empty because a
 // network request is slow, a service worker is stale or optional APIs are down.
 const fallbackCatalogNodes=new Map();
 for(const selector of ['#hub-home-studios','#hub-home-apps','#hub-home-courses','#hub-studios-grid']){

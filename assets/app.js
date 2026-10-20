@@ -5,22 +5,22 @@ var $$ = function (s) { return Array.from(document.querySelectorAll(s)); };
 var routes=['home','studios','academy','pc','apps','dashboard','convert','tools','ai','play','offers','community','account'];
 
 var contextTitles={
- home:'Overview',studios:'Tool Studios',academy:'Video Academy',pc:'Windows & PC Help',
- apps:'App Directory',dashboard:'My Workspace',convert:'File Converter',tools:'Quick Utilities',
+ home:'Overview',studios:'Workspaces',academy:'Video Academy',pc:'Windows & Office Help',
+ apps:'App Directory',dashboard:'My Workspace',convert:'File Converter',tools:'Quick Actions',
  ai:'AI Studio',play:'Games & Quizzes',
  offers:'Deals',community:'Local & Learn',account:'My Account'
 };
 var contextRelated={
- studios:[['#tools','Quick utilities'],['#convert','File converter'],['#apps','App directory']],
- academy:[['#dashboard','My progress'],['#apps','Useful apps'],['#tools','Quick tools']],
+ studios:[['#tools','Quick actions'],['#convert','File converter'],['#apps','App directory']],
+ academy:[['#dashboard','My progress'],['#apps','Useful apps'],['#tools','Quick actions']],
  pc:[['#apps','Software directory'],['#tools','Browser tools'],['#academy','Learn Windows']],
- apps:[['#pc','WinGet builder'],['#studios','Tool studios'],['#dashboard','Saved apps']],
- dashboard:[['#academy','Continue learning'],['#apps','Find apps'],['#tools','Quick tools']],
- convert:[['#tools','Quick utilities'],['#studios','Tool studios'],['#dashboard','My workspace']],
- tools:[['#convert','File converter'],['#studios','Tool studios'],['#apps','App directory']],
- ai:[['#tools','Free utilities'],['#academy','Video academy'],['#studios','Tool studios']],
- play:[['#academy','Academy'],['#tools','Quick tools'],['#apps','App directory']],
- offers:[['#apps','App directory'],['#community','Community'],['#studios','Tool studios']],
+ apps:[['#pc','WinGet builder'],['#studios','Workspaces'],['#dashboard','Saved apps']],
+ dashboard:[['#academy','Continue learning'],['#apps','Find apps'],['#tools','Quick actions']],
+ convert:[['#tools','Quick actions'],['#studios','Workspaces'],['#dashboard','My workspace']],
+ tools:[['#convert','File converter'],['#studios','Workspaces'],['#apps','App directory']],
+ ai:[['#tools','Free utilities'],['#academy','Video academy'],['#studios','Workspaces']],
+ play:[['#academy','Academy'],['#tools','Quick actions'],['#apps','App directory']],
+ offers:[['#apps','App directory'],['#community','Community'],['#studios','Workspaces']],
  community:[['#academy','Academy'],['#play','Games & quizzes'],['#apps','Useful apps']],
  account:[['#dashboard','Local workspace'],['#apps','Apps'],['#home','Overview']]
 };

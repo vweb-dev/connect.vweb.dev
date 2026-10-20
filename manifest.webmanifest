@@ -23,8 +23,8 @@
   ],
   "shortcuts": [
     {
-      "name": "Quick Utilities",
-      "short_name": "Tools",
+      "name": "Quick Actions",
+      "short_name": "Actions",
       "url": "/#tools",
       "description": "Browser-based everyday tools"
     },
