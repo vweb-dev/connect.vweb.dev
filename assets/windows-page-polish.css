@@ -1,0 +1,32 @@
+/* Windows page: screenshot-driven density, readability and alignment corrections */
+#page-pc{max-width:1180px;margin-inline:auto}
+#page-pc .hub-page-title{margin-bottom:20px}
+#page-pc :is(.mas-focus,.hub-panel,.hub-pc-feature,.connect-upgrade-panel){box-sizing:border-box}
+#page-pc .mas-focus{padding:clamp(20px,2.6vw,31px);margin-bottom:18px;border-radius:17px}
+#page-pc .mas-focus-bar{margin-bottom:14px}
+#page-pc .mas-lead{gap:22px}
+#page-pc .mas-lead h2{line-height:1.04}
+#page-pc .mas-section-heading{margin-top:23px;margin-bottom:12px}
+#page-pc .mas-section-heading h3{font-size:clamp(19px,2vw,24px)}
+#page-pc .mas-method-grid{gap:10px}
+#page-pc .mas-method-card{min-height:0;padding:16px}
+#page-pc .mas-document-grid{gap:10px}
+#page-pc .mas-document-card{padding:16px}
+#page-pc .mas-caution{margin-top:15px}
+#page-pc :is(.mas-method-card p,.mas-document-card p,.mas-lead p,.mas-caution p,.hub-panel p,.hub-fix-advice p,.hub-guide-links a,.hub-winget-option small){font-size:12px;line-height:1.6}
+#page-pc :is(.mas-method-foot,.mas-section-kicker,.hub-small-note){font-size:11px}
+#page-pc .hub-pc-two-col{grid-template-columns:minmax(0,1fr) minmax(0,1fr);align-items:start}
+#page-pc .hub-pc-two-col>.hub-panel{align-self:start;min-height:0}
+#page-pc .hub-guide-links{max-height:390px;overflow:auto;scrollbar-width:thin;padding-right:5px}
+#page-pc .hub-winget-grid{grid-template-columns:repeat(3,minmax(0,1fr));gap:9px;max-height:420px;overflow-y:auto;padding-right:6px;scrollbar-width:thin;align-content:start}
+#page-pc .hub-winget-option{min-height:60px}
+#page-pc .hub-winget :is(input,select,textarea){font-size:13px}
+#page-pc .hub-winget-results{position:sticky;bottom:0;z-index:2;padding:12px 14px;background:#1d2b35;border:1px solid #56616b;border-radius:12px}
+#page-pc .hub-winget textarea{min-height:90px}
+#page-pc .connect-mas-command{margin:0 0 15px;padding:20px 22px}
+#page-pc .connect-mas-command h3{font-size:23px}
+#page-pc .connect-command{margin:12px 0}
+#page-pc .connect-upgrade-panel{margin:15px 0}
+#page-pc a:focus-visible,#page-pc button:focus-visible,#page-pc input:focus-visible,#page-pc select:focus-visible{outline:2px solid #f5ca83;outline-offset:3px}
+@media(max-width:780px){#page-pc .hub-pc-two-col{grid-template-columns:1fr}#page-pc .hub-guide-links{max-height:280px}#page-pc .hub-winget-grid{grid-template-columns:repeat(2,minmax(0,1fr));max-height:380px}#page-pc .hub-winget-results{position:static}}
+@media(max-width:490px){#page-pc .mas-method-grid,#page-pc .mas-document-grid,#page-pc .hub-winget-grid{grid-template-columns:1fr}#page-pc .connect-mas-command{padding:17px}#page-pc .connect-mas-command h3{font-size:20px}}
