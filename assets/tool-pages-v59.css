@@ -68,3 +68,6 @@ html[data-connect-course-route] #page-academy .lms-stat-grid{display:none!import
  html[data-connect-tool-route] #page-ai .puter-auth{margin-bottom:14px}
 }
 @media(prefers-reduced-motion:reduce){.tool59-directory-item{transition:none}}
+
+.lms59-permalink{display:inline-flex;align-items:center;justify-content:center;padding:10px 14px;border:1px solid #786447;border-radius:11px;color:#f0ca8c;font-size:11px;font-weight:800;text-align:center;min-height:40px}
+.lms59-permalink:hover,.lms59-permalink:focus-visible{border-color:#e8c58d;background:#37414b}
