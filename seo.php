@@ -81,7 +81,7 @@ if($toolInfo||$courseInfo||$directoryInfo!==null){
  $intro='';
  if($toolInfo){
   $intro='<section id="connect-tool59-hero" class="tool59-hero"><nav aria-label="Breadcrumb"><a href="/">Home</a> / <a href="/'.$esc($toolInfo['section']).'"'.($toolInfo['section']==='tools'?' data-tools-no-sheet="true"':'').' >'.($toolInfo['section']==='pc'?'Windows &amp; Office':ucfirst($esc($toolInfo['section']))).'</a> / <span>'.$esc($toolInfo['title']).'</span></nav><div class="overline">FOCUSED TOOL WORKSPACE</div><h1>'.$esc($toolInfo['title']).'</h1><p>'.$esc($toolInfo['description']).'.</p></section>';
-  $related=array_values(array_filter($tools,static fn($t)=>$t['section']===$toolInfo['section']&&$t['id']!==$toolInfo['id']));
+  $related=array_values(array_filter($tools,static fn($t)=>$t['group']===$toolInfo['group']&&$t['id']!==$toolInfo['id']));
   $intro.='<nav class="tool59-related" aria-label="Related tools"><span>Related tools</span>';
   foreach(array_slice($related,0,4) as $r){$intro.='<a href="'.$esc($r['path']).'">'.$esc($r['title']).' ↗</a>';}
   $intro.='</nav>';
