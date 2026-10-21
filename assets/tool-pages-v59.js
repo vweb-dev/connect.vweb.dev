@@ -24,7 +24,7 @@
  function relatedList(tool){
   const nav=el('nav','tool59-related');nav.id='connect-tool59-related';nav.setAttribute('aria-label','Related tools');
   nav.append(el('span','', 'Related tools'));
-  const related=tools.filter(t=>t.section===tool.section&&t.id!==tool.id).slice(0,5);
+  const related=tools.filter(t=>t.group===tool.group&&t.id!==tool.id).slice(0,5);
   for(const other of related){const a=el('a','',other.title+' ↗');a.href=other.path;nav.append(a);}
   return nav;
  }
