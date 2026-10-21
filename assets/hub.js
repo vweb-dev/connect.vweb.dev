@@ -221,71 +221,40 @@ function navigateIndexed(path){
  window.scrollTo({top:0,behavior:'instant'});
 }
 function openIndexedResult(item){
- const path=item.destination;
- if(item.app){
-  navigateIndexed('/apps');
-  appFilter='All';appSearch=item.app.toLowerCase();appKind='All';appLimit=24;
-  const input=$('#hub-app-search');if(input){input.value=item.app;input.dispatchEvent(new Event('input',{bubbles:true}));}
-  return;
- }
- if(item.course){
-  navigateIndexed('/academy/course/'+encodeURIComponent(item.course));return;
- }
- if(item.tool){
-  const route=window.ConnectToolRoutes?.getPath(item.tool);
-  if(route){navigateIndexed(route);return;}
- }
- if(typeof path==='string'){
-  navigateIndexed(path.startsWith('#')?'/'+path.slice(1):path);
- }
-}
-const searchToolRegistry=()=>{
- try{
-  const parsed=JSON.parse($('#connect-tool-route-catalog')?.textContent||'{}');
-  return Array.isArray(parsed.tools)?parsed.tools:[];
- }catch{return []}
-};
-const searchAlias={
- pdf:'document merge split extract',compress:'resize photo image jpg png webp',json:'developer code api formatter validate',
- qr:'qrcode barcode scan whatsapp wifi',windows:'microsoft pc win11 license activation',office:'microsoft word excel 365',
- currency:'forex exchange rate pkr usd gbp',seo:'website google bing meta title description search ranking',
- password:'secure random credentials login',image:'photo picture graphic jpeg png',video:'movie media clip',
- audio:'sound mp3 wav',network:'speed broadband download upload internet latency',learn:'courses tutorial education',powertoys:'power tools microsoft utilities'
-};
-function indexedScore(item,query){
- const raw=(item.title+' '+item.detail+' '+(item.keywords||'')).toLocaleLowerCase();
- const normalized=raw.normalize('NFKD').replace(/[\u0300-\u036f]/g,'');
- const q=query.normalize('NFKD').toLocaleLowerCase().replace(/[\u0300-\u036f]/g,'').trim();
- if(!q)return 0;
- const words=q.split(/\s+/).filter(Boolean);
- const extra=Object.entries(searchAlias).filter(([word])=>raw.includes(word)).map(([,tags])=>tags).join(' ');
- const hay=normalized+' '+extra;
- if(!words.every(w=>hay.includes(w)))return 0;
- const directTitle=item.title.toLowerCase().replace(/[^a-z0-9]+/g,'');
- const directUrl=(item.destination||'').toLowerCase().replace(/[^a-z0-9]+/g,'');
- const directKeywords=(item.keywords||'').toLowerCase().replace(/[^a-z0-9]+/g,'');
- let score=words.reduce((sum,w)=>sum+(directTitle.includes(w)?24:0)+(directUrl.includes(w)?22:0)+(directKeywords.includes(w)?11:0)+(normalized.includes(w)?4:0)+1,0);
- if(item.title.toLowerCase()===q)score+=140;
- if(item.title.toLowerCase().startsWith(q))score+=55;
- if(item.kind==='tool')score+=12;
- if(item.destination?.startsWith('/'))score+=3;
- return score;
+ const destination=item.destination||'/';
+ if(item.app){location.assign('/apps?q='+encodeURIComponent(item.title));return;}
+ if(item.course){location.assign('/academy/course/'+encodeURIComponent(item.course));return;}
+ if(item.tool&&window.ConnectToolRoutes?.getPath(item.tool)){location.assign(window.ConnectToolRoutes.getPath(item.tool));return;}
+ const clean=destination.startsWith('#')?'/'+destination.slice(1):destination;
+ location.assign(clean||'/');
 }
 function searchIndex(query){
- const term=String(query||'').trim();
- if(term.length<2)return [];
- const registry=searchToolRegistry();
- const all=[
-  ...registry.map(t=>({title:t.title,detail:t.description,keywords:[t.id,t.group,t.slug,t.section,t.path].join(' '),destination:t.path,tool:t.id,kind:'tool',icon:'⌘'})),
-  ...data.studios.map(x=>({title:x.title,detail:x.subtitle,destination:'/studios',kind:'section',icon:x.icon})),
-  ...data.courses.map(x=>({title:x.title,detail:(x.description||'')+' '+(x.provider||''),destination:'/academy/course/'+x.id,course:x.id,kind:'course',icon:x.icon||'▶'})),
-  ...data.apps.map(x=>({title:x.name,detail:x.desc||'',keywords:(x.tags||[]).join(' '),destination:'/apps',app:x.name,kind:'app',icon:x.initial||'◧'})),
-  ...data.help.map(x=>({title:x.title,detail:x.description,destination:'/pc',kind:'help',icon:'▦'}))
+ const original=String(query||'').trim();
+ const normalize=s=>String(s||'').toLowerCase().normalize('NFKD').replace(/[\u0300-\u036f]/g,'').replace(/[^a-z0-9]+/g,' ').trim();
+ const q=normalize(original);if(!q)return [];
+ const tokens=q.split(' ').filter(Boolean);
+ const tools=window.ConnectToolRoutes?.tools||[];
+ let registry=tools;
+ if(!registry.length)try{registry=JSON.parse(document.getElementById('connect-tool-route-catalog')?.textContent||'{}').tools||[];}catch{}
+ const results=[
+  ...registry.map(x=>({title:x.title,detail:x.description,category:'Tool · '+x.group,destination:x.path,tool:x.id,keywords:x.id+' '+x.slug,icon:'⌘'})),
+  ...data.courses.map(x=>({title:x.title,detail:x.description,category:'Course',destination:'/academy/course/'+x.id,course:x.id,keywords:x.provider+' '+x.id,icon:x.icon||'▶'})),
+  ...data.apps.map(x=>({title:x.name,detail:x.desc,category:'App · '+x.category,destination:'/apps?q='+encodeURIComponent(x.name),app:x.id,keywords:(x.tags||[]).join(' ')+' '+x.kind,icon:x.initial||'◧'})),
+  ...data.help.map(x=>({title:x.title,detail:x.description,category:'Windows Guide',destination:'/pc',keywords:'repair troubleshoot windows office activation',icon:'▦'})),
+  ...data.studios.map(x=>({title:x.title,detail:x.subtitle,category:'Workspace',destination:'/studios',keywords:'studio workspace',icon:x.icon||'⇄'}))
  ];
- const found=all.map(item=>({...item,score:indexedScore(item,term)})).filter(item=>item.score>0);
- found.sort((a,b)=>b.score-a.score||a.title.localeCompare(b.title));
- const unique=new Set();
- return found.filter(item=>{const key=item.kind+'|'+item.destination+'|'+item.title;if(unique.has(key))return false;unique.add(key);return true;}).slice(0,25);
+ const ranked=results.map(item=>{
+  const title=normalize(item.title),detail=normalize(item.detail),search=title+' '+detail+' '+normalize(item.keywords)+' '+normalize(item.category);
+  const hits=tokens.filter(t=>search.includes(t));
+  if(hits.length!==tokens.length)return null;
+  let score=hits.length*20;
+  if(title===q)score+=125;else if(title.startsWith(q))score+=75;else if(title.includes(q))score+=48;
+  if(normalize(item.keywords).includes(q))score+=15;
+  if(item.category.startsWith('Tool'))score+=5;
+  return {...item,score};
+ }).filter(Boolean).sort((a,b)=>b.score-a.score||a.title.localeCompare(b.title));
+ const seen=new Set();
+ return ranked.filter(item=>{const id=item.destination;if(seen.has(id))return false;seen.add(id);return true;}).slice(0,24);
 }
 function renderGlobalSearch(){
  const root=$('#hub-search-results');
@@ -317,14 +286,14 @@ $('#hub-global-form').addEventListener('submit',event=>{
 const palette=$('#hub-command-dialog'),paletteQuery=$('#hub-command-query'),paletteResults=$('#hub-command-results');
 let paletteRows=[],palettePos=0;
 const quickSections=[
- {title:'Workspaces',detail:'Image, PDF, Media, QR, Design and developer tools',destination:'#studios',icon:'⇄'},
- {title:'Video Academy',detail:'Organized YouTube courses and full playlists',destination:'#academy',icon:'▶'},
- {title:'Windows & Office Help',detail:'Activation, repairs and official installers',destination:'#pc',icon:'▦'},
- {title:'App Directory',detail:'Curated Windows downloads, web apps and PWAs',destination:'#apps',icon:'◧'},
- {title:'My Workspace',detail:'Saved apps, notes, progress and recent activities',destination:'#dashboard',icon:'◇'},
- {title:'Convert Studio',detail:'On-device image, PDF, video and audio converters',destination:'#convert',icon:'▤'},
- {title:'Quick Actions',detail:'QR code, passwords, text and everyday tools',destination:'#tools',icon:'⌘'},
- {title:'AI Studio',detail:'Puter AI chat, images, video and captions',destination:'#ai',icon:'✦'}
+ {title:'Workspaces',detail:'Image, PDF, Media, QR, Design and developer tools',destination:'/studios',icon:'⇄'},
+ {title:'Video Academy',detail:'Organized YouTube courses and full playlists',destination:'/academy',icon:'▶'},
+ {title:'Windows & Office Help',detail:'Activation, repairs and official installers',destination:'/pc',icon:'▦'},
+ {title:'App Directory',detail:'Curated Windows downloads, web apps and PWAs',destination:'/apps',icon:'◧'},
+ {title:'My Workspace',detail:'Saved apps, notes, progress and recent activities',destination:'/dashboard',icon:'◇'},
+ {title:'Convert Studio',detail:'On-device image, PDF, video and audio converters',destination:'/convert',icon:'▤'},
+ {title:'Quick Actions',detail:'QR code, passwords, text and everyday tools',destination:'/tools',icon:'⌘'},
+ {title:'AI Studio',detail:'Puter AI chat, images, video and captions',destination:'/ai',icon:'✦'}
 ];
 function paletteOptions(query){
  const q=query.toLowerCase().trim();
