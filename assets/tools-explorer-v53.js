@@ -122,7 +122,7 @@ function desk57RenderRail(){
  desk57Rail.append(allButton);
 }
 function render(){
- content.replaceChildren();desk57RenderRail();const q=search.value.trim().toLowerCase();
+ content.replaceChildren();desk57RenderRail();const q=search.value.trim().toLowerCase();sheet.dataset.stage=q?'search':stage;
  if(q){stage='search';setHeader('Search tools',count(all.length)+' across all categories');fillRows(all.filter(item=>(item.title+' '+item.desc+' '+item.groupName).toLowerCase().includes(q)),choose);return;}
  if(stage==='search')stage='groups';
  if(stage==='groups'){
