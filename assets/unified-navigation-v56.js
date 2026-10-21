@@ -53,11 +53,15 @@ let section='more',stage='groups',selectedGroup=null,selectedItem=null,lastFocus
 const sections=Object.keys(sectionTitles);
 const title=$('connect-nav-heading'),subtitle=$('connect-nav-subheading'),topBack=$('connect-nav-top-back'),bottomBack=$('connect-nav-bottom-back'),center=$('connect-nav-view-full');
 function go(url,{courseId,appCategory}={}){
- close();const destination=new URL(url,location.origin);
+ close();let destination=new URL(url,location.origin);
+ if(courseId&&destination.pathname==='/academy')destination=new URL('/academy/course/'+encodeURIComponent(courseId),location.origin);
+ const legacyId=destination.searchParams.get('tool');
+ if(legacyId){const canonical=window.ConnectToolRoutes?.getPath(legacyId);if(canonical)destination=new URL(canonical,location.origin);}
  if(destination.origin===location.origin&&destination.pathname==='/tools'&&!destination.search){$('connect-tools-launch')?.click();return;}
  if(destination.origin!==location.origin){window.open(destination.href,'_blank','noopener,noreferrer');return;}
  if(location.pathname!==destination.pathname||location.search!==destination.search||location.hash){history.pushState(null,'',destination.pathname+destination.search);window.dispatchEvent(new Event('popstate'));}
  if(courseId)window.dispatchEvent(new CustomEvent('connect:select-course',{detail:{id:courseId}}));
+ if(courseId)window.dispatchEvent(new Event('connect:lms-classroom'));
  if(appCategory)window.dispatchEvent(new CustomEvent('connect:apps-open-category',{detail:{category:appCategory}}));
 }
 function courseThumbnail(source,detail=false){

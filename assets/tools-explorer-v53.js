@@ -87,7 +87,7 @@ const count=n=>n===1?'1 tool':n+' tools';
 function element(tag,cls,value){const n=document.createElement(tag);if(cls)n.className=cls;if(value!==undefined)n.textContent=value;return n;}
 function row(item,fn,asLink=false){
  const b=element(asLink?'a':'button','ct53-row');
- if(asLink){b.href=item.path+'?tool='+encodeURIComponent(item.id);}else b.type='button';
+ if(asLink){b.href=window.ConnectToolRoutes?.getPath(item.id)||item.path+'?tool='+encodeURIComponent(item.id);}else b.type='button';
  b.append(element('span','ct53-row-symbol',item.groupIcon||'↗'));
  const text=element('span','ct53-row-body');
  text.append(element('strong','',item.title),element('small','',item.desc));
@@ -175,7 +175,7 @@ function reveal(item){
 function launch(item){
  remember(item);
  closeSheet();
- const next=item.path+'?tool='+encodeURIComponent(item.id);
+ const next=window.ConnectToolRoutes?.getPath(item.id)||item.path+'?tool='+encodeURIComponent(item.id);
  if(location.pathname!==item.path||location.search!==new URL(next,location.origin).search){
   history.pushState({tool:item.id},'',next);
   window.dispatchEvent(new Event('popstate'));

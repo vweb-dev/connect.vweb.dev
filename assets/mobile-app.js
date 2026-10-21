@@ -11,7 +11,7 @@
  const sheetScreens=$$('[data-stack-screen]');
  const mobile=()=>matchMedia('(max-width:800px)').matches;
  let screens=['home'],lastRoute='home',sheetTrail=['root'],returnFocus=null,swipeOrigin=null;
- const route=()=>{const key=location.hash.slice(1)||location.pathname.replace(/^\/+|\/+$/g,'')||'home';return titles[key]?key:'home'};
+ const route=()=>{const base=location.pathname.split('/').filter(Boolean)[0]||'home';const key=location.hash&&titles[location.hash.slice(1)]?location.hash.slice(1):(base==='windows'?'pc':base);return titles[key]?key:'home'};
  const currentSheet=()=>sheetTrail[sheetTrail.length-1];
  function selectSheet(id){
   if(!sheetNames[id])id='root';

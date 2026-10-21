@@ -102,6 +102,7 @@
   if(mode==='catalog'&&joined)actions.append(button('Course outline','lms-outline',()=>{
    bridge()?.open(c.id);selectView('classroom');
   }));
+  const permalink=node('a','lms59-permalink','Open dedicated course page ↗');permalink.href='/academy/course/'+encodeURIComponent(c.id);permalink.setAttribute('aria-label','Open '+c.title+' dedicated course page');actions.append(permalink);
   body.append(actions);article.append(image,body);return article;
  }
  function snapshot(){return bridge()?.snapshot()||null}
