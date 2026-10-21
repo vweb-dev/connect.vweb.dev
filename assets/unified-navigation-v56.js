@@ -126,6 +126,7 @@ document.addEventListener('click',event=>{
 },true);
 /* Contextual launchers make every section discoverable without changing the URL. */
 for(const [route,name] of Object.entries(sectionTitles)){
+ if(route==='apps')continue; // Apps has its own concise Browse Apps launcher.
  const page=$('page-'+route);if(!page)continue;
  const banner=el('div','connect56-page-banner');
  const copy=el('div','connect56-banner-copy');copy.append(el('strong','',name+' · Quick navigation'),el('span','',route==='apps'?'Browse app categories and official publisher links':'Explore related tools and sub-sections'));
