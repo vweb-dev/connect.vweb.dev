@@ -250,7 +250,7 @@ const searchAlias={
  qr:'qrcode barcode scan whatsapp wifi',windows:'microsoft pc win11 license activation',office:'microsoft word excel 365',
  currency:'forex exchange rate pkr usd gbp',seo:'website google bing meta title description search ranking',
  password:'secure random credentials login',image:'photo picture graphic jpeg png',video:'movie media clip',
- audio:'sound mp3 wav',network:'speed broadband download upload internet latency',learn:'courses tutorial education'
+ audio:'sound mp3 wav',network:'speed broadband download upload internet latency',learn:'courses tutorial education',powertoys:'power tools microsoft utilities'
 };
 function indexedScore(item,query){
  const raw=(item.title+' '+item.detail+' '+(item.keywords||'')).toLocaleLowerCase();
@@ -261,7 +261,10 @@ function indexedScore(item,query){
  const extra=Object.entries(searchAlias).filter(([word])=>raw.includes(word)).map(([,tags])=>tags).join(' ');
  const hay=normalized+' '+extra;
  if(!words.every(w=>hay.includes(w)))return 0;
- let score=words.reduce((sum,w)=>sum+(item.title.toLowerCase().includes(w)?18:3),0);
+ const directTitle=item.title.toLowerCase().replace(/[^a-z0-9]+/g,'');
+ const directUrl=(item.destination||'').toLowerCase().replace(/[^a-z0-9]+/g,'');
+ const directKeywords=(item.keywords||'').toLowerCase().replace(/[^a-z0-9]+/g,'');
+ let score=words.reduce((sum,w)=>sum+(directTitle.includes(w)?24:0)+(directUrl.includes(w)?22:0)+(directKeywords.includes(w)?11:0)+(normalized.includes(w)?4:0)+1,0);
  if(item.title.toLowerCase()===q)score+=140;
  if(item.title.toLowerCase().startsWith(q))score+=55;
  if(item.kind==='tool')score+=12;
