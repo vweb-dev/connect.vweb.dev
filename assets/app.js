@@ -53,7 +53,7 @@ function route(focusHeading){
   }
   window.scrollTo(0,0);
 }
-window.addEventListener('hashchange',function(){const key=location.hash.slice(1);if(routes.includes(key)){history.replaceState(null,'','/'+(key==='home'?'':key));}route(true);});
+window.addEventListener('hashchange',function(){const key=location.hash.slice(1);if(routes.includes(key)){history.replaceState(null,'','/'+(key==='home'?'':key));route(true);}else if(!key){route(false);}/* Keep genuine on-page anchors working. */});
 window.addEventListener('popstate',function(){route(false);});
 document.addEventListener('click',function(event){const link=event.target.closest('a[href^="#"]');if(!link||event.defaultPrevented||event.ctrlKey||event.metaKey||event.shiftKey||event.altKey)return;const key=link.getAttribute('href').slice(1);if(!routes.includes(key))return;event.preventDefault();history.pushState(null,'','/'+(key==='home'?'':key));route(true);window.dispatchEvent(new Event('popstate'));});
 if(location.hash&&routes.includes(location.hash.slice(1))){history.replaceState(null,'','/'+(location.hash.slice(1)==='home'?'':location.hash.slice(1)));}
