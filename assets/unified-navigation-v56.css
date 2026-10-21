@@ -1,0 +1,59 @@
+/* Connect v56: one visual language for all sections, directories and nested bottom sheets. */
+.connect56-page-banner,.app56-intro{display:flex;align-items:center;justify-content:space-between;gap:16px;padding:16px 19px;margin:10px 0 19px;border-radius:18px;border:1px solid #48515d;background:radial-gradient(circle at 94% 4%,rgba(210,171,112,.16),transparent 55%),linear-gradient(120deg,#202a34,#161e28);color:#f6f4ef}
+.connect56-banner-copy{display:flex;flex-direction:column;gap:4px;min-width:0}.connect56-banner-copy strong,.app56-intro strong{font-size:clamp(14px,2vw,18px);font-weight:800;letter-spacing:-.025em}.connect56-banner-copy span,.app56-intro p{font-size:12px;color:#bac6d0;line-height:1.6;margin:3px 0 0}
+.connect56-launch,.app56-sheet-button{flex:none;min-height:44px;padding:11px 15px;border-radius:12px;border:1px solid #e9c797;background:#e6c28f;color:#201d1a;font-weight:800;font-size:12px;cursor:pointer;white-space:nowrap}
+.connect56-launch:hover,.app56-sheet-button:hover{background:#ffdfa9}.connect56-launch:focus-visible,.app56-sheet-button:focus-visible{outline:3px solid #e6c28f;outline-offset:3px}
+.app56-intro{padding:clamp(20px,3vw,27px);margin:0 0 19px}.app56-intro p{max-width:69ch}
+#page-apps .hub-app-grid{grid-template-columns:repeat(auto-fill,minmax(min(100%,220px),1fr));gap:12px}
+#page-apps .hub-app-card.app56-card{border:1px solid #48525d;background:linear-gradient(155deg,#232c37,#19222d);border-radius:18px;min-height:228px;padding:18px;transition:border-color .17s,box-shadow .17s}
+#page-apps .hub-app-card.app56-card:hover{border-color:#d6b37c;box-shadow:0 10px 27px rgba(0,0,0,.18)}
+#page-apps .hub-app-card.app56-card h3{font-size:17px;line-height:1.3;color:#f9f5eb;letter-spacing:-.025em}
+#page-apps .hub-app-card.app56-card p{font-size:12px;line-height:1.6;color:#b9c6d0}
+#page-apps .hub-app-card.app56-card .hub-app-mark{border-radius:13px;background:#36393b;color:#f2ce91}
+#page-apps .hub-app-card.app56-card .hub-app-footer{margin-top:auto;flex-wrap:wrap}
+#page-apps .hub-app-card.app56-card a.hub-card-link{font-size:12px}
+#page-apps .hub-app-grid.is-list{grid-template-columns:1fr}
+#page-apps .hub-app-grid.is-list .hub-app-card.app56-card{min-height:0;display:grid;grid-template-columns:50px minmax(0,1fr) minmax(0,1.6fr) minmax(125px,auto);align-items:center;gap:13px}
+#page-apps .hub-app-grid.is-list .hub-app-card.app56-card .hub-app-meta{grid-column:2/-1}
+#page-apps .hub-app-grid.is-list .hub-app-card.app56-card .hub-app-footer{grid-column:2/-1;justify-content:flex-start}
+#page-apps .hub-app-filters{gap:8px;flex-wrap:wrap}
+#page-apps .hub-chip{min-height:40px;border-radius:11px}
+#page-apps .hub-app-controls :is(input,select){min-height:44px;border-radius:12px}
+.connect56-sheet .ct53-content .ct53-row{min-height:66px}
+.connect56-sheet .ct53-row-body strong{font-size:13px}
+.connect56-sheet .ct53-row-body small{font-size:11px}
+.connect56-sheet .ct53-tool-detail{padding-block:25px}
+.connect56-footer #connect-nav-view-full{background:#25303c;border:1px solid #68717a;border-radius:11px;color:#f2d2a2;font-weight:800;padding:10px 13px;font-size:12px;text-decoration:none;cursor:pointer}
+.connect56-footer #connect-nav-view-full:hover{background:#384554}
+.connect56-footer .ct54-bottom-back,.connect56-footer .ct54-bottom-close{display:none}
+#page-ai,#page-convert,#page-tools,#page-qr,#page-daily,#page-studios,#page-academy,#page-pc,#page-network,#page-apps,#page-play,#page-offers,#page-community,#page-dashboard,#page-account{--radius:19px}
+#page-ai :is(.page-header,.studio48-spotlight),#page-convert :is(.convert-intro,.studio48-spotlight),#page-qr :is(.qr-hero,.studio48-spotlight),#page-academy .hub-page-title,#page-apps .hub-page-title,#page-studios .hub-page-title{border-radius:18px}
+#page-ai :is(.ai-result,.puter-auth),#page-convert :is(.convert-tools,.convert-pane),#page-qr :is(.qr-editor-card,.qr-preview-card),#page-pc :is(.hub-panel,.connect-mas-command),#page-daily .daily-panel,#page-studios .hub-studio-card,#page-academy :is(.hub-panel,.hub-course-card),#page-network .speed-v46{border-color:#434e5a;border-radius:18px}
+.connect56-page-banner+.hub-page-title,.connect56-page-banner+.qt-heading{margin-top:3px}
+@media(max-width:1000px){#page-apps .hub-app-grid.is-list .hub-app-card.app56-card{grid-template-columns:48px minmax(0,1fr)}}
+@media(max-width:800px){
+ .connect56-page-banner,.app56-intro{padding:15px;gap:12px}
+ .connect56-launch,.app56-sheet-button{font-size:12px}
+ .connect56-sheet .ct53-head #connect-nav-top-back,.connect56-sheet .ct53-head #connect-nav-top-close{display:none!important}
+ .connect56-footer{display:grid!important;grid-template-columns:minmax(72px,.9fr) minmax(0,1.4fr) minmax(72px,.9fr);align-items:stretch;gap:8px;padding:12px 0 4px}
+ .connect56-footer small{display:none}
+ .connect56-footer .ct54-bottom-back,.connect56-footer .ct54-bottom-close{display:flex;min-height:52px;min-width:0;align-items:center;justify-content:center;gap:6px;border-radius:13px;font-size:13px;font-weight:800;text-decoration:none}
+ .connect56-footer .ct54-bottom-back{border:1px solid #627286;background:#283543;color:#f4dfbe}
+ .connect56-footer .ct54-bottom-back:disabled{opacity:.4}
+ .connect56-footer .ct54-bottom-close{border:1px solid #e7c68d;background:#e5c28c;color:#231f19}
+ .connect56-footer #connect-nav-view-full{min-height:52px;padding:7px 5px;font-size:clamp(10px,2.7vw,12px);line-height:1.25}
+ #page-apps .hub-app-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+ #page-apps .hub-app-card.app56-card{padding:13px;min-height:215px}
+ #page-apps .hub-app-card.app56-card h3{font-size:15px}
+ #page-apps .hub-app-grid.is-list .hub-app-card.app56-card{grid-template-columns:44px minmax(0,1fr)}
+}
+@media(max-width:540px){
+ .connect56-page-banner{padding:12px 13px}
+ .connect56-banner-copy strong{font-size:13px}
+ .connect56-banner-copy span{font-size:11px}
+ .connect56-launch{font-size:11px;white-space:normal;min-width:102px;padding:10px}
+ .app56-intro{flex-direction:column;align-items:stretch}
+ #page-apps .hub-app-grid{grid-template-columns:1fr}
+ #page-apps .hub-app-card.app56-card{min-height:0}
+}
+@media(prefers-reduced-motion:reduce){#page-apps .hub-app-card.app56-card{transition:none}}
