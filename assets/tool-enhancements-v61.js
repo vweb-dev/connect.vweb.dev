@@ -132,3 +132,58 @@ window.addEventListener('popstate',()=>requestAnimationFrame(refresh));
 window.addEventListener('pageshow',refresh);
 if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',refresh,{once:true});else refresh();
 })();
+
+
+/* v62: real workspace affordances without replacing existing processing engines. */
+(()=>{
+const route=()=>window.ConnectToolRoutes?.tools?.find(t=>t.path===location.pathname);
+let activeKey='',cleanup=()=>{};
+function init(){
+ const tool=route(),panel=document.querySelector('.tool59-selected');
+ if(!tool||!panel)return;
+ const key=tool.path;
+ if(key===activeKey&&document.querySelector('.tool62-workspace'))return;
+ cleanup();activeKey=key;
+ document.querySelectorAll('.tool62-workspace').forEach(n=>n.remove());
+ const controls=document.createElement('div');controls.className='tool62-workspace';
+ const heading=document.createElement('div');heading.className='tool62-workspace-intro';
+ heading.innerHTML='<strong>Workspace controls</strong><small>Work directly in this tool · no account required for local utilities</small>';
+ const buttons=document.createElement('div');buttons.className='tool62-workspace-buttons';
+ controls.append(heading,buttons);
+ const actions=[];
+ const add=(label,fn)=>{const b=document.createElement('button');b.type='button';b.className='tool62-button';b.textContent=label;b.addEventListener('click',fn);buttons.append(b);return b};
+ const fields=[...panel.querySelectorAll('textarea,input:not([type=hidden]),select')].filter(el=>!el.disabled);
+ const isPrivate=/password|activation|office|ai-|mas-/.test(tool.id)||tool.section==='ai';
+ const storageKey='connect.draft62.'+tool.id;
+ const textFields=fields.filter(el=>((el.tagName==='TEXTAREA')||(el.tagName==='INPUT'&&['text','search','url','email','number'].includes(el.type)))&&!el.readOnly&&!/password|token|key|secret/i.test(el.id+' '+el.name));
+ const textArea=textFields.find(x=>x.tagName==='TEXTAREA')||textFields[0];
+ if(textArea&&!isPrivate){
+  const save=add('Save draft',()=>{try{localStorage.setItem(storageKey,JSON.stringify(textFields.map(x=>({id:x.id,name:x.name,value:x.value}))));save.textContent='✓ Draft saved';setTimeout(()=>save.textContent='Save draft',1400)}catch{save.textContent='Storage unavailable'}});
+  add('Restore draft',()=>{try{const items=JSON.parse(localStorage.getItem(storageKey)||'[]');for(const item of items){const field=textFields.find(f=>(item.id&&f.id===item.id)||(item.name&&f.name===item.name));if(field){field.value=item.value;field.dispatchEvent(new Event('input',{bubbles:true}));field.dispatchEvent(new Event('change',{bubbles:true}));}}}catch{}});
+  add('Clear draft',()=>{try{localStorage.removeItem(storageKey)}catch{}});
+ }
+ if(textArea)add('Clear input',()=>{textArea.value='';textArea.dispatchEvent(new Event('input',{bubbles:true}));textArea.focus()});
+ const outputs=[...panel.querySelectorAll('output,pre,textarea[readonly],[data-output],[data-result]')];
+ if(outputs.length)add('Download result',()=>{const item=outputs.map(n=>('value'in n?n.value:n.textContent)||'').filter(v=>v.trim()).pop();if(!item)return;const type=/json/i.test(tool.id)?'application/json':'text/plain';const ext=/json/i.test(tool.id)?'.json':'.txt';const blob=new Blob([item],{type:type+';charset=utf-8'}),url=URL.createObjectURL(blob),link=document.createElement('a');link.href=url;link.download='connect-'+tool.id+ext;link.click();setTimeout(()=>URL.revokeObjectURL(url),1000)});
+ const fileInputs=fields.filter(x=>x.type==='file');
+ if(fileInputs.length){
+  for(const input of fileInputs){
+   const zone=document.createElement('div');zone.className='tool62-dropzone';zone.tabIndex=0;zone.setAttribute('role','button');zone.setAttribute('aria-label','Choose or drop files');
+   const display=document.createElement('span');display.textContent='Drop files here, or choose files';zone.append(display);
+   const status=()=>{const files=[...(input.files||[])];display.textContent=files.length?files.map(f=>f.name).slice(0,3).join(', ')+(files.length>3?' +'+(files.length-3)+' more':''):'Drop files here, or choose files'};
+   zone.addEventListener('click',()=>input.click());zone.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();input.click()}});
+   const drag=e=>{e.preventDefault();zone.classList.add('dragover')};zone.addEventListener('dragover',drag);zone.addEventListener('dragleave',()=>zone.classList.remove('dragover'));
+   zone.addEventListener('drop',e=>{e.preventDefault();zone.classList.remove('dragover');if(!e.dataTransfer?.files?.length)return;try{const transfer=new DataTransfer();const allowed=[...e.dataTransfer.files].slice(0,input.multiple?50:1);allowed.forEach(f=>transfer.items.add(f));input.files=transfer.files;input.dispatchEvent(new Event('change',{bubbles:true}));status()}catch{display.textContent='Use Choose files in this browser'}});
+   input.addEventListener('change',status);input.insertAdjacentElement('afterend',zone);actions.push(()=>{input.removeEventListener('change',status);zone.remove()});status();
+  }
+ }
+ if(!buttons.children.length&&!fileInputs.length)return;
+ const target=panel.querySelector('.tool-card')||panel;target.prepend(controls);
+ cleanup=()=>{actions.forEach(fn=>fn());controls.remove()};
+}
+window.addEventListener('popstate',()=>setTimeout(init,80));
+window.addEventListener('pageshow',()=>setTimeout(init,100));
+window.addEventListener('connect:tool-route',()=>setTimeout(init,80));
+document.addEventListener('DOMContentLoaded',()=>setTimeout(init,150),{once:true});
+if(document.readyState!=='loading')setTimeout(init,150);
+})();
