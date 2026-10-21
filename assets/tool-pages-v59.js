@@ -19,6 +19,7 @@
   for(const el of document.querySelectorAll('.tool59-hidden,.tool59-branch,.tool59-selected'))el.classList.remove('tool59-hidden','tool59-branch','tool59-selected');
   root.removeAttribute('data-connect-tool-route');root.removeAttribute('data-connect-tool-directory');root.removeAttribute('data-connect-course-route');
   for(const id of ['connect-tool59-hero','connect-tool59-related','connect-tool59-directory'])$(id)?.remove();
+  document.querySelectorAll('.tool59-related').forEach(n=>n.remove());
  }
  function relatedList(tool){
   const nav=el('nav','tool59-related');nav.id='connect-tool59-related';nav.setAttribute('aria-label','Related tools');
@@ -94,7 +95,7 @@
   }
   if(tool.section==='qr')page.querySelector('.qr-type-tabs')?.classList.add('tool59-hidden');
   suppressOtherTopLevel(page);
-  const related=relatedList(tool);page.insertBefore(related,selected.closest('.tool59-branch')||null);
+  const related=relatedList(tool);const hero=$('connect-tool59-hero');page.insertBefore(related,hero?.nextSibling||page.firstChild);
   /* For PHP-served pages, intro/related already appeared server-side. We normalize
      them in the client so the same result appears after History API transitions. */
  }
