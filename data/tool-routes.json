@@ -1,0 +1,495 @@
+{
+  "version": 59,
+  "tools": [
+    {
+      "id": "password",
+      "title": "Password Generator",
+      "description": "Random passwords, length and symbols",
+      "section": "tools",
+      "mode": "quick",
+      "target": "password",
+      "slug": "password-generator",
+      "path": "/tools/password-generator"
+    },
+    {
+      "id": "text",
+      "title": "Text Studio",
+      "description": "Word count, uppercase and cleanup",
+      "section": "tools",
+      "mode": "quick",
+      "target": "text",
+      "slug": "text-studio",
+      "path": "/tools/text-studio"
+    },
+    {
+      "id": "units",
+      "title": "Unit Converter",
+      "description": "Length, weight, area and temperature",
+      "section": "tools",
+      "mode": "quick",
+      "target": "units",
+      "slug": "unit-converter",
+      "path": "/tools/unit-converter"
+    },
+    {
+      "id": "compress",
+      "title": "Image Compressor",
+      "description": "Compress JPG, PNG and WebP images",
+      "section": "tools",
+      "mode": "quick",
+      "target": "compress",
+      "slug": "image-compressor",
+      "path": "/tools/image-compressor"
+    },
+    {
+      "id": "csv",
+      "title": "CSV to JSON",
+      "description": "Convert CSV rows to JSON locally",
+      "section": "tools",
+      "mode": "quick",
+      "target": "csv",
+      "slug": "csv-to-json",
+      "path": "/tools/csv-to-json"
+    },
+    {
+      "id": "json",
+      "title": "JSON Formatter",
+      "description": "Format, validate and minify JSON",
+      "section": "tools",
+      "mode": "quick",
+      "target": "json",
+      "slug": "json-formatter",
+      "path": "/tools/json-formatter"
+    },
+    {
+      "id": "encode",
+      "title": "Text Encoder / Decoder",
+      "description": "URL and Base64 conversion",
+      "section": "tools",
+      "mode": "quick",
+      "target": "encode",
+      "slug": "text-encoder",
+      "path": "/tools/text-encoder"
+    },
+    {
+      "id": "hash",
+      "title": "SHA-256 Hash",
+      "description": "Generate a text fingerprint",
+      "section": "tools",
+      "mode": "quick",
+      "target": "hash",
+      "slug": "sha256-hash",
+      "path": "/tools/sha256-hash"
+    },
+    {
+      "id": "uuid",
+      "title": "UUID Generator",
+      "description": "Create random identifiers",
+      "section": "tools",
+      "mode": "quick",
+      "target": "uuid",
+      "slug": "uuid-generator",
+      "path": "/tools/uuid-generator"
+    },
+    {
+      "id": "contrast",
+      "title": "Color Contrast Checker",
+      "description": "WCAG text readability checks",
+      "section": "tools",
+      "mode": "quick",
+      "target": "contrast",
+      "slug": "color-contrast-checker",
+      "path": "/tools/color-contrast-checker"
+    },
+    {
+      "id": "image-lab",
+      "title": "Image Lab",
+      "description": "Convert, resize and optimize images",
+      "section": "convert",
+      "mode": "tab",
+      "target": "convert-tab-image",
+      "slug": "image",
+      "path": "/convert/image"
+    },
+    {
+      "id": "pdf-lab",
+      "title": "PDF Lab",
+      "description": "PDF extraction and browser tools",
+      "section": "convert",
+      "mode": "tab",
+      "target": "convert-tab-pdf",
+      "slug": "pdf",
+      "path": "/convert/pdf"
+    },
+    {
+      "id": "audio-lab",
+      "title": "Audio Lab",
+      "description": "Audio trimming and conversion tools",
+      "section": "convert",
+      "mode": "tab",
+      "target": "convert-tab-audio",
+      "slug": "audio",
+      "path": "/convert/audio"
+    },
+    {
+      "id": "video-lab",
+      "title": "Video Lab",
+      "description": "Video previews and supported exports",
+      "section": "convert",
+      "mode": "tab",
+      "target": "convert-tab-video",
+      "slug": "video",
+      "path": "/convert/video"
+    },
+    {
+      "id": "quick-qr",
+      "title": "Quick QR Generator",
+      "description": "Simple link, Wi-Fi or contact QR",
+      "section": "tools",
+      "mode": "quick",
+      "target": "qr",
+      "slug": "qr-generator",
+      "path": "/tools/qr-generator"
+    },
+    {
+      "id": "qr-url",
+      "title": "Website QR",
+      "description": "Link to a website or page",
+      "section": "qr",
+      "mode": "qr",
+      "target": "url",
+      "slug": "website",
+      "path": "/qr/website"
+    },
+    {
+      "id": "qr-text",
+      "title": "Text QR",
+      "description": "Store plain text in a QR code",
+      "section": "qr",
+      "mode": "qr",
+      "target": "text",
+      "slug": "text",
+      "path": "/qr/text"
+    },
+    {
+      "id": "qr-wifi",
+      "title": "Wi-Fi QR",
+      "description": "Share network credentials by scanning",
+      "section": "qr",
+      "mode": "qr",
+      "target": "wifi",
+      "slug": "wifi",
+      "path": "/qr/wifi"
+    },
+    {
+      "id": "qr-whatsapp",
+      "title": "WhatsApp QR",
+      "description": "Start a WhatsApp conversation",
+      "section": "qr",
+      "mode": "qr",
+      "target": "whatsapp",
+      "slug": "whatsapp",
+      "path": "/qr/whatsapp"
+    },
+    {
+      "id": "qr-contact",
+      "title": "Contact QR",
+      "description": "Share a vCard contact",
+      "section": "qr",
+      "mode": "qr",
+      "target": "contact",
+      "slug": "contact",
+      "path": "/qr/contact"
+    },
+    {
+      "id": "qr-email",
+      "title": "Email QR",
+      "description": "Prefill an email message",
+      "section": "qr",
+      "mode": "qr",
+      "target": "email",
+      "slug": "email",
+      "path": "/qr/email"
+    },
+    {
+      "id": "qr-sms",
+      "title": "SMS QR",
+      "description": "Prefill a text message",
+      "section": "qr",
+      "mode": "qr",
+      "target": "sms",
+      "slug": "sms",
+      "path": "/qr/sms"
+    },
+    {
+      "id": "qr-phone",
+      "title": "Phone QR",
+      "description": "Provide a phone dialing action",
+      "section": "qr",
+      "mode": "qr",
+      "target": "phone",
+      "slug": "phone",
+      "path": "/qr/phone"
+    },
+    {
+      "id": "qr-location",
+      "title": "Location QR",
+      "description": "Share geographic coordinates",
+      "section": "qr",
+      "mode": "qr",
+      "target": "location",
+      "slug": "location",
+      "path": "/qr/location"
+    },
+    {
+      "id": "qr-event",
+      "title": "Event QR",
+      "description": "Share event details",
+      "section": "qr",
+      "mode": "qr",
+      "target": "event",
+      "slug": "event",
+      "path": "/qr/event"
+    },
+    {
+      "id": "qr-designer",
+      "title": "QR Designer",
+      "description": "Patterns, logo, gradients and exports",
+      "section": "qr",
+      "mode": "focus",
+      "target": "qr-design",
+      "slug": "designer",
+      "path": "/qr/designer"
+    },
+    {
+      "id": "ai-chat",
+      "title": "AI Chat",
+      "description": "Ask questions and draft content",
+      "section": "ai",
+      "mode": "tab",
+      "target": "ai-tab-chat",
+      "slug": "chat",
+      "path": "/ai/chat"
+    },
+    {
+      "id": "ai-image",
+      "title": "AI Image",
+      "description": "Generate an image from text",
+      "section": "ai",
+      "mode": "tab",
+      "target": "ai-tab-image",
+      "slug": "image",
+      "path": "/ai/image"
+    },
+    {
+      "id": "ai-video",
+      "title": "AI Video",
+      "description": "Create or test video generation",
+      "section": "ai",
+      "mode": "tab",
+      "target": "ai-tab-video",
+      "slug": "video",
+      "path": "/ai/video"
+    },
+    {
+      "id": "ai-caption",
+      "title": "AI Captions",
+      "description": "Write social captions and ideas",
+      "section": "ai",
+      "mode": "tab",
+      "target": "ai-tab-caption",
+      "slug": "captions",
+      "path": "/ai/captions"
+    },
+    {
+      "id": "daily-tasks",
+      "title": "To-do List",
+      "description": "Add and complete tasks on this device",
+      "section": "daily",
+      "mode": "focus",
+      "target": "daily-task-input",
+      "slug": "tasks",
+      "path": "/daily/tasks"
+    },
+    {
+      "id": "daily-notes",
+      "title": "Quick Notes",
+      "description": "Autosave notes and export text",
+      "section": "daily",
+      "mode": "focus",
+      "target": "daily-note",
+      "slug": "notes",
+      "path": "/daily/notes"
+    },
+    {
+      "id": "daily-timer",
+      "title": "Focus Timer",
+      "description": "25-minute focus session",
+      "section": "daily",
+      "mode": "focus",
+      "target": "daily-start",
+      "slug": "focus-timer",
+      "path": "/daily/focus-timer"
+    },
+    {
+      "id": "daily-currency",
+      "title": "Currency Converter",
+      "description": "Daily reference exchange rates",
+      "section": "daily",
+      "mode": "focus",
+      "target": "daily-amount",
+      "slug": "currency-converter",
+      "path": "/daily/currency-converter"
+    },
+    {
+      "id": "daily-text",
+      "title": "Text & Clipboard",
+      "description": "Clean, count, transform and copy text",
+      "section": "daily",
+      "mode": "focus",
+      "target": "daily-text-tool",
+      "slug": "text-toolkit",
+      "path": "/daily/text-toolkit"
+    },
+    {
+      "id": "daily-password",
+      "title": "Secure Passwords",
+      "description": "Browser cryptographic password generator",
+      "section": "daily",
+      "mode": "focus",
+      "target": "daily-password-length",
+      "slug": "password-generator",
+      "path": "/daily/password-generator"
+    },
+    {
+      "id": "daily-date",
+      "title": "Date Calculator",
+      "description": "Measure days between dates",
+      "section": "daily",
+      "mode": "focus",
+      "target": "daily-date-start",
+      "slug": "date-calculator",
+      "path": "/daily/date-calculator"
+    },
+    {
+      "id": "daily-backup",
+      "title": "Notes & Task Backup",
+      "description": "Export or import local JSON",
+      "section": "daily",
+      "mode": "focus",
+      "target": "daily-backup-export",
+      "slug": "notes-backup",
+      "path": "/daily/notes-backup"
+    },
+    {
+      "id": "daily-dictionary",
+      "title": "Dictionary",
+      "description": "Look up English word definitions",
+      "section": "daily",
+      "mode": "focus",
+      "target": "daily-word",
+      "slug": "dictionary",
+      "path": "/daily/dictionary"
+    },
+    {
+      "id": "daily-books",
+      "title": "Book Discovery",
+      "description": "Search titles in Open Library",
+      "section": "daily",
+      "mode": "focus",
+      "target": "daily-book",
+      "slug": "book-search",
+      "path": "/daily/book-search"
+    },
+    {
+      "id": "daily-calculator",
+      "title": "Calculator",
+      "description": "Arithmetic and percentages",
+      "section": "daily",
+      "mode": "focus",
+      "target": "daily-calc-a",
+      "slug": "calculator",
+      "path": "/daily/calculator"
+    },
+    {
+      "id": "daily-seo",
+      "title": "SEO Snippet Checker",
+      "description": "Review page title and meta length",
+      "section": "daily",
+      "mode": "focus",
+      "target": "daily-seo-title",
+      "slug": "seo-snippet-checker",
+      "path": "/daily/seo-snippet-checker"
+    },
+    {
+      "id": "windows-activation",
+      "title": "Windows Activation",
+      "description": "Windows license status, Microsoft guidance and MAS reference",
+      "section": "pc",
+      "mode": "focus",
+      "target": "mas-quickstart",
+      "slug": "activation",
+      "path": "/windows/activation"
+    },
+    {
+      "id": "office-activation",
+      "title": "Office Activation",
+      "description": "Microsoft 365 / Office account and licensing troubleshooting",
+      "section": "pc",
+      "mode": "office",
+      "target": "hub-activation-case",
+      "slug": "office-activation",
+      "path": "/windows/office-activation"
+    },
+    {
+      "id": "activation-diagnostics",
+      "title": "Activation Diagnostics",
+      "description": "Safe Windows license status checks and diagnostics",
+      "section": "pc",
+      "mode": "focus",
+      "target": "windows-license-diagnostics",
+      "slug": "license-diagnostics",
+      "path": "/windows/license-diagnostics"
+    },
+    {
+      "id": "mas-methods",
+      "title": "MAS Documentation",
+      "description": "Original Massgrave repository and licensing cautions",
+      "section": "pc",
+      "mode": "expand",
+      "target": "mas-guide",
+      "slug": "mas-documentation",
+      "path": "/windows/mas-documentation"
+    },
+    {
+      "id": "winget",
+      "title": "WinGet App Installer",
+      "description": "Find apps and build install commands",
+      "section": "pc",
+      "mode": "focus",
+      "target": "hub-winget-search",
+      "slug": "winget-installer",
+      "path": "/windows/winget-installer"
+    },
+    {
+      "id": "windows-help",
+      "title": "Windows & Office Help",
+      "description": "Diagnostics, licensing and guides",
+      "section": "pc",
+      "mode": "focus",
+      "target": "windows-license-diagnostics",
+      "slug": "windows-help",
+      "path": "/windows/windows-help"
+    },
+    {
+      "id": "speed-test",
+      "title": "Internet Speed Test",
+      "description": "Download, upload, ping and jitter",
+      "section": "network",
+      "mode": "focus",
+      "target": "connect-speed-start",
+      "slug": "speed-test",
+      "path": "/network/speed-test"
+    }
+  ]
+}
