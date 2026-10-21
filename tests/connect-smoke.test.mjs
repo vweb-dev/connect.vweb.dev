@@ -63,3 +63,18 @@ test('new shell and scripts use v60 assets',()=>{
   assert.ok(html.includes('/assets/'+asset+'?v=60'),'Unbusted script '+asset);
  }
 });
+
+
+test('search ranks real matching workspaces and returns canonical tool URLs',()=>{
+ const hub=read('assets/hub.js'),start=hub.indexOf('const searchToolRegistry='),end=hub.indexOf('function renderGlobalSearch(){',start);
+ assert.ok(start>=0&&end>start,'Search helper source missing');
+ const data=JSON.parse(read('data/connect-hub.json'));
+ const search=new Function('$','data',hub.slice(start,end)+';return searchIndex;')(
+  ()=>({textContent:read('data/tool-routes.json')}),data
+ );
+ const checks=[['qr wifi','/qr/wifi'],['json formatter','/tools/json-formatter'],['windows activation','/windows/activation'],['pdf','/convert/pdf'],['Power Tools','/apps']];
+ for(const [query,destination] of checks){
+  const found=search(query);assert.ok(found.length,'No matches for '+query);
+  assert.equal(found[0].destination,destination,'Wrong first result for '+query);
+ }
+});
