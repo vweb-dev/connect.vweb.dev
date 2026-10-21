@@ -1353,5 +1353,6 @@ $('#hub-update-reload').addEventListener('click',()=>location.reload());
 
 window.addEventListener('hashchange',trackVisit);
 window.addEventListener('connect:apps-favorites-changed',()=>{state=loadStore();try{renderDashboard();renderHome();}catch(error){console.warn('Could not refresh saved app panels',error);}});
+window.addEventListener('connect:select-course',event=>{const id=event.detail?.id;if(typeof id==='string'&&data.courses.some(c=>c.id===id)){setCourse(id,true);startLesson(lessonIndex);}});
 boot();
 })();
