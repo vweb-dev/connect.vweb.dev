@@ -71,6 +71,26 @@ function tipsFor(t){let preset=descriptions[t.mode]||descriptions.focus;if(t.sec
 function bookmark(t){const key='connect.tools.bookmarks61';try{let list=JSON.parse(localStorage.getItem(key)||'[]');if(!Array.isArray(list))list=[];list=list.includes(t.id)?list.filter(x=>x!==t.id):[t.id,...list].slice(0,40);localStorage.setItem(key,JSON.stringify(list));return list.includes(t.id)}catch{return false}}
 function saved(t){try{return (JSON.parse(localStorage.getItem('connect.tools.bookmarks61')||'[]')||[]).includes(t.id)}catch{return false}}
 function createButton(text,onClick){const b=create('button','tool61-action',text);b.type='button';b.addEventListener('click',onClick);return b}
+function liveInsight(t){
+ const config={
+  text:{id:'text-content',calculate:el=>{const v=el.value||'',words=v.trim()?v.trim().split(/\s+/).length:0;return words+' words · '+v.length+' characters · ~'+Math.ceil(words/225)+' min reading'}},
+  csv:{id:'csv-content',calculate:el=>{const rows=el.value.trim()?el.value.trim().split(/\r?\n/):[];return rows.length?'~'+Math.max(0,rows.length-1)+' data rows · '+rows[0].split(',').length+' header columns':'Paste a CSV to preview row and column counts'}},
+  json:{id:'hub-json-input',calculate:el=>{const v=el.value.trim();if(!v)return'Paste JSON to validate its structure';try{const parsed=JSON.parse(v);return '✓ Valid JSON · '+(Array.isArray(parsed)?parsed.length+' array items':parsed&&typeof parsed==='object'?Object.keys(parsed).length+' top-level keys':'Primitive value')}catch(e){return 'JSON needs attention · '+String(e.message).slice(0,95)}}},
+  encode:{id:'hub-encode-input',calculate:el=>(el.value.length+' input characters · Browser-side encoding')},
+  hash:{id:'hub-hash-input',calculate:el=>(el.value.length+' characters · SHA-256 is not reversible encryption')},
+  password:{id:'password-output',calculate:el=>{const v=el.value||'';if(!v)return'Generate a password to review its length';const kinds=[/[a-z]/,/[A-Z]/,/[0-9]/,/[^a-zA-Z0-9]/].filter(re=>re.test(v)).length;return v.length+' characters · '+kinds+' character groups · Keep this password private'}},
+  compress:{id:'image-file',calculate:el=>{const file=el.files?.[0];return file?file.name+' · '+(file.size/1024/1024).toFixed(2)+' MB input size':'Select an image to see file details before export'}}
+ };
+ const c=config[t.id];if(!c)return;
+ const field=$(c.id);if(!field)return;
+ let badge=field.parentElement?.querySelector('.tool61-live-insight');
+ if(!badge){badge=create('div','tool61-live-insight');field.insertAdjacentElement('afterend',badge);}
+ const update=()=>{badge.textContent=c.calculate(field);badge.classList.toggle('tool61-valid',badge.textContent.startsWith('✓'))};
+ if(!field.dataset.tool61Insight){field.dataset.tool61Insight='1';field.addEventListener('input',update);field.addEventListener('change',update);
+ if(t.id==='password')$('pass-create')?.addEventListener('click',()=>requestAnimationFrame(update));
+ }
+ update();
+}
 function activateTool(t){
  document.querySelectorAll('.tool61-toolbar,.tool61-guide').forEach(n=>n.remove());
  const hero=$('connect-tool59-hero');if(!hero)return;
@@ -88,6 +108,7 @@ function activateTool(t){
  const inner=create('div','tool61-guide-content'),list=create('ol','tool61-howto');
  tipsFor(t).forEach(s=>list.append(create('li','',s)));inner.append(list,create('p','tool61-hint',hints[t.id]||t.description));details.append(inner);
  const related=$('connect-tool59-related');if(related)related.after(details);else hero.after(details);
+ liveInsight(t);
 }
 function enhanceDirectory(){
  const root=$('connect-tool59-directory');if(!root||root.querySelector('.tool61-directory-search'))return;
