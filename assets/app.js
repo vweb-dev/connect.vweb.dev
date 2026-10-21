@@ -2,15 +2,16 @@
 (function () {
 var $ = function (s) { return document.querySelector(s); };
 var $$ = function (s) { return Array.from(document.querySelectorAll(s)); };
-var routes=['home','studios','academy','network','pc','apps','dashboard','convert','tools','qr','ai','play','offers','community','account'];
+var routes=['home','daily','studios','academy','network','pc','apps','dashboard','convert','tools','qr','ai','play','offers','community','account'];
 
 var contextTitles={
- home:'Overview',studios:'Workspaces',academy:'Learn / LMS',pc:'Windows & Office Help',
+ home:'Overview',daily:'Daily Desk',studios:'Workspaces',academy:'Learn / LMS',pc:'Windows & Office Help',
  apps:'App Directory',dashboard:'My Workspace',convert:'File Converter',tools:'Quick Actions',qr:'QR Code Studio',
  ai:'AI Studio',play:'Games & Quizzes',
  offers:'Deals',community:'Local & Learn',account:'My Account'
 };
 var contextRelated={
+ daily:[['#tools','Quick actions'],['#convert','Convert files'],['#qr','QR codes']],
  studios:[['#tools','Quick actions'],['#convert','File converter'],['#apps','App directory']],
  academy:[['#dashboard','My progress'],['#apps','Useful apps'],['#tools','Quick actions']],
  pc:[['#apps','Software directory'],['#tools','Browser tools'],['#academy','Learn Windows']],
