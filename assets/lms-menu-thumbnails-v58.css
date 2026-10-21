@@ -1,0 +1,45 @@
+/* LMS course thumbnails in the unified Connect section explorer, v58 */
+#connect-nav-sheet .lms58-course-row{gap:12px;min-height:91px;align-items:center}
+#connect-nav-sheet .lms58-thumbnail{
+ display:grid;place-items:center;overflow:hidden;flex:0 0 112px;
+ width:112px;aspect-ratio:16/9;border-radius:11px;
+ border:1px solid rgba(219,185,135,.38);background:#303945;
+ box-shadow:0 3px 12px rgba(0,0,0,.16)
+}
+#connect-nav-sheet .lms58-thumbnail-image{width:100%;height:100%;object-fit:cover;display:block}
+#connect-nav-sheet .lms58-thumbnail-fallback{font-size:25px;color:#f2cc91;font-weight:850}
+#connect-nav-sheet .lms58-course-row .ct53-row-body{min-width:0}
+#connect-nav-sheet .lms58-course-row .ct53-row-body strong{
+ display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;
+ overflow:hidden;line-height:1.32;color:#f6f5f2
+}
+#connect-nav-sheet .lms58-course-row .ct53-row-body small{
+ display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;
+ overflow:hidden
+}
+#connect-nav-sheet .lms58-detail-thumbnail{
+ display:grid;place-items:center;overflow:hidden;aspect-ratio:16/9;
+ width:min(100%,390px);height:auto;margin:0 auto 20px;
+ border:1px solid #776447;border-radius:17px;
+ background:linear-gradient(140deg,#3e3a32,#25313a);
+ box-shadow:0 14px 36px rgba(0,0,0,.23)
+}
+#connect-nav-sheet .lms58-detail-thumbnail .lms58-thumbnail-fallback{font-size:64px}
+@media(min-width:961px){
+ #connect-nav-sheet .ct53-content>.lms58-course-row{min-height:102px;padding:14px}
+ #connect-nav-sheet .lms58-thumbnail{width:118px;flex-basis:118px;border-radius:12px}
+ #connect-nav-sheet .lms58-course-row .ct53-chevron{font-size:19px}
+}
+@media(max-width:640px){
+ #connect-nav-sheet .lms58-course-row{padding:11px 10px;gap:10px}
+ #connect-nav-sheet .lms58-thumbnail{width:100px;flex-basis:100px;border-radius:10px}
+ #connect-nav-sheet .lms58-course-row .ct53-chevron{font-size:17px}
+ #connect-nav-sheet .lms58-detail-thumbnail{max-width:320px;border-radius:14px}
+}
+@media(max-width:355px){
+ #connect-nav-sheet .lms58-thumbnail{width:84px;flex-basis:84px}
+ #connect-nav-sheet .lms58-course-row .ct53-row-body strong{font-size:12px}
+}
+@media(prefers-reduced-motion:reduce){
+ #connect-nav-sheet .lms58-thumbnail-image{transition:none}
+}
