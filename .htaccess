@@ -1,5 +1,5 @@
 Options -Indexes
-DirectoryIndex index.html
+DirectoryIndex seo.php index.html
 <IfModule mod_headers.c>
 Header always set X-Content-Type-Options "nosniff"
 Header always set Referrer-Policy "strict-origin-when-cross-origin"
@@ -15,6 +15,8 @@ RewriteEngine On
 # Retired media catalog: block the old URL even if hosting retains the file.
 RewriteRule ^data/entertainment\.json$ - [G,L,NC]
 RewriteRule ^(?:\.git|vendor|node_modules)(?:/|$) - [F,L,NC]
+# Human-readable public URLs, dynamically rendered page metadata
+RewriteRule ^(?:tools|qr|convert|ai|academy|apps|pc|network|daily|studios|play|community|offers|dashboard|account)/?$ seo.php [L,QSA,NC]
 </IfModule>
 
 
