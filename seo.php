@@ -3,7 +3,7 @@ declare(strict_types=1);
 /* Server-rendered SEO metadata for public Connect routes. Shared UI remains in index.html. */
 $pages=[
  ''=>['VWEB.DEV Connect — Free Online Tools, Learning & Utilities','Free browser tools, QR codes, image and PDF utilities, software resources and practical learning in VWEB.DEV Connect.'],
- 'tools'=>['Quick Actions & Free Browser Tools | VWEB.DEV Connect','Use practical free browser utilities for text, developer checks, passwords and everyday tasks.'],
+ 'tools'=>['Free Online Tools — QR, PDF, AI & Utilities | VWEB.DEV Connect','Explore 45 practical tools for QR codes, PDFs, file conversion, AI, text, developers, accessibility, daily productivity and internet diagnostics.'],
  'qr'=>['QR Code Studio — Custom QR Generator | VWEB.DEV Connect','Create and customize QR codes for links, Wi-Fi, contacts and WhatsApp with a browser-based QR studio.'],
  'convert'=>['Convert Studio — Image, PDF & Media Tools | VWEB.DEV Connect','Convert images, work with PDFs and explore browser-based audio and video utilities.'],
  'ai'=>['AI Studio — AI Chat, Images & Creative Tools | VWEB.DEV Connect','Explore AI chat, image generation, video and caption tools powered by your Puter account.'],
