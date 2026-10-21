@@ -70,6 +70,10 @@ const all=groups.flatMap(group=>group.items.map(item=>({...item,group:group.id,g
 const byId=new Map(all.map(item=>[item.id,item]));
 let saved=[];try{saved=JSON.parse(localStorage.getItem('connect.tools.pins.v53')||'[]');if(!Array.isArray(saved))saved=[];}catch{}saved=saved.filter(id=>byId.has(id)).slice(0,24);
 function savePins(){try{localStorage.setItem('connect.tools.pins.v53',JSON.stringify(saved));}catch{}}
+let recent=[];try{recent=JSON.parse(localStorage.getItem('connect.tools.recent.v53')||'[]');if(!Array.isArray(recent))recent=[];}catch{}
+recent=recent.filter(id=>byId.has(id)).slice(0,9);
+function remember(item){recent=[item.id,...recent.filter(x=>x!==item.id)].slice(0,9);try{localStorage.setItem('connect.tools.recent.v53',JSON.stringify(recent));}catch{}}
+
 const backdrop=$('connect-tools-overlay'),sheet=$('connect-tools-sheet'),content=$('connect-tools-content'),search=$('connect-tools-search'),back=$('connect-tools-back'),heading=$('connect-tools-heading'),hint=$('connect-tools-subheading');
 if(!backdrop||!sheet||!content||!search)return;
 let stage='groups',currentGroup=null,currentItem=null,focusReturn=null;
@@ -100,6 +104,7 @@ function render(){
  if(stage==='groups'){
   setHeader('Explore tools',count(all.length)+' · '+groups.length+' categories');
   if(saved.length){const title=element('div','ct53-section-label','★ SAVED TOOLS');content.append(title);saved.map(id=>byId.get(id)).filter(Boolean).forEach(item=>content.append(row(item,()=>choose(item))));}
+  if(recent.length){content.append(element('div','ct53-section-label','↺ RECENTLY USED'));recent.slice(0,4).map(id=>byId.get(id)).filter(Boolean).forEach(item=>content.append(row(item,()=>choose(item))));}
   content.append(element('div','ct53-section-label','ALL CATEGORIES'));
   groups.forEach(group=>{
    const button=element('button','ct53-row ct53-category');
@@ -124,7 +129,10 @@ function render(){
   const open=element('button','ct53-primary','Open '+item.title+' ↗');open.type='button';open.addEventListener('click',()=>launch(item));
   const pin=element('button','ct53-secondary',saved.includes(item.id)?'★ Saved':'☆ Save tool');pin.type='button';pin.setAttribute('aria-pressed',String(saved.includes(item.id)));
   pin.addEventListener('click',()=>{saved=saved.includes(item.id)?saved.filter(id=>id!==item.id):[item.id,...saved].slice(0,24);savePins();render();});
-  actions.append(open,pin);info.append(actions);content.append(info);
+  actions.append(open,pin);info.append(actions);
+  const related=(groups.find(group=>group.id===item.group)?.items||[]).filter(candidate=>candidate.id!==item.id).slice(0,3);
+  if(related.length){info.append(element('div','ct53-section-label','RELATED TOOLS'));const links=element('div','ct53-related');related.forEach(other=>{const b=element('button','ct53-related-link',other.title+' ↗');b.type='button';b.addEventListener('click',()=>choose(byId.get(other.id)));links.append(b);});info.append(links);}
+  content.append(info);
  }
 }
 function choose(item){currentItem=item;stage='detail';render();}
@@ -138,6 +146,7 @@ function reveal(item){
  const target=$(item.target);if(target){target.scrollIntoView({block:'center',behavior:'smooth'});if(target.matches('input,textarea,select'))target.focus({preventScroll:true});}
 }
 function launch(item){
+ remember(item);
  closeSheet();
  const next=item.path+'?tool='+encodeURIComponent(item.id);
  if(location.pathname!==item.path||location.search!==new URL(next,location.origin).search){
