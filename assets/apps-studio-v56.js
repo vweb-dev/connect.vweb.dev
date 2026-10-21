@@ -10,7 +10,7 @@
  const refs=['hub-app-search','hub-app-kind','hub-app-sort','hub-app-categories','hub-app-count','hub-app-more','hub-app-view-grid','hub-app-view-list','hub-app-reset'];
  if(refs.some(id=>!$(id)))return;
  const key='vweb.connect20.v1',featured=['powertoys','7zip','vscode','vlc','gimp','firefox','brave','obsidian','excalidraw','localsend','it-tools','vert'];
- let category='All',kind='All',sort='featured',search='',limit=24,layout='grid';
+ let category='All',kind='All',sort='featured',search=(new URLSearchParams(location.search).get('q')||'').trim().toLowerCase().slice(0,120),limit=24,layout='grid';
  const elt=(tag,cls,value)=>{const el=document.createElement(tag);if(cls)el.className=cls;if(value!=null)el.textContent=String(value);return el;};
  const stored=()=>{try{const value=JSON.parse(localStorage.getItem(key)||'{}');return value&&typeof value==='object'&&!Array.isArray(value)?value:{};}catch{return {};}};
  const favoriteIds=()=>{const favs=stored().favorites;return Array.isArray(favs)?favs.filter(v=>typeof v==='string'):[];};
@@ -52,6 +52,7 @@
  document.querySelectorAll('[data-app-shortcut]').forEach(button=>button.addEventListener('click',()=>{category=button.dataset.appShortcut;kind='All';search='';limit=24;$('hub-app-search').value='';$('hub-app-kind').value='All';render();}));
  window.addEventListener('storage',event=>{if(event.key===key)render();});
  window.addEventListener('connect:apps-open-category',event=>{category=categories.includes(event.detail?.category)?event.detail.category:'All';search='';limit=24;render();});
+ $('hub-app-search').value=search;
  window.ConnectApps={render,apps,categories,chooseCategory:(value)=>{category=categories.includes(value)?value:'All';search='';limit=24;render();}};
  render();
 })();
