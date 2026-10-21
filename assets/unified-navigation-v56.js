@@ -54,6 +54,7 @@ const sections=Object.keys(sectionTitles);
 const title=$('connect-nav-heading'),subtitle=$('connect-nav-subheading'),topBack=$('connect-nav-top-back'),bottomBack=$('connect-nav-bottom-back'),center=$('connect-nav-view-full');
 function go(url,{courseId,appCategory}={}){
  close();const destination=new URL(url,location.origin);
+ if(destination.origin===location.origin&&destination.pathname==='/tools'&&!destination.search){$('connect-tools-launch')?.click();return;}
  if(destination.origin!==location.origin){window.open(destination.href,'_blank','noopener,noreferrer');return;}
  if(location.pathname!==destination.pathname||location.search!==destination.search||location.hash){history.pushState(null,'',destination.pathname+destination.search);window.dispatchEvent(new Event('popstate'));}
  if(courseId)window.dispatchEvent(new CustomEvent('connect:select-course',{detail:{id:courseId}}));
