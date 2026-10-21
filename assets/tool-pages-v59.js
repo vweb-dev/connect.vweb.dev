@@ -137,6 +137,13 @@
   ancestors(classroom,page);
   suppressOtherTopLevel(page);
  }
+ function syncHead(title,description,current){
+  const canonical=document.querySelector('link[rel="canonical"]');
+  if(canonical)canonical.href=location.origin+current;
+  if(title)document.title=title;
+  const values={'meta[name="description"]':description,'meta[property="og:title"]':title,'meta[property="og:description"]':description,'meta[property="og:url"]':location.origin+current};
+  for(const [selector,value] of Object.entries(values)){const tag=document.querySelector(selector);if(tag&&value)tag.setAttribute('content',value);}
+ }
  function update(){
   const current=path();
   const requested=byPath.get(current),course=byCourse.get(current);
@@ -148,9 +155,19 @@
    update();return;
   }
   clear();
-  if(requested)applyTool(requested);
-  else if(course)applyCourse(course);
-  else if(areas.has(base)&&current==='/'+base)directory(base);
+  if(requested){
+   const prefix=requested.section==='ai'?'AI Studio':(requested.section==='pc'?'Windows & Office Guide':'Online Tool');
+   syncHead(requested.title+' — '+prefix+' | VWEB.DEV Connect',requested.description+'. Open a dedicated workspace on VWEB.DEV Connect.',current);
+   applyTool(requested);
+  }else if(course){
+   syncHead(course.title+' — Free Course | VWEB.DEV Connect','Continue the free creator-led course and track your own progress.',current);
+   applyCourse(course);
+  }else if(areas.has(base)&&current==='/'+base){
+   syncHead((categories[base]||'Tools')+' | VWEB.DEV Connect','Browse individual online tools and open a focused workspace.',current);
+   directory(base);
+  }else{
+   const canonical=document.querySelector('link[rel="canonical"]');if(canonical)canonical.href=location.origin+current;
+  }
  }
  const registry={tools,byId,getPath:id=>byId.get(id)?.path||null,getByPath:p=>byPath.get(p)||null,update};
  window.ConnectToolRoutes=registry;
