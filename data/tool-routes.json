@@ -9,7 +9,8 @@
       "mode": "quick",
       "target": "password",
       "slug": "password-generator",
-      "path": "/tools/password-generator"
+      "path": "/tools/password-generator",
+      "group": "quick"
     },
     {
       "id": "text",
@@ -19,7 +20,8 @@
       "mode": "quick",
       "target": "text",
       "slug": "text-studio",
-      "path": "/tools/text-studio"
+      "path": "/tools/text-studio",
+      "group": "quick"
     },
     {
       "id": "units",
@@ -29,7 +31,8 @@
       "mode": "quick",
       "target": "units",
       "slug": "unit-converter",
-      "path": "/tools/unit-converter"
+      "path": "/tools/unit-converter",
+      "group": "quick"
     },
     {
       "id": "compress",
@@ -39,7 +42,8 @@
       "mode": "quick",
       "target": "compress",
       "slug": "image-compressor",
-      "path": "/tools/image-compressor"
+      "path": "/tools/image-compressor",
+      "group": "quick"
     },
     {
       "id": "csv",
@@ -49,7 +53,8 @@
       "mode": "quick",
       "target": "csv",
       "slug": "csv-to-json",
-      "path": "/tools/csv-to-json"
+      "path": "/tools/csv-to-json",
+      "group": "developer"
     },
     {
       "id": "json",
@@ -59,7 +64,8 @@
       "mode": "quick",
       "target": "json",
       "slug": "json-formatter",
-      "path": "/tools/json-formatter"
+      "path": "/tools/json-formatter",
+      "group": "developer"
     },
     {
       "id": "encode",
@@ -69,7 +75,8 @@
       "mode": "quick",
       "target": "encode",
       "slug": "text-encoder",
-      "path": "/tools/text-encoder"
+      "path": "/tools/text-encoder",
+      "group": "developer"
     },
     {
       "id": "hash",
@@ -79,7 +86,8 @@
       "mode": "quick",
       "target": "hash",
       "slug": "sha256-hash",
-      "path": "/tools/sha256-hash"
+      "path": "/tools/sha256-hash",
+      "group": "developer"
     },
     {
       "id": "uuid",
@@ -89,7 +97,8 @@
       "mode": "quick",
       "target": "uuid",
       "slug": "uuid-generator",
-      "path": "/tools/uuid-generator"
+      "path": "/tools/uuid-generator",
+      "group": "developer"
     },
     {
       "id": "contrast",
@@ -99,7 +108,8 @@
       "mode": "quick",
       "target": "contrast",
       "slug": "color-contrast-checker",
-      "path": "/tools/color-contrast-checker"
+      "path": "/tools/color-contrast-checker",
+      "group": "design"
     },
     {
       "id": "image-lab",
@@ -109,7 +119,8 @@
       "mode": "tab",
       "target": "convert-tab-image",
       "slug": "image",
-      "path": "/convert/image"
+      "path": "/convert/image",
+      "group": "files"
     },
     {
       "id": "pdf-lab",
@@ -119,7 +130,8 @@
       "mode": "tab",
       "target": "convert-tab-pdf",
       "slug": "pdf",
-      "path": "/convert/pdf"
+      "path": "/convert/pdf",
+      "group": "files"
     },
     {
       "id": "audio-lab",
@@ -129,7 +141,8 @@
       "mode": "tab",
       "target": "convert-tab-audio",
       "slug": "audio",
-      "path": "/convert/audio"
+      "path": "/convert/audio",
+      "group": "files"
     },
     {
       "id": "video-lab",
@@ -139,7 +152,8 @@
       "mode": "tab",
       "target": "convert-tab-video",
       "slug": "video",
-      "path": "/convert/video"
+      "path": "/convert/video",
+      "group": "files"
     },
     {
       "id": "quick-qr",
@@ -149,7 +163,8 @@
       "mode": "quick",
       "target": "qr",
       "slug": "qr-generator",
-      "path": "/tools/qr-generator"
+      "path": "/tools/qr-generator",
+      "group": "qr"
     },
     {
       "id": "qr-url",
@@ -159,7 +174,8 @@
       "mode": "qr",
       "target": "url",
       "slug": "website",
-      "path": "/qr/website"
+      "path": "/qr/website",
+      "group": "qr"
     },
     {
       "id": "qr-text",
@@ -169,7 +185,8 @@
       "mode": "qr",
       "target": "text",
       "slug": "text",
-      "path": "/qr/text"
+      "path": "/qr/text",
+      "group": "qr"
     },
     {
       "id": "qr-wifi",
@@ -179,7 +196,8 @@
       "mode": "qr",
       "target": "wifi",
       "slug": "wifi",
-      "path": "/qr/wifi"
+      "path": "/qr/wifi",
+      "group": "qr"
     },
     {
       "id": "qr-whatsapp",
@@ -189,7 +207,8 @@
       "mode": "qr",
       "target": "whatsapp",
       "slug": "whatsapp",
-      "path": "/qr/whatsapp"
+      "path": "/qr/whatsapp",
+      "group": "qr"
     },
     {
       "id": "qr-contact",
@@ -199,7 +218,8 @@
       "mode": "qr",
       "target": "contact",
       "slug": "contact",
-      "path": "/qr/contact"
+      "path": "/qr/contact",
+      "group": "qr"
     },
     {
       "id": "qr-email",
@@ -209,7 +229,8 @@
       "mode": "qr",
       "target": "email",
       "slug": "email",
-      "path": "/qr/email"
+      "path": "/qr/email",
+      "group": "qr"
     },
     {
       "id": "qr-sms",
@@ -219,7 +240,8 @@
       "mode": "qr",
       "target": "sms",
       "slug": "sms",
-      "path": "/qr/sms"
+      "path": "/qr/sms",
+      "group": "qr"
     },
     {
       "id": "qr-phone",
@@ -229,7 +251,8 @@
       "mode": "qr",
       "target": "phone",
       "slug": "phone",
-      "path": "/qr/phone"
+      "path": "/qr/phone",
+      "group": "qr"
     },
     {
       "id": "qr-location",
@@ -239,7 +262,8 @@
       "mode": "qr",
       "target": "location",
       "slug": "location",
-      "path": "/qr/location"
+      "path": "/qr/location",
+      "group": "qr"
     },
     {
       "id": "qr-event",
@@ -249,7 +273,8 @@
       "mode": "qr",
       "target": "event",
       "slug": "event",
-      "path": "/qr/event"
+      "path": "/qr/event",
+      "group": "qr"
     },
     {
       "id": "qr-designer",
@@ -259,7 +284,8 @@
       "mode": "focus",
       "target": "qr-design",
       "slug": "designer",
-      "path": "/qr/designer"
+      "path": "/qr/designer",
+      "group": "qr"
     },
     {
       "id": "ai-chat",
@@ -269,7 +295,8 @@
       "mode": "tab",
       "target": "ai-tab-chat",
       "slug": "chat",
-      "path": "/ai/chat"
+      "path": "/ai/chat",
+      "group": "ai"
     },
     {
       "id": "ai-image",
@@ -279,7 +306,8 @@
       "mode": "tab",
       "target": "ai-tab-image",
       "slug": "image",
-      "path": "/ai/image"
+      "path": "/ai/image",
+      "group": "ai"
     },
     {
       "id": "ai-video",
@@ -289,7 +317,8 @@
       "mode": "tab",
       "target": "ai-tab-video",
       "slug": "video",
-      "path": "/ai/video"
+      "path": "/ai/video",
+      "group": "ai"
     },
     {
       "id": "ai-caption",
@@ -299,7 +328,8 @@
       "mode": "tab",
       "target": "ai-tab-caption",
       "slug": "captions",
-      "path": "/ai/captions"
+      "path": "/ai/captions",
+      "group": "ai"
     },
     {
       "id": "daily-tasks",
@@ -309,7 +339,8 @@
       "mode": "focus",
       "target": "daily-task-input",
       "slug": "tasks",
-      "path": "/daily/tasks"
+      "path": "/daily/tasks",
+      "group": "daily"
     },
     {
       "id": "daily-notes",
@@ -319,7 +350,8 @@
       "mode": "focus",
       "target": "daily-note",
       "slug": "notes",
-      "path": "/daily/notes"
+      "path": "/daily/notes",
+      "group": "daily"
     },
     {
       "id": "daily-timer",
@@ -329,7 +361,8 @@
       "mode": "focus",
       "target": "daily-start",
       "slug": "focus-timer",
-      "path": "/daily/focus-timer"
+      "path": "/daily/focus-timer",
+      "group": "daily"
     },
     {
       "id": "daily-currency",
@@ -339,7 +372,8 @@
       "mode": "focus",
       "target": "daily-amount",
       "slug": "currency-converter",
-      "path": "/daily/currency-converter"
+      "path": "/daily/currency-converter",
+      "group": "daily"
     },
     {
       "id": "daily-text",
@@ -349,7 +383,8 @@
       "mode": "focus",
       "target": "daily-text-tool",
       "slug": "text-toolkit",
-      "path": "/daily/text-toolkit"
+      "path": "/daily/text-toolkit",
+      "group": "daily"
     },
     {
       "id": "daily-password",
@@ -359,7 +394,8 @@
       "mode": "focus",
       "target": "daily-password-length",
       "slug": "password-generator",
-      "path": "/daily/password-generator"
+      "path": "/daily/password-generator",
+      "group": "daily"
     },
     {
       "id": "daily-date",
@@ -369,7 +405,8 @@
       "mode": "focus",
       "target": "daily-date-start",
       "slug": "date-calculator",
-      "path": "/daily/date-calculator"
+      "path": "/daily/date-calculator",
+      "group": "daily"
     },
     {
       "id": "daily-backup",
@@ -379,7 +416,8 @@
       "mode": "focus",
       "target": "daily-backup-export",
       "slug": "notes-backup",
-      "path": "/daily/notes-backup"
+      "path": "/daily/notes-backup",
+      "group": "daily"
     },
     {
       "id": "daily-dictionary",
@@ -389,7 +427,8 @@
       "mode": "focus",
       "target": "daily-word",
       "slug": "dictionary",
-      "path": "/daily/dictionary"
+      "path": "/daily/dictionary",
+      "group": "daily"
     },
     {
       "id": "daily-books",
@@ -399,7 +438,8 @@
       "mode": "focus",
       "target": "daily-book",
       "slug": "book-search",
-      "path": "/daily/book-search"
+      "path": "/daily/book-search",
+      "group": "daily"
     },
     {
       "id": "daily-calculator",
@@ -409,7 +449,8 @@
       "mode": "focus",
       "target": "daily-calc-a",
       "slug": "calculator",
-      "path": "/daily/calculator"
+      "path": "/daily/calculator",
+      "group": "daily"
     },
     {
       "id": "daily-seo",
@@ -419,7 +460,8 @@
       "mode": "focus",
       "target": "daily-seo-title",
       "slug": "seo-snippet-checker",
-      "path": "/daily/seo-snippet-checker"
+      "path": "/daily/seo-snippet-checker",
+      "group": "daily"
     },
     {
       "id": "windows-activation",
@@ -429,7 +471,8 @@
       "mode": "focus",
       "target": "mas-quickstart",
       "slug": "activation",
-      "path": "/windows/activation"
+      "path": "/windows/activation",
+      "group": "activation"
     },
     {
       "id": "office-activation",
@@ -439,7 +482,8 @@
       "mode": "office",
       "target": "hub-activation-case",
       "slug": "office-activation",
-      "path": "/windows/office-activation"
+      "path": "/windows/office-activation",
+      "group": "activation"
     },
     {
       "id": "activation-diagnostics",
@@ -449,7 +493,8 @@
       "mode": "focus",
       "target": "windows-license-diagnostics",
       "slug": "license-diagnostics",
-      "path": "/windows/license-diagnostics"
+      "path": "/windows/license-diagnostics",
+      "group": "activation"
     },
     {
       "id": "mas-methods",
@@ -459,7 +504,8 @@
       "mode": "expand",
       "target": "mas-guide",
       "slug": "mas-documentation",
-      "path": "/windows/mas-documentation"
+      "path": "/windows/mas-documentation",
+      "group": "activation"
     },
     {
       "id": "winget",
@@ -469,7 +515,8 @@
       "mode": "focus",
       "target": "hub-winget-search",
       "slug": "winget-installer",
-      "path": "/windows/winget-installer"
+      "path": "/windows/winget-installer",
+      "group": "system"
     },
     {
       "id": "windows-help",
@@ -479,7 +526,8 @@
       "mode": "focus",
       "target": "windows-license-diagnostics",
       "slug": "windows-help",
-      "path": "/windows/windows-help"
+      "path": "/windows/windows-help",
+      "group": "system"
     },
     {
       "id": "speed-test",
@@ -489,7 +537,8 @@
       "mode": "focus",
       "target": "connect-speed-start",
       "slug": "speed-test",
-      "path": "/network/speed-test"
+      "path": "/network/speed-test",
+      "group": "system"
     }
   ]
 }
