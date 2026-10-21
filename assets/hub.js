@@ -1112,6 +1112,7 @@ function initToolsTabs(){
  const lists=Object.fromEntries(keys.map(k=>[k,$('#hub-tools-list-'+k)]));
  if(buttons.length!==keys.length||keys.some(k=>!panels[k]||!lists[k]))return;
  const inventory=[
+  {id:'compress',category:'creative',selector:'#image-file',icon:'▧',title:'Image Compressor',detail:'Resize and compress image files',keywords:'image photo resize jpg jpeg png webp download'},
   {id:'password',category:'everyday',selector:'#password-output',icon:'✳',title:'Password Generator',detail:'Secure random passwords',keywords:'credentials symbols security'},
   {id:'text',category:'everyday',selector:'#text-content',icon:'Aa',title:'Text Studio',detail:'Count, clean and change case',keywords:'word count uppercase writing'},
   {id:'units',category:'everyday',selector:'#conv-mode',icon:'⇄',title:'Unit Converter',detail:'Distance, weight and temperature',keywords:'kilometer miles feet celsius'},
