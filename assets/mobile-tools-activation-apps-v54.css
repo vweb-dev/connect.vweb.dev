@@ -1,0 +1,16 @@
+/* Mobile thumb-reach navigation for the Tools explorer, v54. */
+.ct54-bottom-controls{display:none}
+@media(max-width:800px){
+ .ct53-sheet{padding-bottom:max(8px,env(safe-area-inset-bottom));}
+ .ct53-head #connect-tools-back,.ct53-head #connect-tools-close{display:none!important}
+ .ct53-head{padding-inline:4px}
+ .ct54-bottom-controls{display:grid;grid-template-columns:1fr 1fr;gap:11px;flex:none;padding:12px 1px 4px;background:#171f29;border-top:1px solid #405063}
+ .ct54-bottom-controls button{min-height:54px;border-radius:15px;font-size:15px;font-weight:800;display:flex;justify-content:center;align-items:center;gap:8px;touch-action:manipulation}
+ .ct54-bottom-back{border:1px solid #627286;background:#283543;color:#f4dfbe}
+ .ct54-bottom-back:disabled{opacity:.34;cursor:not-allowed}
+ .ct54-bottom-close{border:1px solid #e7c68d;background:#e5c28c;color:#231f19}
+ .ct53-footer{padding:10px 2px;flex:none}
+ .ct53-footer small{font-size:10px}
+ .ct53-content{scroll-padding-bottom:22px}
+}
+@media(min-width:801px){.ct53-head #connect-tools-back,.ct53-head #connect-tools-close{display:grid}}
