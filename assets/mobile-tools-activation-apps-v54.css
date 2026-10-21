@@ -1,0 +1,26 @@
+/* Mobile thumb-reach navigation for the Tools explorer, v54. */
+.ct54-bottom-controls{display:none}
+@media(max-width:800px){
+ .ct53-sheet{padding-bottom:max(8px,env(safe-area-inset-bottom));}
+ .ct53-head #connect-tools-back,.ct53-head #connect-tools-close{display:none!important}
+ .ct53-head{padding-inline:4px}
+ .ct54-bottom-controls{display:grid;grid-template-columns:1fr 1fr;gap:11px;flex:none;padding:12px 1px 4px;background:#171f29;border-top:1px solid #405063}
+ .ct54-bottom-controls button{min-height:54px;border-radius:15px;font-size:15px;font-weight:800;display:flex;justify-content:center;align-items:center;gap:8px;touch-action:manipulation}
+ .ct54-bottom-back{border:1px solid #627286;background:#283543;color:#f4dfbe}
+ .ct54-bottom-back:disabled{opacity:.34;cursor:not-allowed}
+ .ct54-bottom-close{border:1px solid #e7c68d;background:#e5c28c;color:#231f19}
+ .ct53-footer{padding:10px 2px;flex:none}
+ .ct53-footer small{font-size:10px}
+ .ct53-content{scroll-padding-bottom:22px}
+}
+@media(min-width:801px){.ct53-head #connect-tools-back,.ct53-head #connect-tools-close{display:grid}}
+
+.ct54-activation-nav{display:flex;gap:10px;flex-wrap:wrap;margin:13px 0 18px}
+.ct54-activation-nav a{min-height:44px;padding:12px 15px;border-radius:12px;border:1px solid #53616c;background:#25303b;color:#f0cf9a;font-size:12px;font-weight:800;display:inline-flex;align-items:center;justify-content:center}
+.ct54-activation-nav a:hover,.ct54-activation-nav a:focus-visible{border-color:#f0cf9a;background:#333c45}
+.ct54-office-help{padding:clamp(17px,2.5vw,25px);border:1px solid #3e4c56;border-radius:18px;background:linear-gradient(135deg,#1d2a35,#131c25);display:flex;gap:18px;align-items:center;justify-content:space-between;margin:0 0 18px;scroll-margin-top:90px}
+.ct54-office-help h2{font-size:clamp(19px,2.5vw,26px);margin:7px 0 9px;color:#faf5ea}
+.ct54-office-help p{color:#b9c8d1;font-size:12px;line-height:1.7;margin:0;max-width:70ch}
+.ct54-office-actions{display:flex;flex-direction:column;gap:8px;flex:none}
+.ct54-office-actions a{padding:11px 13px;background:#313e49;border:1px solid #67717b;border-radius:11px;color:#f5d5a0;font-weight:750;font-size:11px;text-align:center}
+@media(max-width:770px){.ct54-office-help{flex-direction:column;align-items:stretch}.ct54-office-actions{flex-direction:row;flex-wrap:wrap}.ct54-office-actions a{flex:1}.ct54-activation-nav a{flex:1}}
