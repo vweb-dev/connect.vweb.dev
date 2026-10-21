@@ -30,7 +30,7 @@ foreach($tools as $entry){
 }
 if($toolInfo){
  $base=$toolInfo['section'];
- $title=$toolInfo['title'].' — Free Online Tool | VWEB.DEV Connect';
+ $title=$toolInfo['title'].' — '.($base==='ai'?'AI Studio':($base==='pc'?'Windows & Office Guide':'Online Tool')).' | VWEB.DEV Connect';
  $description=$toolInfo['description'].'. Open a dedicated workspace on VWEB.DEV Connect.';
 }else{
  $courseJson=@file_get_contents(__DIR__.'/data/connect-hub.json');
@@ -88,7 +88,7 @@ if($toolInfo||$courseInfo||$directoryInfo!==null){
  }elseif($courseInfo){
   $intro='<section id="connect-tool59-hero" class="tool59-hero"><nav aria-label="Breadcrumb"><a href="/">Home</a> / <a href="/academy">Learn</a> / <span>'.$esc($courseInfo['title']).'</span></nav><div class="overline">YOUR COURSE CLASSROOM</div><h1>'.$esc($courseInfo['title']).'</h1><p>'.$esc($courseInfo['description']).'</p><p>Lessons are provided by the original publisher. Progress is self-tracked on this device.</p></section>';
  }else{
-  $areaName=$path==='pc'?'Windows & Office':ucfirst($path);
+  $areaName=$path==='pc'?'Windows & Office':($path==='qr'?'QR Studio':($path==='ai'?'AI Studio':ucfirst($path)));
   $intro='<section id="connect-tool59-directory" class="tool59-directory"><div class="overline">EXPLORE INDIVIDUAL TOOLS</div><h2>'.$esc($areaName).' tools</h2><p>Open the exact tool you need in a focused workspace.</p><div class="tool59-directory-grid">';
   foreach($directoryInfo as $r){$intro.='<a class="tool59-directory-item" href="'.$esc($r['path']).'"><strong>'.$esc($r['title']).'</strong><small>'.$esc($r['description']).'</small><span>Open tool ↗</span></a>';}
   $intro.='</div></section>';
