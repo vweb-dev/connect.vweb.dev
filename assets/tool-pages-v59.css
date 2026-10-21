@@ -71,3 +71,10 @@ html[data-connect-course-route] #page-academy .lms-stat-grid{display:none!import
 
 .lms59-permalink{display:inline-flex;align-items:center;justify-content:center;padding:10px 14px;border:1px solid #786447;border-radius:11px;color:#f0ca8c;font-size:11px;font-weight:800;text-align:center;min-height:40px}
 .lms59-permalink:hover,.lms59-permalink:focus-visible{border-color:#e8c58d;background:#37414b}
+
+html[data-connect-tool-route] #page-qr .tool59-qr-advanced{border:1px solid #505d6b;background:#1f2b35;border-radius:15px;margin:15px 0;padding:0;overflow:hidden}
+html[data-connect-tool-route] #page-qr .tool59-qr-advanced>summary{cursor:pointer;list-style:none;display:flex;justify-content:space-between;align-items:center;padding:16px;color:#eed2a9;font-size:13px;font-weight:800}
+html[data-connect-tool-route] #page-qr .tool59-qr-advanced>summary::after{content:'+';font-size:22px;font-weight:500}
+html[data-connect-tool-route] #page-qr .tool59-qr-advanced[open]>summary::after{content:'−'}
+html[data-connect-tool-route] #page-qr .tool59-qr-advanced-body{padding:0 15px 16px}
+html[data-connect-tool-route] #page-qr .tool59-qr-advanced-body>.qr-step{margin:12px 0}
