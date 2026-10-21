@@ -135,7 +135,7 @@ function render(){
   content.append(info);
  }
 }
-function choose(item){currentItem=item;stage='detail';render();}
+function choose(item){currentItem=item;search.value='';stage='detail';render();}
 function doBack(){if(search.value){search.value='';stage='groups';render();search.focus();return;}if(stage==='detail'){stage='list';currentGroup=groups.find(x=>x.id===currentItem?.group)||groups[0];}else stage='groups';render();}
 function openSheet(){if(!backdrop.hidden)return;focusReturn=document.activeElement;stage='groups';currentGroup=null;currentItem=null;search.value='';render();backdrop.hidden=false;document.body.classList.add('ct53-open');requestAnimationFrame(()=>sheet.focus({preventScroll:true}));}
 function closeSheet(){if(backdrop.hidden)return;backdrop.hidden=true;document.body.classList.remove('ct53-open');if(focusReturn?.isConnected)focusReturn.focus({preventScroll:true});}
@@ -198,5 +198,6 @@ if(library){
 }
 /* Deep links /tools?tool=json and /qr?tool=qr-wifi work on first load and refresh. */
 function readDeepLink(){const id=new URLSearchParams(location.search).get('tool');const item=byId.get(id);if(!item||item.path!==location.pathname)return;requestAnimationFrame(()=>requestAnimationFrame(()=>reveal(item)));}
+window.addEventListener('popstate',readDeepLink);
 if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',readDeepLink,{once:true});else readDeepLink();
 })();
