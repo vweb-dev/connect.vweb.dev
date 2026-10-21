@@ -103,8 +103,26 @@ function fillRows(items,onSelect){
  items.forEach(item=>frag.append(row(item,()=>onSelect(item))));
  content.append(frag);
 }
+const desk57Rail=$('connect-tools-rail');
+const desk57Wide=()=>window.matchMedia('(min-width:961px)').matches;
+function desk57RenderRail(){
+ if(!desk57Rail)return;
+ desk57Rail.replaceChildren();
+ desk57Rail.append(element('div','desk57-rail-label','TOOL CATEGORIES'));
+ for(const group of groups){
+  const button=element('button','desk57-rail-item'+(currentGroup?.id===group.id?' is-selected':''));button.type='button';button.setAttribute('aria-pressed',String(currentGroup?.id===group.id&&stage!=='groups'));
+  const icon=element('span','desk57-rail-icon',group.icon);
+  const copy=element('span','desk57-rail-copy');copy.append(element('strong','',group.title),element('small','',count(group.items.length)));
+  button.append(icon,copy);
+  button.addEventListener('click',()=>{currentGroup=group;currentItem=null;stage='list';search.value='';render();content.scrollTop=0;});
+  desk57Rail.append(button);
+ }
+ const allButton=element('button','desk57-rail-all','◫ All categories');
+ allButton.type='button';allButton.addEventListener('click',()=>{stage='groups';currentGroup=null;search.value='';render();});
+ desk57Rail.append(allButton);
+}
 function render(){
- content.replaceChildren();const q=search.value.trim().toLowerCase();
+ content.replaceChildren();desk57RenderRail();const q=search.value.trim().toLowerCase();
  if(q){stage='search';setHeader('Search tools',count(all.length)+' across all categories');fillRows(all.filter(item=>(item.title+' '+item.desc+' '+item.groupName).toLowerCase().includes(q)),choose);return;}
  if(stage==='search')stage='groups';
  if(stage==='groups'){
@@ -143,7 +161,7 @@ function render(){
 }
 function choose(item){currentItem=item;search.value='';stage='detail';render();}
 function doBack(){if(search.value){search.value='';stage='groups';render();search.focus();return;}if(stage==='detail'){stage='list';currentGroup=groups.find(x=>x.id===currentItem?.group)||groups[0];}else stage='groups';render();}
-function openSheet(){if(!backdrop.hidden)return;focusReturn=document.activeElement;stage='groups';currentGroup=null;currentItem=null;search.value='';render();backdrop.hidden=false;document.body.classList.add('ct53-open');requestAnimationFrame(()=>sheet.focus({preventScroll:true}));}
+function openSheet(){if(!backdrop.hidden)return;focusReturn=document.activeElement;stage=desk57Wide()?'list':'groups';currentGroup=desk57Wide()?groups[0]:null;currentItem=null;search.value='';render();backdrop.hidden=false;document.body.classList.add('ct53-open');requestAnimationFrame(()=>sheet.focus({preventScroll:true}));}
 function closeSheet(){if(backdrop.hidden)return;backdrop.hidden=true;document.body.classList.remove('ct53-open');if(focusReturn?.isConnected)focusReturn.focus({preventScroll:true});}
 function reveal(item){
  if(item.mode==='quick'){window.dispatchEvent(new CustomEvent('connect:open-tool',{detail:{id:item.target}}));const el=$('qt-active-tool');if(el)el.scrollIntoView({block:'start',behavior:'smooth'});return;}
@@ -193,6 +211,7 @@ document.addEventListener('click',event=>{
  event.preventDefault();openSheet();
 },true);
 $('connect-tools-launch')?.addEventListener('click',openSheet);
+$('connect-desktop-tools')?.addEventListener('click',openSheet);
 $('connect-tools-show-all')?.addEventListener('click',()=>{closeSheet();history.pushState(null,'','/tools');window.dispatchEvent(new Event('popstate'));$('connect-tools-directory')?.scrollIntoView({block:'start',behavior:'smooth'});});
 /* Full /tools page also displays every cross-studio tool for search engines and direct visitors. */
 const library=$('connect-tools-directory');
