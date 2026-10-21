@@ -1,0 +1,70 @@
+/* Connect v59 — focused tool pages, indexable directories, shared processing engines */
+html[data-connect-tool-route] .tool59-hidden,
+html[data-connect-tool-directory] .tool59-hidden,
+html[data-connect-course-route] .tool59-hidden{display:none!important}
+.tool59-hero{display:flex;flex-direction:column;gap:9px;max-width:100%;padding:clamp(21px,3vw,35px);margin-bottom:14px;border:1px solid #4a5561;border-radius:21px;background:radial-gradient(ellipse at 98% 3%,rgba(213,173,113,.13),transparent 53%),linear-gradient(130deg,#232d38,#151e29)}
+.tool59-breadcrumb,.tool59-hero nav[aria-label="Breadcrumb"]{display:flex;align-items:center;gap:8px;flex-wrap:wrap;font-size:11px;line-height:1.5;color:#9aaaba;margin-bottom:7px}
+.tool59-breadcrumb a,.tool59-hero nav[aria-label="Breadcrumb"] a{color:#e3c18c;text-decoration:underline;text-underline-offset:3px}
+.tool59-hero .overline{letter-spacing:.12em}
+.tool59-hero h1{font-size:clamp(29px,4.1vw,52px);line-height:1.07;margin:1px 0 3px;letter-spacing:-.045em}
+.tool59-hero p{font-size:clamp(12px,1.2vw,15px);line-height:1.65;max-width:70ch;margin:0;color:#bbcad3}
+.tool59-related{display:flex;align-items:center;gap:9px;flex-wrap:wrap;margin:0 0 18px;padding:3px 0}
+.tool59-related>span{color:#b4c1ce;font-size:11px;font-weight:750;margin-right:2px}
+.tool59-related a{display:inline-flex;align-items:center;gap:4px;padding:9px 12px;border-radius:999px;border:1px solid #4e5965;background:#242e39;color:#edc990;font-size:11px;font-weight:750}
+.tool59-related a:hover,.tool59-related a:focus-visible{background:#354252;border-color:#d9b077}
+.tool59-directory{border:1px solid #44515f;background:linear-gradient(140deg,#222d38,#171f28);border-radius:21px;padding:clamp(21px,3.4vw,35px);margin:0 0 22px}
+.tool59-directory>h1,.tool59-directory>h2{font-size:clamp(28px,4vw,43px);margin:10px 0 9px;letter-spacing:-.05em}
+.tool59-directory>p{font-size:13px;color:#b8c7d3;margin:0 0 22px;line-height:1.6}
+.tool59-directory-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,230px),1fr));gap:11px}
+.tool59-directory-item{display:flex;flex-direction:column;gap:9px;min-height:145px;padding:19px;border:1px solid #475663;border-radius:16px;background:linear-gradient(145deg,#27323f,#1b2732);transition:background .14s,border-color .14s}
+.tool59-directory-item:hover,.tool59-directory-item:focus-visible{border-color:#e4c18a;background:#33404d}
+.tool59-directory-item strong{color:#f4efe5;font-size:15px;font-weight:800;line-height:1.3;letter-spacing:-.022em}
+.tool59-directory-item small{font-size:11px;color:#b8c5d0;line-height:1.5;flex:1}
+.tool59-directory-item>span{color:#f2ce98;font-size:11px;font-weight:800}
+html[data-connect-tool-route] .connect56-page-banner,
+html[data-connect-tool-route] .studio48-switcher,
+html[data-connect-tool-route] .studio48-spotlight,
+html[data-connect-tool-route] .connect-upgrade-panel{display:none!important}
+html[data-connect-tool-directory] .connect56-page-banner,
+html[data-connect-tool-directory] .studio48-switcher,
+html[data-connect-tool-directory] .studio48-spotlight{display:none!important}
+html[data-connect-tool-route] #page-tools .qt-layout{display:block!important}
+html[data-connect-tool-route] #page-tools .qt-workspace{display:block!important;width:100%;max-width:970px;margin:auto;padding:0!important;border:0;background:transparent;box-shadow:none}
+html[data-connect-tool-route] #page-tools .qt-active-tool{max-width:940px;margin:0 auto}
+html[data-connect-tool-route] #page-tools .tool-card{width:100%;max-width:none;border-radius:20px}
+html[data-connect-tool-route] #page-tools .qt-library,
+html[data-connect-tool-route] #page-tools .qt-controls>.qt-discovery,
+html[data-connect-tool-route] #page-tools .qt-controls>.hub-tools-tabs{display:none!important}
+html[data-connect-tool-route] #page-convert .convert-rail,
+html[data-connect-tool-route] #page-ai .ai-tool-tabs,
+html[data-connect-tool-route] #page-qr .qr-type-tabs{display:none!important}
+html[data-connect-tool-route] #page-convert .convert-tools{display:block!important;max-width:1060px;margin:auto}
+html[data-connect-tool-route] #page-convert .convert-workspace{width:100%!important;max-width:100%;border-radius:20px;overflow:hidden}
+html[data-connect-tool-route] #page-convert .convert-panel:not(.tool59-selected){display:none!important}
+html[data-connect-tool-route] #page-ai [id^="ai-pane-"]:not(.tool59-selected){display:none!important}
+html[data-connect-tool-route] #page-ai .ai-info,
+html[data-connect-tool-route] #page-ai .puter-auth{max-width:1050px;margin-inline:auto}
+html[data-connect-tool-route] #page-qr .qr-workbench{margin-top:0;max-width:1250px;margin-inline:auto}
+html[data-connect-tool-route] #page-daily .daily-grid{grid-template-columns:1fr;max-width:940px;margin:auto}
+html[data-connect-tool-route] #page-daily .daily-extended>h2{display:none!important}
+html[data-connect-tool-route] #page-daily .daily-panel.tool59-selected{display:block!important;min-height:0}
+html[data-connect-tool-route] #page-daily .daily-panel:not(.tool59-selected){display:none!important}
+html[data-connect-tool-route] #page-daily .daily-extended{margin:0;border:0}
+html[data-connect-tool-route] #page-daily .daily-extended>.daily-grid{grid-template-columns:1fr;max-width:940px}
+html[data-connect-course-route] #page-academy #lms-view-classroom{display:block!important}
+html[data-connect-course-route] #page-academy .lms-nav,
+html[data-connect-course-route] #page-academy .lms-hero,
+html[data-connect-course-route] #page-academy .lms-stat-grid{display:none!important}
+#page-tools .tool59-directory,#page-convert .tool59-directory,#page-ai .tool59-directory,#page-qr .tool59-directory,#page-daily .tool59-directory,#page-pc .tool59-directory{max-width:1300px;margin-inline:auto}
+@media(max-width:780px){
+ .tool59-hero{padding:19px;border-radius:17px;margin-bottom:11px}
+ .tool59-hero h1{font-size:clamp(27px,8vw,37px)}
+ .tool59-related{gap:6px}
+ .tool59-related a{padding:9px 10px;font-size:10px}
+ .tool59-directory{padding:17px;border-radius:17px}
+ .tool59-directory-grid{grid-template-columns:1fr;gap:9px}
+ .tool59-directory-item{min-height:108px;padding:14px;gap:6px}
+ html[data-connect-tool-route] #page-qr .qr-workbench{display:block}
+ html[data-connect-tool-route] #page-ai .puter-auth{margin-bottom:14px}
+}
+@media(prefers-reduced-motion:reduce){.tool59-directory-item{transition:none}}
