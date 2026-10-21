@@ -140,6 +140,7 @@ function renderStudios(){
 let appLayout='grid';
 const featuredApps=['powertoys','7zip','vscode','vlc','gimp','obsidian','excalidraw','vert','firefox','brave','localsend','it-tools'];
 function renderApps(){
+ if(window.__connectAppsStudio)return; // Independent v56 Apps engine owns this page.
  const host=$('#hub-app-library');clear(host);
  host.classList.toggle('is-list',appLayout==='list');
  $('#hub-app-view-grid').setAttribute('aria-pressed',String(appLayout==='grid'));
@@ -215,7 +216,7 @@ function openIndexedResult(item){
  if(item.course)setCourse(item.course,true);
  if(item.app){
   appFilter='All';appSearch=item.app.toLowerCase();appKind='All';appLimit=12;
-  $('#hub-app-search').value=item.app;$('#hub-app-kind').value='All';renderApps();
+  $('#hub-app-search').value=item.app;$('#hub-app-kind').value='All';renderApps();$('#hub-app-search').dispatchEvent(new Event('input',{bubbles:true}));
  }
  if(item.tool==='qr'){location.hash='#qr';return;}
  if(item.tool){
@@ -1351,5 +1352,6 @@ if('serviceWorker' in navigator){
 $('#hub-update-reload').addEventListener('click',()=>location.reload());
 
 window.addEventListener('hashchange',trackVisit);
+window.addEventListener('connect:apps-favorites-changed',()=>{state=loadStore();try{renderDashboard();renderHome();}catch(error){console.warn('Could not refresh saved app panels',error);}});
 boot();
 })();
