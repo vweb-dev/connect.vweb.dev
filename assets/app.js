@@ -45,7 +45,7 @@ function route(focusHeading){
   if(routes.indexOf(key)<0)key='home';
   $$('.page').forEach(function(el){el.hidden=el.id!=='page-'+key;});
   $$('[data-nav]').forEach(function(el){var active=el.dataset.nav===key;el.classList.toggle('active',active);if(active){el.setAttribute('aria-current','page');}else{el.removeAttribute('aria-current');}});
-  document.title=(key==='home'?'VWEB.DEV Connect':(contextTitles[key]||key)+' | VWEB.DEV Connect');
+  if(!document.querySelector('link[rel="canonical"]')||key!==(location.pathname.replace(/^\\/+|\\/+$/g,'')||'home')){document.title=(key==='home'?'VWEB.DEV Connect':(contextTitles[key]||key)+' | VWEB.DEV Connect');}
   renderContext(key);
   if(focusHeading){
     var heading=$('#page-'+key+' h1');
