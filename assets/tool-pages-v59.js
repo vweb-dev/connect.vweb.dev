@@ -33,7 +33,7 @@
   if(!hero){hero=el('section','tool59-hero');hero.id='connect-tool59-hero';page.prepend(hero);}
   else{hero.replaceChildren();}
   const breadcrumbs=el('nav','tool59-breadcrumb');breadcrumbs.setAttribute('aria-label','Breadcrumb');
-  const back=el('a','','Home');back.href='/';const category=el('a','',categories[base]||'Learn');category.href=course?'/academy':'/'+base;
+  const back=el('a','','Home');back.href='/';const category=el('a','',categories[base]||'Learn');category.href=course?'/academy':'/'+base;if(base==='tools')category.dataset.toolsNoSheet='true';
   breadcrumbs.append(back,el('span','', '›'),category,el('span','', '›'),el('span','',title));
   hero.append(breadcrumbs,el('div','overline',course?'YOUR FOCUSED CLASSROOM':'ONE TOOL · ONE WORKSPACE'),el('h1','',title),el('p','',description));
   return hero;
