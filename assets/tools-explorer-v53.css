@@ -68,3 +68,7 @@ body.ct53-open{overflow:hidden}
 @keyframes ct53-dim{from{opacity:0}to{opacity:1}}
 @keyframes ct53-rise{from{transform:translateY(65px);opacity:.76}to{transform:translateY(0);opacity:1}}
 .ct53-handle{touch-action:pan-x;cursor:grab}
+
+.ct53-related{display:flex;justify-content:center;gap:8px;flex-wrap:wrap;margin-top:9px}
+.ct53-related-link{border:1px solid #505d6d;border-radius:999px;background:#26313d;color:#e8c697;padding:9px 12px;font-size:12px;font-weight:700;cursor:pointer}
+.ct53-related-link:hover,.ct53-related-link:focus-visible{border-color:#e8c697;background:#364353}
