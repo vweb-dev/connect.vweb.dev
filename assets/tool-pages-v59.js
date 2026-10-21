@@ -50,11 +50,25 @@
   intro(page,{title:tool.title,description:tool.description+'.',base:tool.section});
   let selected=null;
   if(tool.mode==='quick'){
-   const candidate=$('qt-active-tool');selected=candidate;
+   const candidate=$('qt-active-tool');
    window.dispatchEvent(new CustomEvent('connect:open-tool',{detail:{id:tool.target}}));
-   selected=candidate;
+   const current=candidate?.querySelector('.tool-card');
+   if(!current||current.dataset.toolsId!==tool.target){
+    const fallbackSelectors={compress:'#image-file',password:'#password-output',text:'#text-content',units:'#conv-mode',csv:'#csv-content',json:'#hub-json-input',encode:'#hub-encode-input',hash:'#hub-hash-input',uuid:'#hub-uuid-output',qr:'.hub-qr-card',contrast:'.hub-contrast-card'};
+    const source=$('hub-tools-source'),selector=fallbackSelectors[tool.target];
+    const recovered=selector?source?.querySelector(selector)?.closest('.tool-card'):null;
+    if(recovered&&candidate){candidate.replaceChildren(recovered);recovered.dataset.toolsId=tool.target;}
+   }
+   selected=candidate?.querySelector('.tool-card')?candidate:null;
   }else if(tool.mode==='tab'){
-   const tab=$(tool.target);tab?.click();selected=$(tool.target.replace('-tab-','-pane-'));
+   const tab=$(tool.target);tab?.click();
+   selected=$(tool.target.replace('-tab-','-pane-'));
+   if(selected){
+    selected.hidden=false;
+    const all=selected.parentElement?.querySelectorAll('[role="tabpanel"]')||[];
+    all.forEach(panel=>{if(panel!==selected)panel.hidden=true;});
+    if(tab){tab.setAttribute('aria-selected','true');tab.classList.add('is-selected','active');}
+   }
   }else if(tool.mode==='qr'){
    document.querySelector('[data-qr-type="'+tool.target+'"]')?.click();
    selected=page.querySelector('.qr-workbench');
@@ -70,7 +84,21 @@
    if(tool.section==='daily')selected=selected?.closest('.daily-panel')||selected;
    if(tool.section==='pc')selected=selected?.closest('.hub-panel,.connect-mas-command,.ct54-office-help,.win-deep-dive,.hub-activation-scripts')||selected;
   }
-  if(!selected){console.warn('Tool workspace not available:',tool.id);return;}
+  if(!selected){
+   console.warn('Tool workspace not available:',tool.id);
+   const hero=$('connect-tool59-hero');
+   const warning=el('div','tool60-recovery');
+   warning.setAttribute('role','status');
+   warning.append(el('strong','','This tool did not finish loading.'));
+   warning.append(el('p','','Try reloading this page. If it is still unavailable, choose another related tool.'));
+   const retry=el('button','tool60-retry','↻ Reload tool');retry.type='button';retry.addEventListener('click',()=>location.reload());
+   warning.append(retry);hero?.append(warning);
+   suppressOtherTopLevel(page);
+   const related=relatedList(tool);page.insertBefore(related,hero?.nextSibling||page.firstChild);
+   return;
+  }
+  selected.hidden=false;
+  let disclosure=selected.closest('details');while(disclosure){disclosure.open=true;disclosure=disclosure.parentElement?.closest('details');}
   selected.classList.add('tool59-selected');
   ancestors(selected,page);
   if(tool.section==='daily'){
