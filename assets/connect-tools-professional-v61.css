@@ -77,3 +77,6 @@ html[data-connect-tool-route] #page-ai .ai-tool-workspace{gap:17px}
  .tool59-directory-item{min-height:106px}
 }
 @media(prefers-reduced-motion:reduce){.tool61-action,html[data-connect-tool-route] .tool59-selected button{transition:none!important}}
+
+.tool61-live-insight{margin:9px 0 13px;display:inline-flex;align-items:center;min-height:29px;padding:6px 11px;border-radius:9px;background:#2b3542;border:1px solid #586773;color:#d6dee5;font-size:11px;font-weight:680;line-height:1.45}
+.tool61-live-insight.tool61-valid{background:#1c3b34;border-color:#438069;color:#bbebd3}
