@@ -1,0 +1,79 @@
+/* Connect v61 — professional utility workspaces, unified mobile and desktop */
+html[data-connect-tool-route] .tool59-hero{border-color:#645740;background:radial-gradient(circle at 95% 7%,rgba(233,183,100,.21),transparent 49%),linear-gradient(140deg,#222e3a,#151d27);padding:clamp(23px,3vw,40px)}
+html[data-connect-tool-route] .tool59-hero h1{font-weight:850;letter-spacing:-.055em;line-height:1.08}
+html[data-connect-tool-route] .tool59-hero>.overline{color:#e7bb7c;font-weight:800}
+html[data-connect-tool-route] .tool59-hero>p{max-width:750px;color:#d0d9e0;font-size:clamp(13px,1.35vw,16px)}
+.tool61-toolbar{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:13px;margin-top:16px;padding-top:17px;border-top:1px solid rgba(226,201,163,.2)}
+.tool61-privacy{font-weight:730;font-size:11px;color:#ecc991;display:inline-flex;align-items:center;gap:8px;letter-spacing:.025em}
+.tool61-privacy:before{content:'●';font-size:8px;color:#9cdfb7}
+.tool61-actions{display:flex;flex-wrap:wrap;gap:8px}
+.tool61-action{min-height:40px;padding:9px 13px;border-radius:12px;border:1px solid rgba(204,217,226,.29);background:rgba(35,48,60,.82);color:#f5e0c1;font-size:11px;font-weight:750;cursor:pointer;transition:background .17s,border-color .17s}
+.tool61-action:hover,.tool61-action:focus-visible{border-color:#edc88c;background:#394554}
+.tool61-action[aria-pressed=true]{background:#54422b;border-color:#c6a36b}
+.tool61-guide{padding:0;margin:0 0 18px;border:1px solid #455360;border-radius:15px;background:linear-gradient(135deg,#202b35,#1a2530);overflow:hidden}
+.tool61-guide summary{cursor:pointer;color:#eccb9a;font-weight:800;font-size:12px;padding:15px 19px;display:flex;align-items:center;justify-content:space-between;list-style:none}
+.tool61-guide summary::-webkit-details-marker{display:none}
+.tool61-guide summary:after{content:'+';font-size:20px;font-weight:450}
+.tool61-guide[open] summary:after{content:'−'}
+.tool61-guide-content{padding:0 19px 20px;color:#c4d0d7;font-size:12px;line-height:1.6}
+.tool61-howto{list-style:none;counter-reset:step;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;padding:0;margin:0 0 13px}
+.tool61-howto li{counter-increment:step;display:flex;align-items:center;gap:9px;min-width:0;padding:12px;background:#283642;border-radius:11px}
+.tool61-howto li:before{content:counter(step,decimal-leading-zero);flex:none;display:grid;place-items:center;width:30px;height:30px;border-radius:8px;background:#55422d;color:#ffdb9f;font-size:11px;font-weight:850}
+.tool61-hint{font-size:12px;color:#bdcad3;margin:0}
+html[data-connect-tool-route] .tool59-selected{scroll-margin-top:94px}
+html[data-connect-tool-route] #page-tools .qt-active-tool{max-width:1060px}
+html[data-connect-tool-route] #page-tools .tool-card,
+html[data-connect-tool-route] #page-ai .ai-tab-panel,
+html[data-connect-tool-route] #page-convert .convert-panel,
+html[data-connect-tool-route] #page-qr .qr-editor-card,
+html[data-connect-tool-route] #page-qr .qr-preview-card,
+html[data-connect-tool-route] #page-daily .daily-panel,
+html[data-connect-tool-route] #page-pc .tool59-selected{background:linear-gradient(140deg,#222e38,#18232e);border:1px solid #475765;border-radius:19px;box-shadow:0 16px 38px rgba(0,0,0,.12);padding:clamp(17px,2.3vw,29px)}
+html[data-connect-tool-route] .tool59-selected h2,
+html[data-connect-tool-route] .tool59-selected h3{color:#f5f3ef;letter-spacing:-.025em}
+html[data-connect-tool-route] .tool59-selected label{font-size:12px;font-weight:760;color:#d7e0e8}
+html[data-connect-tool-route] .tool59-selected :is(input:not([type=checkbox],[type=radio],[type=range],[type=color],[type=file]),select,textarea){
+ background:#111b25;border:1px solid #546372;border-radius:11px;color:#f8f5ee;min-height:44px;box-shadow:none;max-width:100%
+}
+html[data-connect-tool-route] .tool59-selected :is(input,select,textarea):focus-visible{outline:2px solid #e7bb79;outline-offset:2px}
+html[data-connect-tool-route] .tool59-selected :is(button,.button):not([disabled]){transition:background .16s,transform .16s,border-color .16s}
+html[data-connect-tool-route] .tool59-selected :is(button,.button):not([disabled]):active{transform:translateY(1px)}
+html[data-connect-tool-route] .tool59-selected :is(pre,output,.ai-result,[role=status]){overflow-wrap:anywhere}
+html[data-connect-tool-route] .tool59-selected .actions{display:flex;flex-wrap:wrap;gap:9px}
+html[data-connect-tool-route] .tool59-selected .actions button{min-height:43px;border-radius:11px}
+html[data-connect-tool-route] #page-tools.qt-enhanced .qt-active-tool .tool-card{padding:clamp(19px,3vw,30px)!important;border:1px solid #475765!important;border-radius:19px!important;background:linear-gradient(140deg,#222e38,#18232e)!important}
+html[data-connect-tool-route] #page-qr .qr-workbench{gap:15px}
+html[data-connect-tool-route] #page-qr .qr-editor-card,html[data-connect-tool-route] #page-qr .qr-preview-card{min-width:0}
+html[data-connect-tool-route] #page-daily .daily-panel{max-width:100%;margin:auto}
+html[data-connect-tool-route] #page-convert .convert-dropzone{min-height:190px;border:2px dashed #8d795b;border-radius:16px;background:#1a2934}
+html[data-connect-tool-route] #page-ai .ai-tool-workspace{gap:17px}
+.tool61-directory-search{display:block;width:min(100%,640px);height:51px;padding:12px 16px;margin-bottom:10px;background:#111c27;color:#f5f3ee;border:1px solid #5b6672;border-radius:14px;font-size:14px}
+.tool61-directory-search:focus-visible{outline:2px solid #eac487;outline-offset:2px}
+.tool61-result-count{color:#c8d0d8!important;margin:0 0 15px!important;font-size:12px!important}
+.tool61-empty{color:#cbd3db;padding:20px;border:1px dashed #576471;border-radius:12px;text-align:center;margin:15px 0}
+.tool59-directory-grid>.tool59-directory-item[hidden]{display:none!important}
+.tool59-directory-item{position:relative;min-height:158px}
+.tool59-directory-item:after{content:'↗';position:absolute;top:13px;right:16px;font-size:17px;color:#d8b581}
+.tool59-directory-item strong{padding-right:13px}
+.speed61-enginebar{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px;border:1px solid #58616a;background:rgba(15,25,35,.7);border-radius:12px;padding:13px 17px;color:#d1dae1;font-size:12px}
+.speed61-enginebar strong{color:#f3c586;font-weight:850}
+#speed61-backend-state{color:#aed9c0;font-weight:750}
+.speed61-usage{color:#adbecb;font-size:11px!important;line-height:1.6;margin:13px 0}
+#page-network .speed45-controls .speed61-copy{min-height:42px}
+.speed61-history{background:#16232e;border:1px solid #4c5a68;border-radius:14px;padding:14px 17px;margin-top:17px}
+.speed61-history summary{color:#edc991;font-weight:800;cursor:pointer;font-size:12px}
+#speed61-history{margin-top:12px;font-size:11px;color:#cbd3da}
+.speed61-history-row{border-top:1px solid #354451;padding:10px 0;line-height:1.5}
+@media(min-width:1000px){html[data-connect-tool-route] #page-tools .qt-workspace,html[data-connect-tool-route] #page-ai .ai-tab-content{max-width:1200px;margin-inline:auto}}
+@media(max-width:790px){
+ .tool61-howto{grid-template-columns:1fr}
+ .tool61-toolbar{align-items:stretch}
+ .tool61-actions{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));width:100%}
+ .tool61-actions .tool61-action{min-height:44px}
+ .tool61-privacy{font-size:10px}
+ .speed61-enginebar{align-items:flex-start}
+ html[data-connect-tool-route] .tool59-selected{padding:16px}
+ html[data-connect-tool-route] #page-tools.qt-enhanced .qt-active-tool .tool-card{padding:17px!important}
+ .tool59-directory-item{min-height:106px}
+}
+@media(prefers-reduced-motion:reduce){.tool61-action,html[data-connect-tool-route] .tool59-selected button{transition:none!important}}
