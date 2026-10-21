@@ -199,6 +199,7 @@ for(const kind of ['grid','list']){
 }
 // Optional global find: user searches a curated local index, not a backend.
 const quickToolIndex=[
+ {title:'Image Compressor',detail:'Compress and resize images locally',destination:'#tools',tool:'compress',icon:'▧'},
  {title:'Password Generator',detail:'Create strong passwords locally',destination:'#tools',tool:'password',icon:'✳'},
  {title:'Text Studio',detail:'Word count, text cleanup and uppercase',destination:'#tools',tool:'text',icon:'Aa'},
  {title:'Unit Converter',detail:'Convert length, mass, temperature and area',destination:'#tools',tool:'units',icon:'⇄'},
