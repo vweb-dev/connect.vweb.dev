@@ -60,6 +60,12 @@ const groups=[
   T('daily-calculator','Calculator','Arithmetic and percentages','/daily','focus','daily-calc-a'),
   T('daily-seo','SEO Snippet Checker','Review page title and meta length','/daily','focus','daily-seo-title')
  ]},
+ {id:'activation',icon:'▣',title:'Windows & Office Activation',subtitle:'Separate activation guides, license checks and original references',items:[
+  T('windows-activation','Windows Activation','Windows license status, Microsoft guidance and MAS reference','/pc','focus','mas-quickstart'),
+  T('office-activation','Office Activation','Microsoft 365 / Office account and licensing troubleshooting','/pc','office','hub-activation-case'),
+  T('activation-diagnostics','Activation Diagnostics','Safe Windows license status checks and diagnostics','/pc','focus','windows-license-diagnostics'),
+  T('mas-methods','MAS Documentation','Original Massgrave repository and licensing cautions','/pc','expand','mas-guide')
+ ]},
  {id:'system',icon:'◈',title:'Windows & Internet',subtitle:'Software utilities and connection tests',items:[
   T('winget','WinGet App Installer','Find apps and build install commands','/pc','focus','hub-winget-search'),
   T('windows-help','Windows & Office Help','Diagnostics, licensing and guides','/pc','focus','windows-license-diagnostics'),
@@ -74,7 +80,7 @@ let recent=[];try{recent=JSON.parse(localStorage.getItem('connect.tools.recent.v
 recent=recent.filter(id=>byId.has(id)).slice(0,9);
 function remember(item){recent=[item.id,...recent.filter(x=>x!==item.id)].slice(0,9);try{localStorage.setItem('connect.tools.recent.v53',JSON.stringify(recent));}catch{}}
 
-const backdrop=$('connect-tools-overlay'),sheet=$('connect-tools-sheet'),content=$('connect-tools-content'),search=$('connect-tools-search'),back=$('connect-tools-back'),heading=$('connect-tools-heading'),hint=$('connect-tools-subheading');
+const backdrop=$('connect-tools-overlay'),sheet=$('connect-tools-sheet'),content=$('connect-tools-content'),search=$('connect-tools-search'),back=$('connect-tools-back'),bottomBack=$('connect-tools-bottom-back'),heading=$('connect-tools-heading'),hint=$('connect-tools-subheading');
 if(!backdrop||!sheet||!content||!search)return;
 let stage='groups',currentGroup=null,currentItem=null,focusReturn=null;
 const count=n=>n===1?'1 tool':n+' tools';
@@ -89,7 +95,7 @@ function row(item,fn,asLink=false){
  b.addEventListener('click',fn);
  return b;
 }
-function setHeader(title,sub){heading.textContent=title;hint.textContent=sub;back.hidden=stage==='groups';}
+function setHeader(title,sub){heading.textContent=title;hint.textContent=sub;back.hidden=stage==='groups';if(bottomBack)bottomBack.disabled=stage==='groups';}
 function fillRows(items,onSelect){
  content.replaceChildren();
  if(!items.length){content.append(element('p','ct53-empty','No matching tools. Try a different search.'));return;}
@@ -143,6 +149,9 @@ function reveal(item){
  if(item.mode==='quick'){window.dispatchEvent(new CustomEvent('connect:open-tool',{detail:{id:item.target}}));const el=$('qt-active-tool');if(el)el.scrollIntoView({block:'start',behavior:'smooth'});return;}
  if(item.mode==='tab'){const tab=$(item.target);if(tab)tab.click();const section=tab?.closest('[role=tablist]')||tab;if(section)section.scrollIntoView({block:'start',behavior:'smooth'});return;}
  if(item.mode==='qr'){const tab=document.querySelector('[data-qr-type="'+item.target+'"]');if(tab)tab.click();const target=$('qr-content');if(target)target.scrollIntoView({block:'start',behavior:'smooth'});return;}
+ if(item.mode==='office'){const field=$(item.target);if(field){field.value='office-account';field.dispatchEvent(new Event('change',{bubbles:true}));field.scrollIntoView({block:'center',behavior:'smooth'});}return;}
+ if(item.mode==='expand'){const target=$(item.target);if(target){const disclosure=target.closest('details');if(disclosure)disclosure.open=true;target.scrollIntoView({block:'start',behavior:'smooth'});}return;}
+
  const target=$(item.target);if(target){target.scrollIntoView({block:'center',behavior:'smooth'});if(target.matches('input,textarea,select'))target.focus({preventScroll:true});}
 }
 function launch(item){
@@ -156,6 +165,8 @@ function launch(item){
  requestAnimationFrame(()=>requestAnimationFrame(()=>reveal(item)));
 }
 back?.addEventListener('click',doBack);
+bottomBack?.addEventListener('click',doBack);
+$('connect-tools-bottom-close')?.addEventListener('click',closeSheet);
 $('connect-tools-close')?.addEventListener('click',closeSheet);
 backdrop.addEventListener('click',event=>{if(event.target===backdrop)closeSheet();});
 search.addEventListener('input',render);
