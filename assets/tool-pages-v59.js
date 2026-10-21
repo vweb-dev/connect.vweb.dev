@@ -7,7 +7,7 @@
  const byPath=new Map(tools.map(t=>[t.path,t])),byId=new Map(tools.map(t=>[t.id,t]));
  const areas=new Set(['tools','convert','qr','ai','daily','pc']);
  const categories={tools:'Browser tools',convert:'File converters',qr:'QR Studio',ai:'AI Studio',daily:'Daily Desk',pc:'Windows & Office',network:'Internet utilities'};
- const courses=[{id:'windows11',title:'Master Windows 11'},{id:'canva',title:'Canva Design Masterclass'},{id:'python',title:'Python Programming — Full Course'},{id:'htmlcss',title:'HTML & CSS — Build Real Websites'},{id:'excel',title:'Microsoft Excel for Beginners'}];
+ let courses=[];try{const x=JSON.parse($('hub-offline-catalog')?.textContent||'{}');courses=Array.isArray(x.courses)?x.courses.filter(c=>c&&typeof c.id==='string'&&typeof c.title==='string'):[];}catch{}
  const byCourse=new Map(courses.map(c=>['/academy/course/'+c.id,c]));
  const el=(tag,cls,content)=>{const x=document.createElement(tag);if(cls)x.className=cls;if(content!=null)x.textContent=content;return x;};
  function path(){return '/'+location.pathname.split('/').filter(Boolean).join('/');}
@@ -128,7 +128,7 @@
   const page=$('page-academy');if(!page)return;
   root.dataset.connectCourseRoute=course.id;
   page.hidden=false;
-  intro(page,{title:course.title,description:'Continue the original creator-led learning path. Progress, notes and quizzes are stored locally on this device.',base:'academy',course:true});
+  intro(page,{title:course.title,description:(course.description||'Creator-led learning path.')+' Progress, notes and quizzes stay on this device.',base:'academy',course:true});
   window.dispatchEvent(new CustomEvent('connect:select-course',{detail:{id:course.id}}));
   window.dispatchEvent(new Event('connect:lms-classroom'));
   const classroom=$('lms-view-classroom');
@@ -160,7 +160,7 @@
    syncHead(requested.title+' — '+prefix+' | VWEB.DEV Connect',requested.description+'. Open a dedicated workspace on VWEB.DEV Connect.',current);
    applyTool(requested);
   }else if(course){
-   syncHead(course.title+' — Free Course | VWEB.DEV Connect','Continue the free creator-led course and track your own progress.',current);
+   syncHead(course.title+' — Free Course | VWEB.DEV Connect',course.description||'Creator-led learning path with local progress tracking.',current);
    applyCourse(course);
   }else if(areas.has(base)&&current==='/'+base){
    syncHead((categories[base]||'Tools')+' | VWEB.DEV Connect','Browse individual online tools and open a focused workspace.',current);
