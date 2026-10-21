@@ -16,6 +16,9 @@ RewriteEngine On
 RewriteRule ^data/entertainment\.json$ - [G,L,NC]
 RewriteRule ^(?:\.git|vendor|node_modules)(?:/|$) - [F,L,NC]
 # Human-readable public URLs, dynamically rendered page metadata
+# Dedicated tool and course pages share server-rendered metadata, not hash fragments.
+RewriteRule ^(?:tools|convert|ai|qr|daily|windows|network)/[a-z0-9-]+/?$ seo.php [L,QSA,NC]
+RewriteRule ^academy/course/[a-z0-9-]+/?$ seo.php [L,QSA,NC]
 RewriteRule ^(?:tools|qr|convert|ai|academy|apps|pc|network|daily|studios|play|community|offers|dashboard|account)/?$ seo.php [L,QSA,NC]
 </IfModule>
 
