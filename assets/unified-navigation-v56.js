@@ -10,6 +10,17 @@ const el=(tag,cls,text)=>{const node=document.createElement(tag);if(cls)node.cla
 const group=(id,title,icon,description,entries)=>({id,title,icon,description,entries});
 const item=(id,title,description,url,options={})=>({id,title,description,url,...options});
 const catalogGroups=[...new Set(catalog.apps.map(a=>a.category).filter(Boolean))].map(cat=>group('apps-'+cat,cat,'◧',catalog.apps.filter(a=>a.category===cat).length+' official app links',catalog.apps.filter(a=>a.category===cat).map(a=>item(a.id,a.name,a.desc,a.open,{external:true,kind:a.kind,icon:a.initial||'◧'}))));
+function globalMenuResults(query){
+ let tools=[];
+ try{const parsed=JSON.parse($('connect-tool-route-catalog')?.textContent||'{}');tools=Array.isArray(parsed.tools)?parsed.tools:[];}catch{}
+ const term=query.toLowerCase().trim(),words=term.split(/\s+/).filter(Boolean);
+ const rows=[
+  ...tools.map(t=>item('global-'+t.id,t.title,t.description,t.path,{icon:'⌘'})),
+  ...catalog.apps.map(a=>item('global-app-'+a.id,a.name,a.desc||'Official publisher app',a.open,{external:true,icon:a.initial||'◧'})),
+  ...catalog.courses.map(c=>item('global-course-'+c.id,c.title,c.description||'Video course','/academy/course/'+c.id,{icon:c.icon||'▶',courseId:c.id}))
+ ];
+ return rows.filter(i=>words.every(w=>(i.title+' '+i.description+' '+i.url).toLowerCase().includes(w))).slice(0,40);
+}
 const appGroups=[group('apps-featured','Featured apps','★','Popular publisher tools',catalog.apps.filter(a=>['powertoys','7zip','vscode','vlc','firefox','excalidraw','it-tools','vert','localsend','obsidian'].includes(a.id)).map(a=>item(a.id,a.name,a.desc,a.open,{external:true,kind:a.kind,icon:a.initial||'◧'}))),...catalogGroups];
 const courseList=catalog.courses.map(c=>item('course-'+c.id,c.title,(c.provider||'Creator course')+' · '+(c.level||'Free lessons'),'/academy',{courseId:c.id,icon:c.icon||'▶',videoId:/^[a-zA-Z0-9_-]{11}$/.test(c.videoId||'')?c.videoId:null}));
 const deep=(name,title,description,url,tool,options={})=>item(name,title,description,url+(tool?'?tool='+encodeURIComponent(tool):''),options);
@@ -113,7 +124,8 @@ function render(){
  center.textContent='View full '+(section==='more'?'Connect':sectionTitles[section]||'section')+' ↗';
  if(term&&stage!=='detail'){
   const all=groups.flatMap(g=>g.entries.map(i=>({...i,icon:i.icon||g.icon})));
-  const found=all.filter(i=>(i.title+' '+i.description).toLowerCase().includes(term)).slice(0,120);
+  const scoped=all.filter(i=>(i.title+' '+i.description).toLowerCase().includes(term));
+  const found=section==='more'?[...scoped,...globalMenuResults(term)].slice(0,50):scoped.slice(0,120);
   if(!found.length)content.append(el('p','ct53-empty','No matching entries. Try a different search.'));
   found.forEach(i=>content.append(drawRow(i,selectItem)));return;
  }
