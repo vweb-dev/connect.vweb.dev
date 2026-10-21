@@ -4,13 +4,13 @@ import {readFileSync} from 'node:fs';
 const read=file=>readFileSync(new URL('../'+file,import.meta.url),'utf8');
 const html=read('index.html'),routes=JSON.parse(read('data/tool-routes.json')).tools;
 function parseLayout(source){
- const doc=source.replace(/<script\\b[^>]*>[\\s\\S]*?<\\/script\\s*>/gi,'').replace(/<style\\b[^>]*>[\\s\\S]*?<\\/style\\s*>/gi,'').replace(/<!--[\\s\\S]*?-->/g,'').replace(/<textarea\\b[^>]*>[\\s\\S]*?<\\/textarea\\s*>/gi,'<textarea></textarea>');
- const re=/<(\\/)?([A-Za-z][\\w:-]*)\\b([^<>]*?)>/g;
+ const doc=source.replace(/<script\b[^>]*>[\s\S]*?<\/script\s*>/gi,'').replace(/<style\b[^>]*>[\s\S]*?<\/style\s*>/gi,'').replace(/<!--[\s\S]*?-->/g,'').replace(/<textarea\b[^>]*>[\s\S]*?<\/textarea\s*>/gi,'<textarea></textarea>');
+ const re=/<(\/)?([A-Za-z][\w:-]*)\b([^<>]*?)>/g;
  const voids=new Set(['area','base','br','col','embed','hr','img','input','link','meta','param','source','track','wbr']);
  const stack=[],pages=[],m;while((m=re.exec(doc))){
   const tag=m[2].toLowerCase();
   if(!m[1]){if(voids.has(tag)||m[3].trim().endsWith('/'))continue;
-   const id=m[3].match(/\\bid="([^"]+)"/)?.[1]||'';
+   const id=m[3].match(/\bid="([^"]+)"/)?.[1]||'';
    const node={tag,id,parent:stack.at(-1)?.id||stack.at(-1)?.tag||''};
    if(id.startsWith('page-'))pages.push(node);stack.push(node);
   }else{assert.equal(stack.at(-1)?.tag,tag,'Unbalanced closing tag '+tag+' near position '+m.index);
@@ -29,11 +29,11 @@ test('49 tools have unique canonical routes and valid existing controls',()=>{
  assert.equal(routes.length,49);
  assert.equal(new Set(routes.map(t=>t.path)).size,routes.length);
  assert.equal(new Set(routes.map(t=>t.id)).size,routes.length);
- const ids=new Set([...html.matchAll(/\\bid="([^"]+)"/g)].map(m=>m[1]));
+ const ids=new Set([...html.matchAll(/\bid="([^"]+)"/g)].map(m=>m[1]));
  const qrTypes=new Set([...html.matchAll(/data-qr-type="([^"]+)"/g)].map(m=>m[1]));
- const quickToolIds=new Set([...read('assets/tools-explorer-v53.js').matchAll(/\\bT\\('([^']+)'/g)].map(m=>m[1]));
+ const quickToolIds=new Set([...read('assets/tools-explorer-v53.js').matchAll(/\bT\('([^']+)'/g)].map(m=>m[1]));
  for(const tool of routes){
-  assert.match(tool.path,/^\\/(tools|convert|ai|qr|daily|windows|network)\\/[a-z0-9-]+$/,'Invalid URL for '+tool.id);
+  assert.match(tool.path,/^\/(tools|convert|ai|qr|daily|windows|network)\/[a-z0-9-]+$/,'Invalid URL for '+tool.id);
   if(tool.mode==='quick')assert.ok(quickToolIds.has(tool.id),'Unregistered Quick Action '+tool.id);
   else if(tool.mode==='qr')assert.ok(qrTypes.has(tool.target),'Missing QR type '+tool.id);
   else assert.ok(ids.has(tool.target),'Missing workspace control for '+tool.id+': '+tool.target);
