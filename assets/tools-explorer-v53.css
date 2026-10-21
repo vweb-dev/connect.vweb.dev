@@ -63,3 +63,8 @@ body.ct53-open{overflow:hidden}
  .ct53-content .ct53-row{min-height:68px}
 }
 @media(prefers-reduced-motion:reduce){.ct53-row{transition:none}}
+
+@media(prefers-reduced-motion:no-preference){.ct53-overlay:not([hidden]){animation:ct53-dim .18s ease-out}.ct53-overlay:not([hidden]) .ct53-sheet{animation:ct53-rise .26s cubic-bezier(.2,.82,.24,1)}}
+@keyframes ct53-dim{from{opacity:0}to{opacity:1}}
+@keyframes ct53-rise{from{transform:translateY(65px);opacity:.76}to{transform:translateY(0);opacity:1}}
+.ct53-handle{touch-action:pan-x;cursor:grab}
