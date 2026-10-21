@@ -11,7 +11,7 @@ const group=(id,title,icon,description,entries)=>({id,title,icon,description,ent
 const item=(id,title,description,url,options={})=>({id,title,description,url,...options});
 const catalogGroups=[...new Set(catalog.apps.map(a=>a.category).filter(Boolean))].map(cat=>group('apps-'+cat,cat,'◧',catalog.apps.filter(a=>a.category===cat).length+' official app links',catalog.apps.filter(a=>a.category===cat).map(a=>item(a.id,a.name,a.desc,a.open,{external:true,kind:a.kind,icon:a.initial||'◧'}))));
 const appGroups=[group('apps-featured','Featured apps','★','Popular publisher tools',catalog.apps.filter(a=>['powertoys','7zip','vscode','vlc','firefox','excalidraw','it-tools','vert','localsend','obsidian'].includes(a.id)).map(a=>item(a.id,a.name,a.desc,a.open,{external:true,kind:a.kind,icon:a.initial||'◧'}))),...catalogGroups];
-const courseList=catalog.courses.map(c=>item('course-'+c.id,c.title,(c.provider||'Creator course')+' · '+(c.level||'Free lessons'),'/academy',{courseId:c.id,icon:c.icon||'▶'}));
+const courseList=catalog.courses.map(c=>item('course-'+c.id,c.title,(c.provider||'Creator course')+' · '+(c.level||'Free lessons'),'/academy',{courseId:c.id,icon:c.icon||'▶',videoId:/^[a-zA-Z0-9_-]{11}$/.test(c.videoId||'')?c.videoId:null}));
 const deep=(name,title,description,url,tool,options={})=>item(name,title,description,url+(tool?'?tool='+encodeURIComponent(tool):''),options);
 const menus={
  apps:appGroups,
@@ -60,9 +60,21 @@ function go(url,{courseId,appCategory}={}){
  if(courseId)window.dispatchEvent(new CustomEvent('connect:select-course',{detail:{id:courseId}}));
  if(appCategory)window.dispatchEvent(new CustomEvent('connect:apps-open-category',{detail:{category:appCategory}}));
 }
+function courseThumbnail(source,detail=false){
+ const wrap=el('span',detail?'lms58-detail-thumbnail':'lms58-thumbnail');
+ const icon=el('span','lms58-thumbnail-fallback',source.icon||'▶');
+ if(!source.videoId){wrap.append(icon);return wrap;}
+ const img=el('img','lms58-thumbnail-image');
+ img.src='https://i.ytimg.com/vi/'+encodeURIComponent(source.videoId)+'/mqdefault.jpg';
+ img.alt='';img.loading='lazy';img.decoding='async';img.referrerPolicy='no-referrer';
+ img.width=320;img.height=180;
+ img.addEventListener('error',()=>{img.remove();wrap.append(icon);},{once:true});
+ wrap.append(img);
+ return wrap;
+}
 function drawRow(source,activate){
- const button=el('button','ct53-row connect56-row');button.type='button';
- button.append(el('span','ct53-row-symbol',source.icon||'↗'));
+ const button=el('button','ct53-row connect56-row'+(source.courseId?' lms58-course-row':''));button.type='button';
+ button.append(source.courseId?courseThumbnail(source):el('span','ct53-row-symbol',source.icon||'↗'));
  const copy=el('span','ct53-row-body');copy.append(el('strong','',source.title),el('small','',source.description||''));button.append(copy,el('span','ct53-chevron','›'));button.addEventListener('click',()=>activate(source));return button;
 }
 function viewFull(){go(section==='more'?'/studios':'/'+section);}
@@ -110,7 +122,7 @@ function render(){
  }
  if(stage==='detail'&&selectedItem){
   const i=selectedItem,box=el('div','ct53-tool-detail');
-  box.append(el('span','ct53-detail-icon',i.icon||selectedGroup?.icon||'◈'),el('h3','',i.title),el('p','',i.description));
+  box.append(i.courseId?courseThumbnail(i,true):el('span','ct53-detail-icon',i.icon||selectedGroup?.icon||'◈'),el('h3','',i.title),el('p','',i.description));
   if(i.external)box.append(el('p','ct53-detail-note','Opens the official publisher website in a new tab. Downloads are not hosted by Connect.'));
   const actions=el('div','ct53-detail-actions'),open=el('button','ct53-primary',i.external?'Open official website ↗':'Open '+i.title+' ↗');open.type='button';open.addEventListener('click',()=>go(i.url,{courseId:i.courseId}));actions.append(open);
   if(section==='apps'){const full=el('button','ct53-secondary','Browse all apps');full.type='button';full.addEventListener('click',()=>go('/apps',{appCategory:selectedGroup?.id.startsWith('apps-')?selectedGroup?.title:'All'}));actions.append(full);}
