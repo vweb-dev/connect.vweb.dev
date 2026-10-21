@@ -163,7 +163,8 @@
    syncHead(course.title+' — Free Course | VWEB.DEV Connect',course.description||'Creator-led learning path with local progress tracking.',current);
    applyCourse(course);
   }else if(areas.has(base)&&current==='/'+base){
-   syncHead((categories[base]||'Tools')+' | VWEB.DEV Connect','Browse individual online tools and open a focused workspace.',current);
+   const canonical=document.querySelector('link[rel="canonical"]');
+   if(!canonical||new URL(canonical.href,location.origin).pathname!==current)syncHead((categories[base]||'Tools')+' | VWEB.DEV Connect','Browse individual online tools and open a focused workspace.',current);
    directory(base);
   }else{
    const canonical=document.querySelector('link[rel="canonical"]');if(canonical)canonical.href=location.origin+current;
