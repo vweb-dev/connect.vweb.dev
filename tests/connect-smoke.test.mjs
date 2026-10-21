@@ -7,7 +7,7 @@ function parseLayout(source){
  const doc=source.replace(/<script\b[^>]*>[\s\S]*?<\/script\s*>/gi,'').replace(/<style\b[^>]*>[\s\S]*?<\/style\s*>/gi,'').replace(/<!--[\s\S]*?-->/g,'').replace(/<textarea\b[^>]*>[\s\S]*?<\/textarea\s*>/gi,'<textarea></textarea>');
  const re=/<(\/)?([A-Za-z][\w:-]*)\b([^<>]*?)>/g;
  const voids=new Set(['area','base','br','col','embed','hr','img','input','link','meta','param','source','track','wbr']);
- const stack=[],pages=[],m;while((m=re.exec(doc))){
+ const stack=[],pages=[];let m;while((m=re.exec(doc))){
   const tag=m[2].toLowerCase();
   if(!m[1]){if(voids.has(tag)||m[3].trim().endsWith('/'))continue;
    const id=m[3].match(/\bid="([^"]+)"/)?.[1]||'';
