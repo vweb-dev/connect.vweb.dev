@@ -39,13 +39,13 @@ function renderContext(key){
 }
 
 function route(focusHeading){
-  var key=location.hash.replace('#','')||'home';
+  var key=location.hash.replace('#','')||location.pathname.replace(/^\/+|\/+$/g,'')||'home';
   if(['watch','discover','tv','listen'].includes(key)){key='home';history.replaceState(null,'','#home');}
   if(key==='internet'||key==='rewards'){key='dashboard';history.replaceState(null,'','#dashboard');}
   if(routes.indexOf(key)<0)key='home';
   $$('.page').forEach(function(el){el.hidden=el.id!=='page-'+key;});
   $$('[data-nav]').forEach(function(el){var active=el.dataset.nav===key;el.classList.toggle('active',active);if(active){el.setAttribute('aria-current','page');}else{el.removeAttribute('aria-current');}});
-  document.title=(key==='home'?'VWEB.DEV Connect':key.charAt(0).toUpperCase()+key.slice(1)+' | VWEB.DEV Connect');
+  document.title=(key==='home'?'VWEB.DEV Connect':(contextTitles[key]||key)+' | VWEB.DEV Connect');
   renderContext(key);
   if(focusHeading){
     var heading=$('#page-'+key+' h1');
@@ -53,7 +53,11 @@ function route(focusHeading){
   }
   window.scrollTo(0,0);
 }
-window.addEventListener('hashchange',function(){route(true);});route(false);
+window.addEventListener('hashchange',function(){const key=location.hash.slice(1);if(routes.includes(key)){history.replaceState(null,'','/'+(key==='home'?'':key));}route(true);});
+window.addEventListener('popstate',function(){route(false);});
+document.addEventListener('click',function(event){const link=event.target.closest('a[href^="#"]');if(!link||event.defaultPrevented||event.ctrlKey||event.metaKey||event.shiftKey||event.altKey)return;const key=link.getAttribute('href').slice(1);if(!routes.includes(key))return;event.preventDefault();history.pushState(null,'','/'+(key==='home'?'':key));route(true);window.dispatchEvent(new Event('popstate'));});
+if(location.hash&&routes.includes(location.hash.slice(1))){history.replaceState(null,'','/'+(location.hash.slice(1)==='home'?'':location.hash.slice(1)));}
+route(false);
 // Mobile app navigation is handled independently by assets/mobile-app.js.
 $('#year').textContent=new Date().getFullYear();
 if('serviceWorker' in navigator){window.addEventListener('load',function(){navigator.serviceWorker.register('/sw.js').catch(function(){});});}
