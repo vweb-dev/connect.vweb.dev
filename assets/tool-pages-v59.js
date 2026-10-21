@@ -166,7 +166,7 @@
    const items=catalog.filter(item=>{
     const matching=selected==='all'||item.group===selected;
     const text=[item.title,item.description,item.id,item.slug,item.section,item.path,item.group].join(' ').toLowerCase().replace(/[\W_]+/g,' ');
-    const aliases=(item.group==='qr'?'qrcode scan barcode wifi whatsapp ':item.group==='files'?'pdf image video audio converter ':item.group==='activation'?'microsoft windows office license ':item.group==='developer'?'code json csv uuid hash base64 ':'');
+    const aliases=(item.group==='qr'?'qrcode scan barcode ':item.group==='files'?'file converter ':item.group==='activation'?'microsoft license ':item.group==='developer'?'code developer ':'');
     return matching&&words.every(word=>(text+' '+aliases).includes(word));
    });
    status.textContent=items.length+' matching tools · '+catalog.length+' available';
