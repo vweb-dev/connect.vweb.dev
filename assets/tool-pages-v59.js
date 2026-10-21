@@ -93,7 +93,15 @@
    page.querySelector('.puter-help')?.classList.add('tool59-branch');
    page.querySelector('.ai-info')?.classList.add('tool59-branch');
   }
-  if(tool.section==='qr')page.querySelector('.qr-type-tabs')?.classList.add('tool59-hidden');
+  if(tool.section==='qr'){
+   page.querySelector('.qr-type-tabs')?.classList.add('tool59-hidden');
+   const form=$('qr-design'),steps=form?[...form.children].filter(x=>x.classList?.contains('qr-step')):[];
+   if(steps.length>2&&!form.querySelector('.tool59-qr-advanced')){
+    const advanced=el('details','tool59-qr-advanced'),summary=el('summary','','Customize colors, patterns & logo');
+    const body=el('div','tool59-qr-advanced-body');advanced.append(summary,body);
+    steps[2].before(advanced);steps.slice(2).forEach(step=>body.append(step));
+   }
+  }
   suppressOtherTopLevel(page);
   const related=relatedList(tool);const hero=$('connect-tool59-hero');page.insertBefore(related,hero?.nextSibling||page.firstChild);
   /* For PHP-served pages, intro/related already appeared server-side. We normalize
