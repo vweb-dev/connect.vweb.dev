@@ -50,11 +50,25 @@
   intro(page,{title:tool.title,description:tool.description+'.',base:tool.section});
   let selected=null;
   if(tool.mode==='quick'){
-   const candidate=$('qt-active-tool');selected=candidate;
+   const candidate=$('qt-active-tool');
    window.dispatchEvent(new CustomEvent('connect:open-tool',{detail:{id:tool.target}}));
-   selected=candidate;
+   const current=candidate?.querySelector('.tool-card');
+   if(!current||current.dataset.toolsId!==tool.target){
+    const fallbackSelectors={compress:'#image-file',password:'#password-output',text:'#text-content',units:'#conv-mode',csv:'#csv-content',json:'#hub-json-input',encode:'#hub-encode-input',hash:'#hub-hash-input',uuid:'#hub-uuid-output',qr:'.hub-qr-card',contrast:'.hub-contrast-card'};
+    const source=$('hub-tools-source'),selector=fallbackSelectors[tool.target];
+    const recovered=selector?source?.querySelector(selector)?.closest('.tool-card'):null;
+    if(recovered&&candidate){candidate.replaceChildren(recovered);recovered.dataset.toolsId=tool.target;}
+   }
+   selected=candidate?.querySelector('.tool-card')?candidate:null;
   }else if(tool.mode==='tab'){
-   const tab=$(tool.target);tab?.click();selected=$(tool.target.replace('-tab-','-pane-'));
+   const tab=$(tool.target);tab?.click();
+   selected=$(tool.target.replace('-tab-','-pane-'));
+   if(selected){
+    selected.hidden=false;
+    const all=selected.parentElement?.querySelectorAll('[role="tabpanel"]')||[];
+    all.forEach(panel=>{if(panel!==selected)panel.hidden=true;});
+    if(tab){tab.setAttribute('aria-selected','true');tab.classList.add('is-selected','active');}
+   }
   }else if(tool.mode==='qr'){
    document.querySelector('[data-qr-type="'+tool.target+'"]')?.click();
    selected=page.querySelector('.qr-workbench');
@@ -70,7 +84,21 @@
    if(tool.section==='daily')selected=selected?.closest('.daily-panel')||selected;
    if(tool.section==='pc')selected=selected?.closest('.hub-panel,.connect-mas-command,.ct54-office-help,.win-deep-dive,.hub-activation-scripts')||selected;
   }
-  if(!selected){console.warn('Tool workspace not available:',tool.id);return;}
+  if(!selected){
+   console.warn('Tool workspace not available:',tool.id);
+   const hero=$('connect-tool59-hero');
+   const warning=el('div','tool60-recovery');
+   warning.setAttribute('role','status');
+   warning.append(el('strong','','This tool did not finish loading.'));
+   warning.append(el('p','','Try reloading this page. If it is still unavailable, choose another related tool.'));
+   const retry=el('button','tool60-retry','↻ Reload tool');retry.type='button';retry.addEventListener('click',()=>location.reload());
+   warning.append(retry);hero?.append(warning);
+   suppressOtherTopLevel(page);
+   const related=relatedList(tool);page.insertBefore(related,hero?.nextSibling||page.firstChild);
+   return;
+  }
+  selected.hidden=false;
+  let disclosure=selected.closest('details');while(disclosure){disclosure.open=true;disclosure=disclosure.parentElement?.closest('details');}
   selected.classList.add('tool59-selected');
   ancestors(selected,page);
   if(tool.section==='daily'){
@@ -110,18 +138,60 @@
  function directory(area){
   const page=$('page-'+area);if(!page)return;
   root.dataset.connectToolDirectory=area;
-  const group=tools.filter(x=>x.section===area);
-  if(!group.length)return;
+  const catalog=area==='tools'?tools:tools.filter(t=>t.section===area);
+  if(!catalog.length)return;
   page.hidden=false;
   let block=$('connect-tool59-directory');
   if(!block){block=el('section','tool59-directory');block.id='connect-tool59-directory';page.prepend(block);}
-  block.replaceChildren(el('div','overline','CHOOSE YOUR TOOL'),el('h1','',categories[area]||'Tools'),el('p','','Choose a dedicated tool. Only its workspace opens, with no unnecessary scrolling.'));
-  const grid=el('div','tool59-directory-grid');
-  for(const t of group){
-   const a=el('a','tool59-directory-item');a.href=t.path;
-   a.append(el('strong','',t.title),el('small','',t.description),el('span','','Open tool ↗'));grid.append(a);
+  const title=area==='tools'?'All Connect Tools':(categories[area]||'Tools');
+  block.replaceChildren(el('div','overline','BROWSE · SEARCH · OPEN'),el('h1','',title),el('p','','Find exactly what you need, then work in a dedicated page. No unrelated tools or extra scrolling.'));
+  const form=el('form','tool60-search');
+  form.setAttribute('role','search');
+  const label=el('label','visually-hidden','Search '+title);label.htmlFor='tool60-search-input';
+  const input=el('input','tool60-search-input');
+  input.type='search';input.id='tool60-search-input';input.autocomplete='off';input.placeholder='Search tools — PDF, WhatsApp, image, JSON, Windows…';
+  const clear=el('button','tool60-clear','Clear');clear.type='button';clear.hidden=true;
+  clear.addEventListener('click',()=>{input.value='';selected='all';limit=12;render();input.focus();});
+  form.append(label,input,clear);form.addEventListener('submit',event=>{event.preventDefault();const first=grid.querySelector('a');first?.focus();});
+  block.append(form);
+  const status=el('p','tool60-result-count');status.setAttribute('role','status');status.setAttribute('aria-live','polite');
+  const chips=el('div','tool60-filters'),grid=el('div','tool59-directory-grid'),more=el('button','tool60-load-more','Show more tools ↓');more.type='button';
+  block.append(status,chips,grid,more);
+  let selected='all',limit=12;
+  const names={quick:'Quick & Everyday',developer:'Developer',design:'Design',files:'Files & Media',qr:'QR Studio',ai:'AI Studio',daily:'Daily Desk',activation:'Activation',system:'Windows & Internet'};
+  const groups=[...new Set(catalog.map(item=>item.group))];
+  function render(){
+   const phrase=input.value.trim().toLowerCase().replace(/[\u0300-\u036f]/g,'');
+   const words=phrase.split(/\s+/).filter(Boolean);
+   const items=catalog.filter(item=>{
+    const matching=selected==='all'||item.group===selected;
+    const text=[item.title,item.description,item.id,item.slug,item.section,item.path,item.group].join(' ').toLowerCase().replace(/[\W_]+/g,' ');
+    const aliases=(item.group==='qr'?'qrcode scan barcode ':item.group==='files'?'file converter ':item.group==='activation'?'microsoft license ':item.group==='developer'?'code developer ':'');
+    return matching&&words.every(word=>(text+' '+aliases).includes(word));
+   });
+   status.textContent=items.length+' matching tools · '+catalog.length+' available';
+   grid.replaceChildren();
+   for(const item of items.slice(0,limit)){
+    const a=el('a','tool59-directory-item');a.href=item.path;
+    a.append(el('strong','',item.title),el('small','',item.description),el('span','','Open tool ↗'));
+    grid.append(a);
+   }
+   if(!items.length)grid.append(el('p','tool60-empty','No results. Try a shorter or different keyword.'));
+   more.hidden=items.length<=limit;
+   more.textContent='Show '+Math.min(12,items.length-limit)+' more tools ↓';
+   clear.hidden=!input.value;
+   chips.replaceChildren();
+   if(area!=='tools')return;
+   for(const key of ['all',...groups]){
+    const button=el('button','tool60-chip'+(selected===key?' selected':''),key==='all'?'All '+catalog.length:names[key]||key);
+    button.type='button';button.setAttribute('aria-pressed',String(selected===key));
+    button.addEventListener('click',()=>{selected=key;limit=12;render();});
+    chips.append(button);
+   }
   }
-  block.append(grid);
+  input.addEventListener('input',()=>{limit=12;render();});
+  more.addEventListener('click',()=>{limit+=12;render();});
+  render();
   for(const child of page.children){if(child!==block)child.classList.add('tool59-hidden');}
  }
  function applyCourse(course){

@@ -47,7 +47,7 @@ if($toolInfo){
   $base=$path;
   $title=$pages[$path][0];$description=$pages[$path][1];
   if(in_array($path,['tools','convert','ai','qr','daily','pc'],true)){
-   $directoryInfo=array_values(array_filter($tools,static fn($t)=>isset($t['section'])&&$t['section']===$path));
+   $directoryInfo=$path==='tools'?$tools:array_values(array_filter($tools,static fn($t)=>isset($t['section'])&&$t['section']===$path));
   }
  }else{
   http_response_code(404);header('Content-Type: text/plain; charset=utf-8');echo 'Page not found';exit;

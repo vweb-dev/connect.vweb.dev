@@ -212,33 +212,80 @@ const quickToolIndex=[
  {title:'QR Code Studio',detail:'Full QR designer with logo, gradients, SVG and PNG',destination:'#qr',tool:'qr',icon:'▦'},
  {title:'Color Contrast',detail:'Check accessible WCAG text contrast',destination:'#tools',tool:'contrast',icon:'◐'}
 ];
-function openIndexedResult(item){
- if(item.course)setCourse(item.course,true);
- if(item.app){
-  appFilter='All';appSearch=item.app.toLowerCase();appKind='All';appLimit=12;
-  $('#hub-app-search').value=item.app;$('#hub-app-kind').value='All';renderApps();$('#hub-app-search').dispatchEvent(new Event('input',{bubbles:true}));
+function navigateIndexed(path){
+ if(!path||!path.startsWith('/'))return;
+ if(location.pathname!==path||location.hash||location.search){
+  history.pushState(null,'',path);
+  window.dispatchEvent(new Event('popstate'));
  }
- if(item.tool==='qr'){location.hash='#qr';return;}
- if(item.tool){
-  if(location.hash!=='#tools')location.hash='#tools';
-  requestAnimationFrame(()=>window.dispatchEvent(new CustomEvent('connect:open-tool',{detail:{id:item.tool}})));
+ window.scrollTo({top:0,behavior:'instant'});
+}
+function openIndexedResult(item){
+ const path=item.destination;
+ if(item.app){
+  navigateIndexed('/apps');
+  appFilter='All';appSearch=item.app.toLowerCase();appKind='All';appLimit=24;
+  const input=$('#hub-app-search');if(input){input.value=item.app;input.dispatchEvent(new Event('input',{bubbles:true}));}
   return;
  }
- if(location.hash===item.destination&&item.destination==='#academy'&&item.course)startLesson(lessonIndex);
- else location.hash=item.destination;
+ if(item.course){
+  navigateIndexed('/academy/course/'+encodeURIComponent(item.course));return;
+ }
+ if(item.tool){
+  const route=window.ConnectToolRoutes?.getPath(item.tool);
+  if(route){navigateIndexed(route);return;}
+ }
+ if(typeof path==='string'){
+  navigateIndexed(path.startsWith('#')?'/'+path.slice(1):path);
+ }
 }
-
+const searchToolRegistry=()=>{
+ try{
+  const parsed=JSON.parse($('#connect-tool-route-catalog')?.textContent||'{}');
+  return Array.isArray(parsed.tools)?parsed.tools:[];
+ }catch{return []}
+};
+const searchAlias={
+ pdf:'document merge split extract',compress:'resize photo image jpg png webp',json:'developer code api formatter validate',
+ qr:'qrcode barcode scan whatsapp wifi',windows:'microsoft pc win11 license activation',office:'microsoft word excel 365',
+ currency:'forex exchange rate pkr usd gbp',seo:'website google bing meta title description search ranking',
+ password:'secure random credentials login',image:'photo picture graphic jpeg png',video:'movie media clip',
+ audio:'sound mp3 wav',network:'speed broadband download upload internet latency',learn:'courses tutorial education',powertoys:'power tools microsoft utilities'
+};
+function indexedScore(item,query){
+ const raw=(item.title+' '+item.detail+' '+(item.keywords||'')).toLocaleLowerCase();
+ const normalized=raw.normalize('NFKD').replace(/[\u0300-\u036f]/g,'');
+ const q=query.normalize('NFKD').toLocaleLowerCase().replace(/[\u0300-\u036f]/g,'').trim();
+ if(!q)return 0;
+ const words=q.split(/\s+/).filter(Boolean);
+ const extra=Object.entries(searchAlias).filter(([word])=>raw.includes(word)).map(([,tags])=>tags).join(' ');
+ const hay=normalized+' '+extra;
+ if(!words.every(w=>hay.includes(w)))return 0;
+ const directTitle=item.title.toLowerCase().replace(/[^a-z0-9]+/g,'');
+ const directUrl=(item.destination||'').toLowerCase().replace(/[^a-z0-9]+/g,'');
+ const directKeywords=(item.keywords||'').toLowerCase().replace(/[^a-z0-9]+/g,'');
+ let score=words.reduce((sum,w)=>sum+(directTitle.includes(w)?24:0)+(directUrl.includes(w)?22:0)+(directKeywords.includes(w)?11:0)+(normalized.includes(w)?4:0)+1,0);
+ if(item.title.toLowerCase()===q)score+=140;
+ if(item.title.toLowerCase().startsWith(q))score+=55;
+ if(item.kind==='tool')score+=12;
+ if(item.destination?.startsWith('/'))score+=3;
+ return score;
+}
 function searchIndex(query){
- const q=query.toLowerCase().trim();
- if(!q)return [];
+ const term=String(query||'').trim();
+ if(term.length<2)return [];
+ const registry=searchToolRegistry();
  const all=[
-  ...quickToolIndex,
-  ...data.studios.map(x=>({title:x.title,detail:x.subtitle,destination:'#studios',icon:x.icon})),
-  ...data.courses.map(x=>({title:x.title,detail:x.description,destination:'#academy',course:x.id,icon:x.icon})),
-  ...data.apps.map(x=>({title:x.name,detail:x.desc,destination:'#apps',app:x.name,icon:x.initial||'◧'})),
-  ...data.help.map(x=>({title:x.title,detail:x.description,destination:'#pc',icon:'▦'}))
+  ...registry.map(t=>({title:t.title,detail:t.description,keywords:[t.id,t.group,t.slug,t.section,t.path].join(' '),destination:t.path,tool:t.id,kind:'tool',icon:'⌘'})),
+  ...data.studios.map(x=>({title:x.title,detail:x.subtitle,destination:'/studios',kind:'section',icon:x.icon})),
+  ...data.courses.map(x=>({title:x.title,detail:(x.description||'')+' '+(x.provider||''),destination:'/academy/course/'+x.id,course:x.id,kind:'course',icon:x.icon||'▶'})),
+  ...data.apps.map(x=>({title:x.name,detail:x.desc||'',keywords:(x.tags||[]).join(' '),destination:'/apps',app:x.name,kind:'app',icon:x.initial||'◧'})),
+  ...data.help.map(x=>({title:x.title,detail:x.description,destination:'/pc',kind:'help',icon:'▦'}))
  ];
- return all.filter(x=>(x.title+' '+x.detail).toLowerCase().includes(q)).slice(0,9);
+ const found=all.map(item=>({...item,score:indexedScore(item,term)})).filter(item=>item.score>0);
+ found.sort((a,b)=>b.score-a.score||a.title.localeCompare(b.title));
+ const unique=new Set();
+ return found.filter(item=>{const key=item.kind+'|'+item.destination+'|'+item.title;if(unique.has(key))return false;unique.add(key);return true;}).slice(0,25);
 }
 function renderGlobalSearch(){
  const root=$('#hub-search-results');
@@ -281,13 +328,14 @@ const quickSections=[
 ];
 function paletteOptions(query){
  const q=query.toLowerCase().trim();
- const options=q?[...quickSections,...searchIndex(q)].filter(item=>
-  (item.title+' '+item.detail).toLowerCase().includes(q)).slice(0,12):quickSections;
+ if(!q)return quickSections;
+ const all=[...searchIndex(q),...quickSections.map(i=>({...i,destination:i.destination.startsWith('#')?'/'+i.destination.slice(1):i.destination}))];
  const unique=new Set();
- return options.filter(item=>{
-  const key=item.destination+'|'+item.title;
+ return all.filter(item=>{
+  if(!(item.title+' '+item.detail).toLowerCase().includes(q)&&!item.score)return false;
+  const key=item.title+'|'+item.destination;
   if(unique.has(key))return false;unique.add(key);return true;
- });
+ }).slice(0,18);
 }
 function gotoSearchResult(item){
  if(palette.open)palette.close();

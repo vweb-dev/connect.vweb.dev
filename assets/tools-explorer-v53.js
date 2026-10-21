@@ -212,7 +212,7 @@ document.addEventListener('click',event=>{
 },true);
 $('connect-tools-launch')?.addEventListener('click',openSheet);
 $('connect-desktop-tools')?.addEventListener('click',openSheet);
-$('connect-tools-show-all')?.addEventListener('click',()=>{closeSheet();history.pushState(null,'','/tools');window.dispatchEvent(new Event('popstate'));$('connect-tools-directory')?.scrollIntoView({block:'start',behavior:'smooth'});});
+$('connect-tools-show-all')?.addEventListener('click',()=>{closeSheet();history.pushState(null,'','/tools');window.dispatchEvent(new Event('popstate'));requestAnimationFrame(()=>( $('connect-tool59-directory')||$('connect-tools-directory') )?.scrollIntoView({block:'start',behavior:'auto'}));});
 /* Full /tools page also displays every cross-studio tool for search engines and direct visitors. */
 const library=$('connect-tools-directory');
 if(library){
