@@ -80,3 +80,14 @@ html[data-connect-tool-route] #page-ai .ai-tool-workspace{gap:17px}
 
 .tool61-live-insight{margin:9px 0 13px;display:inline-flex;align-items:center;min-height:29px;padding:6px 11px;border-radius:9px;background:#2b3542;border:1px solid #586773;color:#d6dee5;font-size:11px;font-weight:680;line-height:1.45}
 .tool61-live-insight.tool61-valid{background:#1c3b34;border-color:#438069;color:#bbebd3}
+
+
+/* v62 interactive tool workspace */
+.tool62-workspace{display:flex;align-items:center;justify-content:space-between;gap:14px;flex-wrap:wrap;padding:15px 17px;margin:0 0 20px;border:1px solid #526372;border-radius:15px;background:linear-gradient(120deg,#263541,#182732)}
+.tool62-workspace-intro{display:grid;gap:4px}.tool62-workspace-intro strong{color:#f8e8cd;font-size:13px}.tool62-workspace-intro small{color:#b5c4d0;font-size:11px}
+.tool62-workspace-buttons{display:flex;flex-wrap:wrap;gap:7px}
+.tool62-button{border:1px solid #63798a;border-radius:10px;padding:9px 12px;background:#334657;color:#f4f6f8;min-height:38px;font-weight:720;font-size:11px;cursor:pointer}
+.tool62-button:hover,.tool62-button:focus-visible{background:#465b6b;border-color:#eac187;outline-offset:2px}
+.tool62-dropzone{margin:10px 0 16px;padding:18px;border:2px dashed #987d52;border-radius:13px;text-align:center;color:#ead2af;background:rgba(236,186,109,.06);cursor:pointer;font-size:12px;line-height:1.55;overflow-wrap:anywhere}
+.tool62-dropzone.dragover,.tool62-dropzone:focus-visible{outline:2px solid #e9bf77;background:rgba(236,186,109,.16)}
+@media(max-width:740px){.tool62-workspace{padding:13px;align-items:stretch}.tool62-workspace-buttons{display:grid;grid-template-columns:repeat(2,minmax(0,1fr))}.tool62-button{min-height:44px}}
