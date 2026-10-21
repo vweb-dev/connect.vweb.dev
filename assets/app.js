@@ -11,20 +11,20 @@ var contextTitles={
  offers:'Deals',community:'Local & Learn',account:'My Account'
 };
 var contextRelated={
- daily:[['#tools','Quick actions'],['#convert','Convert files'],['#qr','QR codes']],
- studios:[['#tools','Quick actions'],['#convert','File converter'],['#apps','App directory']],
- academy:[['#dashboard','My progress'],['#apps','Useful apps'],['#tools','Quick actions']],
- pc:[['#apps','Software directory'],['#tools','Browser tools'],['#academy','Learn Windows']],
- apps:[['#pc','WinGet builder'],['#studios','Workspaces'],['#dashboard','Saved apps']],
- dashboard:[['#academy','Continue learning'],['#apps','Find apps'],['#tools','Quick actions']],
- convert:[['#tools','Quick actions'],['#studios','Workspaces'],['#dashboard','My workspace']],
- tools:[['#qr','QR Code Studio'],['#convert','File converter'],['#apps','App directory']],
- qr:[['#tools','Quick actions'],['#convert','File converter'],['#studios','Workspaces']],
- ai:[['#tools','Free utilities'],['#academy','Video academy'],['#studios','Workspaces']],
- play:[['#academy','Academy'],['#tools','Quick actions'],['#apps','App directory']],
- offers:[['#apps','App directory'],['#community','Community'],['#studios','Workspaces']],
- community:[['#academy','Academy'],['#play','Games & quizzes'],['#apps','Useful apps']],
- account:[['#dashboard','Local workspace'],['#apps','Apps'],['#home','Overview']]
+ daily:[['/tools','Quick actions'],['/convert','Convert files'],['/qr','QR codes']],
+ studios:[['/tools','Quick actions'],['/convert','File converter'],['/apps','App directory']],
+ academy:[['/dashboard','My progress'],['/apps','Useful apps'],['/tools','Quick actions']],
+ pc:[['/apps','Software directory'],['/tools','Browser tools'],['/academy','Learn Windows']],
+ apps:[['/pc','WinGet builder'],['/studios','Workspaces'],['/dashboard','Saved apps']],
+ dashboard:[['/academy','Continue learning'],['/apps','Find apps'],['/tools','Quick actions']],
+ convert:[['/tools','Quick actions'],['/studios','Workspaces'],['/dashboard','My workspace']],
+ tools:[['/qr','QR Code Studio'],['/convert','File converter'],['/apps','App directory']],
+ qr:[['/tools','Quick actions'],['/convert','File converter'],['/studios','Workspaces']],
+ ai:[['/tools','Free utilities'],['/academy','Video academy'],['/studios','Workspaces']],
+ play:[['/academy','Academy'],['/tools','Quick actions'],['/apps','App directory']],
+ offers:[['/apps','App directory'],['#community','Community'],['/studios','Workspaces']],
+ community:[['/academy','Academy'],['#play','Games & quizzes'],['/apps','Useful apps']],
+ account:[['/dashboard','Local workspace'],['/apps','Apps'],['/','Overview']]
 };
 function renderContext(key){
  var container=$('#hub-context');
@@ -39,13 +39,13 @@ function renderContext(key){
 }
 
 function route(focusHeading){
-  var key=location.hash.replace('#','')||location.pathname.replace(/^\/+|\/+$/g,'')||'home';
+  var segments=location.pathname.split('/').filter(Boolean);var segment=segments[0]||'home';var key=(location.hash&&routes.includes(location.hash.slice(1))?location.hash.slice(1):'')||(segment==='windows'?'pc':segment);
   if(['watch','discover','tv','listen'].includes(key)){key='home';history.replaceState(null,'','#home');}
   if(key==='internet'||key==='rewards'){key='dashboard';history.replaceState(null,'','#dashboard');}
   if(routes.indexOf(key)<0)key='home';
   $$('.page').forEach(function(el){el.hidden=el.id!=='page-'+key;});
   $$('[data-nav]').forEach(function(el){var active=el.dataset.nav===key;el.classList.toggle('active',active);if(active){el.setAttribute('aria-current','page');}else{el.removeAttribute('aria-current');}});
-  if(!document.querySelector('link[rel="canonical"]')||key!==(location.pathname.split('/').filter(Boolean).join('/')||'home')){document.title=(key==='home'?'VWEB.DEV Connect':(contextTitles[key]||key)+' | VWEB.DEV Connect');}
+  if(!document.querySelector('link[rel="canonical"]')||key!==(location.pathname.split('/').filter(Boolean)[0]||'home')){document.title=(key==='home'?'VWEB.DEV Connect':(contextTitles[key]||key)+' | VWEB.DEV Connect');}
   renderContext(key);
   if(focusHeading){
     var heading=$('#page-'+key+' h1');
