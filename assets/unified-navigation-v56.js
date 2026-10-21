@@ -88,6 +88,7 @@ function desk57RenderRail(){
 }
 function render(){
  const groups=menus[section]||menus.more,term=query.value.trim().toLowerCase();
+ sheet.dataset.stage=term&&stage!=='detail'?'search':stage;
  desk57RenderRail();
  content.replaceChildren();const headline=section==='more'?'Explore Connect':(sectionTitles[section]||'Explore Connect');
  title.textContent=stage==='list'&&selectedGroup?.title||stage==='detail'&&selectedItem?.title||headline;
