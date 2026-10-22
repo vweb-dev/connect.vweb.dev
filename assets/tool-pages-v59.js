@@ -153,6 +153,7 @@
   const clear=el('button','tool60-clear','Clear');clear.type='button';clear.hidden=true;
   clear.addEventListener('click',()=>{input.value='';selected='all';limit=12;render();input.focus();});
   form.append(label,input,clear);form.addEventListener('submit',event=>{event.preventDefault();const first=grid.querySelector('a');first?.focus();});
+  if(area==='convert'){const suite=$('convert72-suite');if(suite)block.append(suite);}
   block.append(form);
   const status=el('p','tool60-result-count');status.setAttribute('role','status');status.setAttribute('aria-live','polite');
   const chips=el('div','tool60-filters'),grid=el('div','tool59-directory-grid'),more=el('button','tool60-load-more','Show more tools ↓');more.type='button';
