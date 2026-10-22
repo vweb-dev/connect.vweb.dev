@@ -221,3 +221,22 @@ html[data-connect-tool-route="speed-test"] #page-network .connect-ost-speed{widt
 
 /* v70: visible alternate network test above embedded FAST.com */
 #page-network .fast-comparison-link{margin:15px 0 18px!important;justify-content:space-between!important;padding:13px 16px!important}#page-network .fast-comparison-link a{white-space:normal!important;text-align:center}#page-network .connect-fast-test .ookla-iframe-wrap{margin-top:0!important}@media(max-width:640px){#page-network .fast-comparison-link{flex-direction:column!important;align-items:stretch!important}#page-network .fast-comparison-link a{width:100%}}
+
+
+/* QR studio v75: dedicated QR routes share one consistent editor + preview workbench */
+html[data-connect-tool-route^="qr-"] #page-qr .qr-workbench,
+html[data-connect-tool-route="qr-designer"] #page-qr .qr-workbench{
+display:grid!important;grid-template-columns:minmax(0,1.15fr) minmax(320px,.85fr)!important;
+align-items:start!important;gap:18px!important;max-width:1160px!important;margin:10px auto 20px!important;
+}
+html[data-connect-tool-route^="qr-"] #page-qr .qr-workbench>.qr-editor-card,
+html[data-connect-tool-route^="qr-"] #page-qr .qr-workbench>.qr-preview-card,
+html[data-connect-tool-route="qr-designer"] #page-qr .qr-workbench>.qr-editor-card,
+html[data-connect-tool-route="qr-designer"] #page-qr .qr-workbench>.qr-preview-card{min-width:0!important;width:100%!important;margin:0!important;grid-column:auto!important;max-width:none!important}
+html[data-connect-tool-route^="qr-"] #page-qr .qr-workbench>.qr-preview-card,
+html[data-connect-tool-route="qr-designer"] #page-qr .qr-workbench>.qr-preview-card{position:sticky;top:85px;align-self:start}
+html[data-connect-tool-route^="qr-"] #page-qr .tool62-workspace,
+html[data-connect-tool-route="qr-designer"] #page-qr .tool62-workspace{display:none!important}
+html[data-connect-tool-route^="qr-"] #page-qr .qr-editor-card,
+html[data-connect-tool-route^="qr-"] #page-qr .qr-preview-card{box-shadow:0 10px 28px rgba(0,0,0,.15)!important}
+@media(max-width:950px){html[data-connect-tool-route^="qr-"] #page-qr .qr-workbench,html[data-connect-tool-route="qr-designer"] #page-qr .qr-workbench{grid-template-columns:minmax(0,1fr)!important;gap:14px!important}html[data-connect-tool-route^="qr-"] #page-qr .qr-workbench>.qr-preview-card,html[data-connect-tool-route="qr-designer"] #page-qr .qr-workbench>.qr-preview-card{position:static!important}}
