@@ -104,7 +104,7 @@ function activateTool(t){
  const example=samples[t.id];if(example)buttons.append(createButton('✦ Try example',()=>{const el=$(example.id);if(!el){return}el.value=example.value;el.dispatchEvent(new Event('input',{bubbles:true}));el.dispatchEvent(new Event('change',{bubbles:true}));el.focus();}));
  if(t.section==='tools'||t.section==='daily')buttons.append(createButton('⌁ Copy output',async()=>{const block=$('page-'+t.section);const selected=block?.querySelector('.tool59-selected');const result=selected?readOutput(selected):'';const b=buttons.lastElementChild;if(!result){b.textContent='No result yet';setTimeout(()=>b.textContent='⌁ Copy output',1800);return}try{await navigator.clipboard.writeText(result);b.textContent='✓ Copied';setTimeout(()=>b.textContent='⌁ Copy output',1800)}catch{b.textContent='Clipboard unavailable'}}));
  toolbar.append(buttons);hero.append(toolbar);
- const details=create('details','tool61-guide'),summary=create('summary','','How to use '+t.title);details.append(summary);
+ const details=create('details','tool61-guide'),summary=create('summary','','How to use '+t.title);if(t.section==='qr')details.open=true;details.append(summary);
  const inner=create('div','tool61-guide-content'),list=create('ol','tool61-howto');
  tipsFor(t).forEach(s=>list.append(create('li','',s)));inner.append(list,create('p','tool61-hint',hints[t.id]||t.description));details.append(inner);
  const related=$('connect-tool59-related');if(related)related.after(details);else hero.after(details);
