@@ -216,3 +216,5 @@ html[data-connect-tool-route="speed-test"] #page-network .connect-ost-speed{widt
 #page-network .connect-ookla-speed .ookla-head{text-align:center;padding-bottom:6px}
 #page-network .connect-ookla-speed .ookla-head p{color:#b6c6d4;font-size:13px}
 @media(max-width:650px){#page-network .connect-ookla-speed .ookla-iframe-wrap{min-height:620px}#page-network .connect-ookla-speed .ookla-iframe-wrap iframe{height:620px}}
+
+#page-network .fast-comparison-link{display:flex;gap:12px;align-items:center;justify-content:center;flex-wrap:wrap;padding:14px;margin:12px 0;border:1px solid #394e60;border-radius:13px;background:#1b2a36;color:#b9c8d5;font-size:13px}#page-network .fast-comparison-link a{display:inline-flex;align-items:center;justify-content:center;min-height:43px;border-radius:10px;padding:9px 16px;background:#dfb976;color:#18202a;font-weight:800;text-decoration:none}#page-network .fast-comparison-link a:hover{background:#f1cf94}
