@@ -29,3 +29,18 @@ test('PWA precache only references committed assets',()=>{
  for(const match of items.matchAll(/'([^']+)'/g)){const url=match[1];if(url==='/'||url==='/index.html')continue;assert.ok(existsSync(new URL('..'+url,import.meta.url)),url)}
  assert.doesNotMatch(items,/librespeed/);
 });
+
+test('advertisement illustrations do not share SVG gradient identifiers',()=>{
+ const ids=[...html.matchAll(/id="connect-ad-gradient-(\d+)"/g)].map(x=>x[1]);
+ assert.deepEqual(ids,['1','2','3','4']);
+});
+test('release scripts do not inject duplicate discovery searches into unrelated pages',()=>{
+ const release=read('assets/connect-release-v80.js');
+ assert.doesNotMatch(release,/createElement\('input'\).*type='search'/);
+ assert.ok(!release.includes('root.querySelectorAll(\'a[href],article\')'));
+});
+test('PWA install survives an individual optional cache fetch failure',()=>{
+ assert.match(sw,/Promise\.all\(APP\.map/);
+ assert.match(sw,/Offline cache skipped/);
+ assert.match(sw,/vweb-connect-static-v81/);
+});
