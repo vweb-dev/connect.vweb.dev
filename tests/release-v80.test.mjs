@@ -42,7 +42,7 @@ test('release scripts do not inject duplicate discovery searches into unrelated 
 test('PWA install survives an individual optional cache fetch failure',()=>{
  assert.match(sw,/Promise\.all\(APP\.map/);
  assert.match(sw,/Offline cache skipped/);
- assert.match(sw,/vweb-connect-static-v81/);
+ assert.match(sw,/vweb-connect-static-v82/);
 });
 
 test('all stylesheet and script references are present in repository',()=>{
@@ -55,3 +55,5 @@ test('service cards keep outbound destinations and descriptive copy',()=>{
  assert.equal(cards.length,4);
  for(const card of cards){assert.match(card,/href="https:\/\/vweb\.dev\/"/);assert.match(card,/<strong>[^<]+<\/strong>/)}
 });
+
+test('Connect 2.1 recent tools and presets are linked',()=>{assert.match(html,/assets\/connect21-journey\.js/);assert.match(html,/assets\/connect21-journey\.css/);const journey=read('assets/connect21-journey.js');assert.match(journey,/connect21-recent/);assert.match(journey,/convert-image-format/)});
