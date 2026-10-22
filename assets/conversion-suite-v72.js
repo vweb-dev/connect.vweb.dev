@@ -1,6 +1,8 @@
 'use strict';
 (()=>{const $=id=>document.getElementById(id),root=$('convert72-suite');if(!root)return;
 const fmt=n=>Number.isFinite(n)?new Intl.NumberFormat('en-US',{maximumSignificantDigits:12}).format(n):'Invalid value';
+function selectFromHash(){const key=location.hash.match(/^#conversion-(units|data|encoding|numbers|text)$/)?.[1];if(!key)return;const tab=root.querySelector('[data-convert72-tab="'+key+'"]');if(tab){tab.click();root.scrollIntoView({block:'start',behavior:'instant'});}}
+window.addEventListener('hashchange',selectFromHash);window.addEventListener('popstate',()=>setTimeout(selectFromHash,30));setTimeout(selectFromHash,50);
 root.querySelectorAll('[data-convert72-tab]').forEach(b=>b.addEventListener('click',()=>{const key=b.dataset.convert72Tab;root.querySelectorAll('[data-convert72-tab]').forEach(x=>{x.classList.toggle('active',x===b);x.setAttribute('aria-selected',String(x===b))});root.querySelectorAll('[data-convert72-panel]').forEach(p=>p.hidden=p.dataset.convert72Panel!==key)}));
 const units={length:{m:1,km:1000,cm:.01,mm:.001,mi:1609.344,ft:.3048,in:.0254,yd:.9144},mass:{kg:1,g:.001,mg:.000001,lb:.45359237,oz:.028349523125,t:1000},area:{'m²':1,'km²':1e6,'ft²':.09290304,'in²':.00064516,acre:4046.8564224,ha:10000},volume:{L:1,mL:.001,'m³':1000,'ft³':28.316846592,'gal (US)':3.785411784,'fl oz (US)':.0295735295625},speed:{'m/s':1,'km/h':1/3.6,mph:.44704,knot:.5144444444},data:{B:1,KB:1000,MB:1e6,GB:1e9,TB:1e12,KiB:1024,MiB:1048576,GiB:1073741824},time:{s:1,min:60,h:3600,day:86400,week:604800},temperature:{'°C':1,'°F':1,K:1}};
 const cat=$('c72-unit-category'),from=$('c72-unit-from'),to=$('c72-unit-to'),amount=$('c72-unit-amount');
