@@ -140,6 +140,7 @@ const route=()=>window.ConnectToolRoutes?.tools?.find(t=>t.path===location.pathn
 let activeKey='',cleanup=()=>{};
 function init(){
  const tool=route(),panel=document.querySelector('.tool59-selected');
+ if(tool?.section==='qr'){cleanup();document.querySelectorAll('.tool62-workspace').forEach(n=>n.remove());return;}
  if(!tool||!panel)return;
  const key=tool.path;
  if(key===activeKey&&document.querySelector('.tool62-workspace'))return;
