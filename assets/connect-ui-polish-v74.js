@@ -1,0 +1,11 @@
+'use strict';
+/* Safe progressive enhancements: keyboard affordances, focus return, form errors. */
+(()=>{const $=id=>document.getElementById(id);let lastFocus=null;
+function enhance(){document.querySelectorAll('a[target="_blank"]').forEach(a=>{if(a.dataset.connect74External)return;a.dataset.connect74External='1';a.rel='noopener noreferrer';if(!a.getAttribute('aria-label')&&a.textContent.trim()){a.setAttribute('aria-label',a.textContent.trim()+' (opens a new tab)')}});
+document.querySelectorAll('.tool59-directory-item,.hub-app-card').forEach(el=>{if(el.dataset.connect74Card)return;el.dataset.connect74Card='1';el.addEventListener('keydown',e=>{if(e.key===' '&&el.tagName==='A'){e.preventDefault();el.click()}})});
+document.querySelectorAll('[role="dialog"]').forEach(dialog=>{if(dialog.dataset.connect74Dialog)return;dialog.dataset.connect74Dialog='1';dialog.addEventListener('keydown',e=>{if(e.key!=='Tab')return;const visible=[...dialog.querySelectorAll('a[href],button:not([disabled]),input:not([disabled]),textarea:not([disabled]),select:not([disabled]),[tabindex="0"]')].filter(x=>x.getClientRects().length);if(!visible.length)return;const first=visible[0],last=visible.at(-1);if(e.shiftKey&&document.activeElement===first){e.preventDefault();last.focus()}else if(!e.shiftKey&&document.activeElement===last){e.preventDefault();first.focus()}})});
+}
+document.addEventListener('keydown',e=>{if(e.key!=='Escape')return;const modal=[...document.querySelectorAll('#connect-nav-overlay,#connect-tools-overlay')].find(x=>!x.hidden);if(!modal)return;const close=modal.querySelector('[id$="bottom-close"],[id$="top-close"],[id$="close"]');if(close){e.preventDefault();close.click()}});
+document.addEventListener('focusin',e=>{if(e.target.matches?.('[data-connect-section],#connect-tools-launch'))lastFocus=e.target});
+window.addEventListener('popstate',()=>requestAnimationFrame(enhance));document.addEventListener('DOMContentLoaded',enhance,{once:true});if(document.readyState!=='loading')enhance();
+})();
