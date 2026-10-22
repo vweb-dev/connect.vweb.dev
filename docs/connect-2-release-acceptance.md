@@ -32,3 +32,16 @@ Release candidate: v81 (2026-10-22)
 - No modifications to common ISP router credentials.
 - Preserve FAST.com speed test and original brand logo.
 - Shipping code is not equivalent to live user acceptance. This checklist remains open pending real-device verification.
+
+
+## Certification evidence (2026-10-22)
+- Repository tree: 138 files inspected via GitHub.
+- 56 service-worker pre-cache entries verified against the tree: **0 missing**.
+- 45 linked JavaScript/CSS assets in index.html checked against the tree: **0 missing**.
+- Registry audit: 49 dedicated tool routes with unique IDs and canonical paths.
+- Homepage, QR, Converter, Windows, and Network live site URLs could not be fetched by the available external browsing service. This is a **verification blocker**, not proof that the site is down.
+- GitHub Actions runs have shown failure/incomplete states with jobs reporting no executed steps and inaccessible logs. Root cause remains undetermined; do not report CI green.
+- Test suite expanded to guard linked assets, advertisements, QR/conversion elements, unique routes and PWA resiliency.
+- Pending: real browser UI flows, QR scan/export, converter file operations, Lighthouse metrics and release approval.
+
+Release sign-off: **NOT YET CERTIFIED**.
