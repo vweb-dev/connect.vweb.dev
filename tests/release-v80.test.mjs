@@ -42,7 +42,7 @@ test('release scripts do not inject duplicate discovery searches into unrelated 
 test('PWA install survives an individual optional cache fetch failure',()=>{
  assert.match(sw,/Promise\.all\(APP\.map/);
  assert.match(sw,/Offline cache skipped/);
- assert.match(sw,/vweb-connect-static-v82/);
+ assert.match(sw,/vweb-connect-static-v81/);
 });
 
 test('all stylesheet and script references are present in repository',()=>{
