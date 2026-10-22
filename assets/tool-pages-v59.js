@@ -126,10 +126,11 @@
    page.querySelector('.qr-type-tabs')?.classList.add('tool59-hidden');
    const form=$('qr-design'),steps=form?[...form.children].filter(x=>x.classList?.contains('qr-step')):[];
    if(steps.length>2&&!form.querySelector('.tool59-qr-advanced')){
-    const advanced=el('details','tool59-qr-advanced'),summary=el('summary','','Customize colors, patterns & logo');
+    const advanced=el('details','tool59-qr-advanced'),summary=el('summary','','Customize colors, patterns & logo');advanced.open=true;
     const body=el('div','tool59-qr-advanced-body');advanced.append(summary,body);
     steps[2].before(advanced);steps.slice(2).forEach(step=>body.append(step));
    }
+   form?.querySelector('.tool59-qr-advanced')?.setAttribute('open','');
   }
   suppressOtherTopLevel(page);
   const related=relatedList(tool);const hero=$('connect-tool59-hero');page.insertBefore(related,hero?.nextSibling||page.firstChild);
