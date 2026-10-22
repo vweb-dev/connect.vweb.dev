@@ -192,3 +192,19 @@ html[data-connect-tool-route="speed-test"] #page-network .connect-ost-speed{widt
 #page-network .connect-ost-speed .ost-links a{display:inline-flex;align-items:center;min-height:40px;padding:9px 13px;border-radius:10px;background:#273747;border:1px solid #506072;color:#ebd0a5;font-size:12px;font-weight:700;text-decoration:none}
 #page-network .connect-ost-speed .ost-links a:hover{background:#34485a}
 @media(max-width:700px){#page-network .connect-ost-speed{padding:10px!important;border-radius:14px!important}#page-network .connect-ost-speed .ost-embed{min-height:480px}#page-network .connect-ost-speed .ost-embed iframe{height:530px}#page-network .connect-ost-speed .ost-head h2{font-size:24px}#page-network .connect-ost-speed .ost-links{display:grid;grid-template-columns:1fr 1fr}#page-network .connect-ost-speed .ost-links a{font-size:11px}}
+
+
+/* v66 genuine Ookla handoff, until the account-owned Custom embed is authorized */
+#page-network .connect-ookla-speed{max-width:990px!important;background:linear-gradient(145deg,#152332,#111a25)!important;border:1px solid #415263!important;padding:clamp(22px,4vw,48px)!important;color:#f5f6f7!important}
+#page-network .connect-ookla-speed .ookla-head{text-align:center}
+#page-network .connect-ookla-speed .ookla-head h2{font-size:clamp(27px,4vw,48px);color:#fff;letter-spacing:-.05em;margin:12px 0}
+#page-network .connect-ookla-speed .ookla-head p{font-size:14px;color:#aebdca}
+#page-network .connect-ookla-speed .ookla-center{display:flex;align-items:center;flex-direction:column;gap:12px;text-align:center;padding:clamp(24px,4vw,48px) 16px}
+#page-network .connect-ookla-speed .ookla-mark{font-size:68px;color:#e4be86}
+#page-network .connect-ookla-speed .ookla-center>strong{font-size:clamp(22px,3vw,32px);color:#f6f5f4}
+#page-network .connect-ookla-speed .ookla-center p{max-width:530px;color:#bdcad5;line-height:1.6}
+#page-network .connect-ookla-speed .ookla-go{background:#dcb778;color:#13191e;text-decoration:none;border-radius:100px;padding:17px 32px;font-size:17px;font-weight:850;display:inline-flex;align-items:center;justify-content:center;min-height:58px;margin:8px 0}
+#page-network .connect-ookla-speed .ookla-go:hover{background:#f2d296}
+#page-network .connect-ookla-speed .ookla-center small{color:#a9bac7}
+#page-network .connect-ookla-speed .ookla-note{border-top:1px solid #3a4d5d;color:#b1c0cd;padding-top:16px;font-size:12px;line-height:1.6}
+#page-network .connect-ookla-speed .ookla-note strong{color:#eac38c}
