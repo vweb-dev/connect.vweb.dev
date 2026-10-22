@@ -535,7 +535,7 @@
       "description": "Download, upload, ping and jitter",
       "section": "network",
       "mode": "focus",
-      "target": "connect-speed-start",
+      "target": "connect-ookla-workspace",
       "slug": "speed-test",
       "path": "/network/speed-test",
       "group": "system"
