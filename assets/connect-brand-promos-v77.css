@@ -24,3 +24,7 @@
 @media(max-width:650px){.connect-brand-promos{padding:16px;margin:20px auto 26px}.connect-ad-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:9px}.connect-ad-text{padding:12px;gap:7px}.connect-ad-text>strong{font-size:14px}.connect-ad-text>span{font-size:10px}.connect-ad-text>b{font-size:10px}.connect-promos-bottom{align-items:flex-start;flex-direction:column}.connect-footer-brand{gap:7px;flex-direction:column;align-items:flex-start}.connect-footer-brand img{width:98px;height:29px}}
 @media(max-width:390px){.connect-ad-grid{grid-template-columns:1fr}.connect-ad-card{flex-direction:row}.connect-ad-card>img{width:42%;aspect-ratio:auto;object-fit:cover}.connect-ad-text{min-width:0}.connect-ad-text>strong{font-size:14px}}
 @media(prefers-reduced-motion:reduce){.connect-ad-card{transition:none}}
+
+/* Embedded vector artwork: no external asset request required */
+.connect-ad-card>.connect-ad-illustration{display:block;width:100%;height:auto;aspect-ratio:16/10;flex:none;overflow:hidden;background:#1a2733}
+@media(max-width:390px){.connect-ad-card>.connect-ad-illustration{width:42%;height:auto;aspect-ratio:auto;align-self:stretch}}
