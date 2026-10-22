@@ -175,3 +175,20 @@ html[data-connect-tool-route="speed-test"] #page-network{max-width:1240px;margin
 #page-network .speed45-plot-head strong{font-size:clamp(56px,8vw,95px)!important}
 #page-network .speed45-side dl{grid-template-columns:repeat(2,minmax(0,1fr))!important}
 @media(max-width:700px){#page-network .speed45-side dl{grid-template-columns:1fr!important}#page-network .connect-native-speed{margin:6px auto 16px!important;padding:13px!important}#page-network .speed45-graphs{gap:10px}}
+
+
+/* v65 — replace local LibreSpeed dashboard with managed OpenSpeedTest widget */
+html[data-connect-tool-route="speed-test"] #page-network .connect-ost-speed{width:min(100%,1100px);max-width:1100px!important;padding:clamp(14px,2vw,24px)!important;background:linear-gradient(145deg,#1c2936,#111b26)!important;border:1px solid #3f4a56!important;color:#f4f6f8!important;overflow:hidden}
+#page-network .connect-ost-speed .ost-head{display:flex;justify-content:space-between;align-items:center;gap:16px;flex-wrap:wrap;margin-bottom:16px;padding:5px 5px 13px;border-bottom:1px solid #384957}
+#page-network .connect-ost-speed .ost-head h2{font-size:clamp(23px,3vw,37px);color:#f8f8f9;margin:8px 0}
+#page-network .connect-ost-speed .ost-head p{font-size:13px;color:#bcc8d2;max-width:650px;line-height:1.55;margin:0}
+#page-network .connect-ost-speed .ost-provider{font-size:12px;color:#b6c2ce}
+#page-network .connect-ost-speed .ost-provider a{color:#f0c789;font-weight:750}
+#page-network .connect-ost-speed .ost-embed{position:relative;width:100%;min-height:570px;border-radius:15px;overflow:hidden;background:#fff}
+#page-network .connect-ost-speed .ost-embed iframe{display:block;width:100%;height:590px;border:0;background:white}
+#page-network .connect-ost-speed .ost-footer{padding:14px 5px 0}
+#page-network .connect-ost-speed .ost-footer p{font-size:12px;line-height:1.6;color:#acbcca;margin:0 0 13px}
+#page-network .connect-ost-speed .ost-links{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+#page-network .connect-ost-speed .ost-links a{display:inline-flex;align-items:center;min-height:40px;padding:9px 13px;border-radius:10px;background:#273747;border:1px solid #506072;color:#ebd0a5;font-size:12px;font-weight:700;text-decoration:none}
+#page-network .connect-ost-speed .ost-links a:hover{background:#34485a}
+@media(max-width:700px){#page-network .connect-ost-speed{padding:10px!important;border-radius:14px!important}#page-network .connect-ost-speed .ost-embed{min-height:480px}#page-network .connect-ost-speed .ost-embed iframe{height:530px}#page-network .connect-ost-speed .ost-head h2{font-size:24px}#page-network .connect-ost-speed .ost-links{display:grid;grid-template-columns:1fr 1fr}#page-network .connect-ost-speed .ost-links a{font-size:11px}}
