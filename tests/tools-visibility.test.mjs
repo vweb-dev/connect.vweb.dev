@@ -37,7 +37,7 @@ test('independent local tools and stable routes are preserved',()=>{
  assert.match(hub,/qrcode@1\.5\.4/);
 });
 test('PWA cache bust and visible fallback status',()=>{
- assert.match(sw,/vweb-connect-static-v28/);
+ assert.match(sw,/vweb-connect-static-v81/);
  assert.match(html,/hub\.js\?v=connect-lms-20261020a/);
  assert.match(css,/hub-catalog-status/);
  assert.match(html,/id="hub-catalog-retry"/);
