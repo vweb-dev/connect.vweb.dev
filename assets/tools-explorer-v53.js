@@ -159,7 +159,7 @@ function render(){
   content.append(info);
  }
 }
-function choose(item){currentItem=item;search.value='';stage='detail';render();}
+function choose(item){launch(item);}
 function doBack(){if(search.value){search.value='';stage='groups';render();search.focus();return;}if(stage==='detail'){stage='list';currentGroup=groups.find(x=>x.id===currentItem?.group)||groups[0];}else stage='groups';render();}
 function openSheet(){if(!backdrop.hidden)return;focusReturn=document.activeElement;stage=desk57Wide()?'list':'groups';currentGroup=desk57Wide()?groups[0]:null;currentItem=null;search.value='';render();backdrop.hidden=false;document.body.classList.add('ct53-open');requestAnimationFrame(()=>sheet.focus({preventScroll:true}));}
 function closeSheet(){if(backdrop.hidden)return;backdrop.hidden=true;document.body.classList.remove('ct53-open');if(focusReturn?.isConnected)focusReturn.focus({preventScroll:true});}
