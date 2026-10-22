@@ -44,3 +44,14 @@ test('PWA install survives an individual optional cache fetch failure',()=>{
  assert.match(sw,/Offline cache skipped/);
  assert.match(sw,/vweb-connect-static-v81/);
 });
+
+test('all stylesheet and script references are present in repository',()=>{
+ const assets=[...html.matchAll(/(?:src|href)="(\/assets\/[^"]+\.(?:js|css))(?:\?[^"]*)?"/g)].map(x=>x[1]);
+ assert.ok(assets.length>=30,'Expected published local assets');
+ for(const item of assets)assert.ok(existsSync(new URL('..'+item,import.meta.url)),item);
+});
+test('service cards keep outbound destinations and descriptive copy',()=>{
+ const cards=html.match(/<a class="connect-ad-card"[\s\S]*?<\/a>/g)||[];
+ assert.equal(cards.length,4);
+ for(const card of cards){assert.match(card,/href="https:\/\/vweb\.dev\/"/);assert.match(card,/<strong>[^<]+<\/strong>/)}
+});
