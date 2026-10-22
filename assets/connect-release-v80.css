@@ -1,0 +1,11 @@
+/* Release quality system — visual consistency and accessibility */
+.connect-release-search{display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin:16px 0 22px;padding:12px 14px;border:1px solid #465766;border-radius:14px;background:#1a2834}
+.connect-release-search input{flex:1;min-width:175px;min-height:46px;border:1px solid #657586;border-radius:11px;background:#0f1b27;color:#f9f8f5;padding:10px 14px}
+.connect-release-search span{font-size:12px;color:#cbd6df}
+.connect-release-filtered{display:none!important}
+.connect-release-actions{display:flex;justify-content:flex-end;padding-top:12px}
+.connect-release-actions button{padding:10px 15px;min-height:44px;border-radius:10px;border:1px solid #6f7983;background:#2b3b4a;color:#f3d5a6;font-weight:700;cursor:pointer}
+.connect-brand-promos .connect-ad-card{isolation:isolate}
+.connect-brand-promos .connect-ad-card svg{pointer-events:none}
+#page-academy a:focus-visible,#page-apps a:focus-visible,.convert72-tabs button:focus-visible{outline:2px solid #edc78d!important;outline-offset:3px}
+@media(max-width:660px){.connect-release-search{align-items:stretch;flex-direction:column}.connect-release-search input{width:100%;flex:auto}.connect-release-search span{text-align:right}}
