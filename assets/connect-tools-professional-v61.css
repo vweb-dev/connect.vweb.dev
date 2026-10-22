@@ -91,3 +91,47 @@ html[data-connect-tool-route] #page-ai .ai-tool-workspace{gap:17px}
 .tool62-dropzone{margin:10px 0 16px;padding:18px;border:2px dashed #987d52;border-radius:13px;text-align:center;color:#ead2af;background:rgba(236,186,109,.06);cursor:pointer;font-size:12px;line-height:1.55;overflow-wrap:anywhere}
 .tool62-dropzone.dragover,.tool62-dropzone:focus-visible{outline:2px solid #e9bf77;background:rgba(236,186,109,.16)}
 @media(max-width:740px){.tool62-workspace{padding:13px;align-items:stretch}.tool62-workspace-buttons{display:grid;grid-template-columns:repeat(2,minmax(0,1fr))}.tool62-button{min-height:44px}}
+
+
+/* v63 — minimal speed interface prioritising the live headline measurement */
+#page-network .connect-native-speed{max-width:1120px;margin:0 auto;background:#f9fafb;color:#15171a;padding:clamp(18px,3vw,40px);border-radius:24px}
+#page-network .speed61-enginebar{background:#fff;border:1px solid #e1e4e8;color:#363b43}
+#page-network .speed61-enginebar strong{color:#aa7a33}
+#page-network #speed61-backend-state{color:#287c58}
+#page-network .speed61-usage{color:#626973;text-align:center}
+#page-network .speed45-header{display:flex;flex-direction:column;align-items:center;text-align:center;gap:12px;border:0}
+#page-network .speed45-header .overline{color:#947346}
+#page-network .speed45-header h2{font-size:clamp(26px,4vw,43px);color:#131519;letter-spacing:-.05em}
+#page-network .speed45-header p{max-width:580px;color:#5f6470}
+#page-network .speed45-controls{display:flex;justify-content:center;gap:9px}
+#page-network .speed45-controls button{min-height:46px;border-radius:25px;padding:11px 23px}
+#page-network .speed45-controls .primary{background:#dcb777;color:#211c15;border:0}
+#page-network .speed45-layout{display:flex;flex-direction:column;align-items:stretch;gap:18px}
+#page-network .speed45-main{display:flex;flex-direction:column;gap:18px;width:100%}
+#page-network .speed45-graphs{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+#page-network .speed45-plot{border:1px solid #e1e5e9!important;background:#fff!important;border-radius:18px;padding:clamp(14px,2.4vw,25px)!important;min-width:0}
+#page-network .speed45-plot-head{display:flex;flex-direction:column;align-items:center;text-align:center;gap:4px}
+#page-network .speed45-plot-head>span{font-size:12px;color:#737985;font-weight:750;letter-spacing:.07em}
+#page-network .speed45-plot-head strong{font-size:clamp(55px,9vw,118px)!important;color:#131519!important;line-height:1.05;letter-spacing:-.075em}
+#page-network .speed45-plot-head small{font-size:16px;color:#30353b}
+#page-network .speed45-plot canvas{height:96px!important;max-height:96px}
+#page-network .speed45-stats{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
+#page-network .speed45-stats article{background:#fff!important;border:1px solid #e1e5e9!important;border-radius:15px;padding:17px!important;min-width:0}
+#page-network .speed45-stats article span,#page-network .speed45-stats article small{color:#626973!important}
+#page-network .speed45-stats article strong{color:#16191e!important;font-size:clamp(19px,3vw,30px)!important}
+#page-network .speed45-side{background:#fff!important;border:1px solid #e2e5e9!important;border-radius:16px;padding:16px!important;width:100%;max-width:none}
+#page-network .speed45-side .overline,#page-network .speed45-side h3{color:#333840!important}
+#page-network .speed45-side .speed45-orbit{display:none}
+#page-network .speed45-side dl{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:6px 20px}
+#page-network .speed45-side dl>div{border-bottom:1px solid #e7e9eb!important}
+#page-network .speed45-side dt,#page-network .speed45-side>p{color:#6b7280!important}
+#page-network .speed45-side dd{color:#1b2028!important}
+#page-network .speed45-status{color:#414954!important;text-align:center}
+#page-network .speed46-quality{background:#fff!important;border:1px solid #e2e5e9!important;border-radius:18px}
+#page-network .speed46-quality h3,#page-network .speed46-quality strong{color:#1c2025!important}
+#page-network .speed46-quality span,#page-network .speed46-quality p{color:#626973!important}
+#page-network .speed61-history{background:#fff;border:1px solid #e1e5e9}
+#page-network .speed61-history summary{color:#77552b}
+#page-network #speed61-history{color:#404750}
+#page-network .speed61-history-row{border-color:#e6e9ed}
+@media(max-width:700px){#page-network .connect-native-speed{padding:15px;border-radius:15px}#page-network .speed45-graphs{grid-template-columns:1fr}#page-network .speed45-stats{grid-template-columns:repeat(2,minmax(0,1fr))}#page-network .speed45-side dl{grid-template-columns:1fr}#page-network .speed45-plot-head strong{font-size:clamp(64px,17vw,100px)!important}}
