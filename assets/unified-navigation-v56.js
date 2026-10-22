@@ -68,7 +68,7 @@ function go(url,{courseId,appCategory}={}){
  if(courseId&&destination.pathname==='/academy')destination=new URL('/academy/course/'+encodeURIComponent(courseId),location.origin);
  const legacyId=destination.searchParams.get('tool');
  if(legacyId){const canonical=window.ConnectToolRoutes?.getPath(legacyId);if(canonical)destination=new URL(canonical,location.origin);}
- if(destination.origin===location.origin&&destination.pathname==='/tools'&&!destination.search){$('connect-tools-launch')?.click();return;}
+ 
  if(destination.origin!==location.origin){window.open(destination.href,'_blank','noopener,noreferrer');return;}
  if(location.pathname!==destination.pathname||location.search!==destination.search||location.hash){history.pushState(null,'',destination.pathname+destination.search);window.dispatchEvent(new Event('popstate'));}
  if(courseId)window.dispatchEvent(new CustomEvent('connect:select-course',{detail:{id:courseId}}));
