@@ -67,7 +67,7 @@ test('self-marked activity is explicitly not an accredited award',()=>{
  assert.ok(manifest.shortcuts.some(x=>x.url==='/#academy'));
 });
 test('LMS source files are included in the PWA shell and released with matching version',()=>{
- assert.match(worker,/vweb-connect-static-v28/);
+ assert.match(worker,/vweb-connect-static-v81/);
  for(const ext of ['css','js']){
   assert.ok(html.includes('/assets/lms.'+ext+'?v=connect-ios-focus-20261020a'));
   assert.ok(worker.includes('/assets/lms.'+ext));
