@@ -18,6 +18,7 @@
  function clear(){
   for(const el of document.querySelectorAll('.tool59-hidden,.tool59-branch,.tool59-selected'))el.classList.remove('tool59-hidden','tool59-branch','tool59-selected');
   root.removeAttribute('data-connect-tool-route');root.removeAttribute('data-connect-tool-directory');root.removeAttribute('data-connect-course-route');
+  const suite=document.getElementById('convert72-suite');const dir=document.getElementById('connect-tool59-directory');if(suite&&dir&&dir.contains(suite))document.getElementById('page-convert')?.prepend(suite);
   for(const id of ['connect-tool59-hero','connect-tool59-related','connect-tool59-directory'])$(id)?.remove();
   document.querySelectorAll('.tool59-related').forEach(n=>n.remove());
  }
