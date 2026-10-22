@@ -51,7 +51,7 @@ test('classroom player is paused when returning to the course catalog',()=>{
  assert.match(lms,/player\.replaceChildren\(paused\)/);
 });
 test('all iOS and LMS release assets use current cache identifiers',()=>{
- assert.match(sw,/vweb-connect-static-v28/);
+ assert.match(sw,/vweb-connect-static-v81/);
  for(const asset of ['mobile-app.js','lms.js','lms.css'])
   assert.ok(html.includes('/assets/'+asset+'?v=connect-ios-focus-20261020a'),asset);
 });
