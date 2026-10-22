@@ -58,7 +58,7 @@ test('search and individual routes use the same registry',()=>{
 });
 test('new shell and scripts use v60 assets',()=>{
  const sw=read('sw.js');
- assert.ok(sw.includes("vweb-connect-static-v60"));
+ assert.ok(sw.includes("vweb-connect-static-v81"));
  for(const asset of ['app.js','hub.js','tools-explorer-v53.js','tool-pages-v59.js','unified-navigation-v56.js']){
   assert.ok(html.includes('/assets/'+asset+'?v=60'),'Unbusted script '+asset);
  }
