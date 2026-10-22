@@ -135,3 +135,43 @@ html[data-connect-tool-route] #page-ai .ai-tool-workspace{gap:17px}
 #page-network #speed61-history{color:#404750}
 #page-network .speed61-history-row{border-color:#e6e9ed}
 @media(max-width:700px){#page-network .connect-native-speed{padding:15px;border-radius:15px}#page-network .speed45-graphs{grid-template-columns:1fr}#page-network .speed45-stats{grid-template-columns:repeat(2,minmax(0,1fr))}#page-network .speed45-side dl{grid-template-columns:1fr}#page-network .speed45-plot-head strong{font-size:clamp(64px,17vw,100px)!important}}
+
+
+/* v64 speed test: one cohesive dark workspace — avoid nesting oversized hero/guide/cards */
+html[data-connect-tool-route="speed-test"] #page-network>.tool59-hero,
+html[data-connect-tool-route="speed-test"] #page-network>.tool59-related,
+html[data-connect-tool-route="speed-test"] #page-network>.tool61-guide,
+html[data-connect-tool-route="speed-test"] #page-network>.speed-only-heading{display:none!important}
+html[data-connect-tool-route="speed-test"] #page-network{max-width:1240px;margin:auto}
+#page-network .connect-native-speed{max-width:1100px!important;margin:16px auto 30px!important;padding:clamp(16px,2.5vw,30px)!important;border:1px solid #344354!important;border-radius:20px!important;background:linear-gradient(155deg,#17232f,#101922)!important;color:#f3f5f8!important;box-shadow:0 18px 55px rgba(0,0,0,.16)}
+#page-network .speed61-enginebar{background:#111d29!important;border:1px solid #3a4958!important;color:#cbd6df!important}
+#page-network .speed61-enginebar strong{color:#e9bd7e!important}
+#page-network .speed61-usage{color:#a3b3c2!important}
+#page-network .speed45-header{border:0!important}
+#page-network .speed45-header h2{color:#f7f7f9!important}
+#page-network .speed45-header p{color:#a7b7c5!important}
+#page-network .speed45-plot{background:#1b2935!important;border-color:#3a4a58!important;box-shadow:none!important}
+#page-network .speed45-plot-head strong{color:#fff!important}
+#page-network .speed45-plot-head small{color:#d6e0e9!important}
+#page-network .speed45-plot-head>span{color:#a7b8c6!important}
+#page-network .speed45-stats article{background:#1b2935!important;border-color:#3a4a58!important}
+#page-network .speed45-stats article strong{color:#f6f8f9!important}
+#page-network .speed45-stats article span,#page-network .speed45-stats article small{color:#a8b8c6!important}
+#page-network .speed45-side{background:#192631!important;border-color:#3a4a58!important}
+#page-network .speed45-side h3{color:#f3f6f8!important}
+#page-network .speed45-side .overline{color:#e8be84!important}
+#page-network .speed45-side dl>div{border-color:#3b4854!important}
+#page-network .speed45-side dt,#page-network .speed45-side>p{color:#a7b5c4!important}
+#page-network .speed45-side dd{color:#f1f4f8!important}
+#page-network .speed45-status{color:#c9d7e0!important}
+#page-network .speed46-quality{background:#192631!important;border-color:#3a4a58!important;padding:16px!important}
+#page-network .speed46-quality h3,#page-network .speed46-quality strong{color:#f5f7fa!important}
+#page-network .speed46-quality p,#page-network .speed46-quality span{color:#b6c5d0!important}
+#page-network .speed61-history{background:#192631!important;border-color:#3a4a58!important}
+#page-network .speed61-history summary{color:#eec588!important}
+#page-network #speed61-history{color:#cbd7df!important}
+#page-network .speed61-history-row{border-color:#3a4a58!important}
+#page-network .speed45-plot canvas{height:84px!important;max-height:84px!important}
+#page-network .speed45-plot-head strong{font-size:clamp(56px,8vw,95px)!important}
+#page-network .speed45-side dl{grid-template-columns:repeat(2,minmax(0,1fr))!important}
+@media(max-width:700px){#page-network .speed45-side dl{grid-template-columns:1fr!important}#page-network .connect-native-speed{margin:6px auto 16px!important;padding:13px!important}#page-network .speed45-graphs{gap:10px}}
