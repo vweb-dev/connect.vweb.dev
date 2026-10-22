@@ -218,3 +218,6 @@ html[data-connect-tool-route="speed-test"] #page-network .connect-ost-speed{widt
 @media(max-width:650px){#page-network .connect-ookla-speed .ookla-iframe-wrap{min-height:620px}#page-network .connect-ookla-speed .ookla-iframe-wrap iframe{height:620px}}
 
 #page-network .fast-comparison-link{display:flex;gap:12px;align-items:center;justify-content:center;flex-wrap:wrap;padding:14px;margin:12px 0;border:1px solid #394e60;border-radius:13px;background:#1b2a36;color:#b9c8d5;font-size:13px}#page-network .fast-comparison-link a{display:inline-flex;align-items:center;justify-content:center;min-height:43px;border-radius:10px;padding:9px 16px;background:#dfb976;color:#18202a;font-weight:800;text-decoration:none}#page-network .fast-comparison-link a:hover{background:#f1cf94}
+
+/* v70: visible alternate network test above embedded FAST.com */
+#page-network .fast-comparison-link{margin:15px 0 18px!important;justify-content:space-between!important;padding:13px 16px!important}#page-network .fast-comparison-link a{white-space:normal!important;text-align:center}#page-network .connect-fast-test .ookla-iframe-wrap{margin-top:0!important}@media(max-width:640px){#page-network .fast-comparison-link{flex-direction:column!important;align-items:stretch!important}#page-network .fast-comparison-link a{width:100%}}
