@@ -15,6 +15,12 @@ jobs:
           php-version: '8.2'
           extensions: pdo_mysql, mbstring, openssl
           coverage: none
+      - name: Runner diagnostic
+        run: |
+          echo "Runner active: $(uname -s)"
+          node --version
+          php --version
+          test -f index.html
       - name: PHP syntax checks
         run: |
           find api admin ops docs -type f -name '*.php' -print0 | xargs -0 -n 1 php -l
