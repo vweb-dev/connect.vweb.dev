@@ -21,7 +21,7 @@
   return {done,total,pct:Math.round(done/Math.max(total,1)*100)};
  };
  const courseById=(s,id)=>s.courses.find(c=>c.id===id);
- const viewNames=['overview','catalog','classroom','practice'];
+ const viewNames=['overview','catalog','classroom','practice','library'];
  let view='overview',search='',filter='all',detail='notes',quizCourse='',quizModule=0,quizSession=null,visible=false;
  // Curated checks mirror each real module in the five free courses.
  const bank={
