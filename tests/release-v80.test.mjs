@@ -67,3 +67,12 @@ test('Connect 3.0 workspace and QR presets are available with no paid API',()=>{
  assert.match(workspace,/data-qr-type/);
  assert.doesNotMatch(workspace,/\bfetch\(/);
 });
+
+test('Connect 3.0 conversion result export is registered',()=>{
+ assert.match(html,/assets\/connect30-export\.js/);
+ assert.match(html,/assets\/connect30-experience\.css/);
+ const exportCode=read('assets/connect30-export.js');
+ assert.match(exportCode,/connect30-export-bar/);
+ assert.match(exportCode,/URL\.createObjectURL/);
+ assert.match(sw,/connect30-export\.js/);
+});
