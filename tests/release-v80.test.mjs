@@ -57,3 +57,13 @@ test('service cards keep outbound destinations and descriptive copy',()=>{
 });
 
 test('Connect 2.1 recent tools and presets are linked',()=>{assert.match(html,/assets\/connect21-journey\.js/);assert.match(html,/assets\/connect21-journey\.css/);const journey=read('assets/connect21-journey.js');assert.match(journey,/connect21-recent/);assert.match(journey,/convert-image-format/)});
+
+test('Connect 3.0 workspace and QR presets are available with no paid API',()=>{
+ assert.match(html,/assets\/connect30-workspace\.js/);
+ assert.match(html,/assets\/connect30-workspace\.css/);
+ const workspace=read('assets/connect30-workspace.js');
+ assert.match(workspace,/connect30-favorites/);
+ assert.match(workspace,/hub-command-open/);
+ assert.match(workspace,/data-qr-type/);
+ assert.doesNotMatch(workspace,/\bfetch\(/);
+});
