@@ -62,7 +62,7 @@
   }
   view=next;
   try{sessionStorage.setItem('connect-academy-view',next)}catch{}
-  $('.lms-nav-tab').forEach(b=>{
+  $$$('.lms-nav-tab').forEach(b=>{
    const selected=b.dataset.lmsView===view;
    if(selected)b.setAttribute('aria-current','page');else b.removeAttribute('aria-current');
   });
