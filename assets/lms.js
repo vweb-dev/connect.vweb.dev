@@ -152,6 +152,13 @@
    const joined=enrolled(s,c),pct=progress(s,c).pct;
    return filter==='all'||(filter==='enrolled'&&joined)||(filter==='new'&&!joined)||(filter==='finished'&&pct===100);
   });
+  const order=$('#lms-catalog-sort')?.value||'recommended';
+  results.sort((a,b)=>{const pa=progress(s,a).pct,pb=progress(s,b).pct;
+    if(order==='az')return a.title.localeCompare(b.title);
+    if(order==='progress')return pb-pa||a.title.localeCompare(b.title);
+    if(order==='lessons')return flat(a).length-flat(b).length;
+    return Number(enrolled(s,b))-Number(enrolled(s,a))||a.title.localeCompare(b.title);
+  });
   $('#lms-catalog-count').textContent=results.length+' of '+s.courses.length+' courses';
   $('#lms-catalog-empty').hidden=results.length>0;
   results.forEach(c=>host.append(card(s,c,'catalog')));
@@ -296,6 +303,11 @@
  $$('[data-lms-open]').forEach(b=>b.addEventListener('click',()=>selectView(b.dataset.lmsOpen)));
  $('#lms-course-search').addEventListener('input',event=>{search=event.target.value.trim().toLocaleLowerCase();renderCatalog()});
  $('#lms-course-filter').addEventListener('change',event=>{filter=event.target.value;renderCatalog()});
+ const sortControl=document.createElement('label');sortControl.className='lms-sort-control';sortControl.textContent='Sort courses ';
+ const sortSelect=document.createElement('select');sortSelect.id='lms-catalog-sort';sortSelect.setAttribute('aria-label','Sort courses');
+ for(const [value,label] of [['recommended','Recommended'],['progress','Progress first'],['az','Title A–Z'],['lessons','Shortest course first']]){const opt=document.createElement('option');opt.value=value;opt.textContent=label;sortSelect.append(opt)}
+ sortControl.append(sortSelect);$('#lms-course-filter').insertAdjacentElement('afterend',sortControl);
+ sortSelect.addEventListener('change',renderCatalog);
  $$('.lms-classroom-detail-tabs button').forEach(b=>b.addEventListener('click',()=>{
   detail=b.dataset.lmsPanel;
   $$('.lms-classroom-detail-tabs button').forEach(x=>x.setAttribute('aria-pressed',String(x===b)));
