@@ -61,11 +61,12 @@
    }
   }
   view=next;
-  $$('.lms-nav-tab').forEach(b=>{
+  try{sessionStorage.setItem('connect-academy-view',next)}catch{}
+  $('.lms-nav-tab').forEach(b=>{
    const selected=b.dataset.lmsView===view;
    if(selected)b.setAttribute('aria-current','page');else b.removeAttribute('aria-current');
   });
-  viewNames.forEach(name=>{$('#lms-view-'+name).hidden=name!==next});
+  viewNames.forEach(name=>{const screen=$('#lms-view-'+name);if(screen)screen.hidden=name!==next});
   if(next==='overview'){const s=snapshot();if(s?.courses.length)renderOverview(s);}
   if(next==='catalog')renderCatalog();
   if(next==='classroom')renderClassroom();
@@ -290,7 +291,7 @@
   if(view==='catalog')renderCatalog();
   if(view==='classroom')renderClassroom();
  }
- $$('.lms-nav-tab').forEach(b=>b.addEventListener('click',()=>selectView(b.dataset.lmsView)));
+ root.addEventListener('click',event=>{const tab=event.target.closest('.lms-nav-tab[data-lms-view]');if(tab&&root.contains(tab))selectView(tab.dataset.lmsView)});
  $('#lms-back-to-courses').addEventListener('click',()=>selectView('catalog'));
  $$('[data-lms-open]').forEach(b=>b.addEventListener('click',()=>selectView(b.dataset.lmsOpen)));
  $('#lms-course-search').addEventListener('input',event=>{search=event.target.value.trim().toLocaleLowerCase();renderCatalog()});
@@ -313,5 +314,6 @@
  root.addEventListener('click',event=>{
   if(event.target.closest('#hub-course-list button,#hub-curriculum button'))selectView('classroom');
  });
- selectView('overview');render();visible=location.hash==='#academy';
+ let initial='overview';try{const saved=sessionStorage.getItem('connect-academy-view');if(viewNames.includes(saved)&&['overview','catalog','classroom'].includes(saved))initial=saved}catch{}
+ selectView(initial);render();visible=location.hash==='#academy';
 })();
