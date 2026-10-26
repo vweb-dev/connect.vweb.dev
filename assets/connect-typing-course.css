@@ -5,3 +5,5 @@
 #connect-typing-course .ct-stats{grid-template-columns:repeat(5,minmax(0,1fr))}
 @media(max-width:800px){#connect-typing-course .ct-stats{grid-template-columns:repeat(3,minmax(0,1fr))}}
 @media(max-width:420px){#connect-typing-course .ct-stats{grid-template-columns:repeat(2,minmax(0,1fr))}#connect-typing-course .ct-key-row{gap:2px}#connect-typing-course .ct-key{min-width:0;width:clamp(17px,6vw,25px)}}
+
+#ct-performance{margin-top:18px;padding:16px;border:1px solid #496173;border-radius:12px;background:#112735;color:#d9e3e9}#ct-performance h3{margin:0 0 9px;color:#f1cc92;font-size:18px}#ct-performance h4{margin:14px 0 8px;color:#edd0a2}#ct-best{font-weight:700}#ct-summary{font-size:12px;color:#c4d3dc;margin:8px 0}#ct-trend{height:75px;display:flex;align-items:end;gap:5px;padding:8px;background:#1c3646;border-radius:9px}#ct-trend .ct-trend-bar{flex:1;min-width:5px;max-width:42px;background:#e7c48d;border-radius:5px 5px 2px 2px}#ct-attempts{display:grid;gap:7px}#ct-attempts .ct-attempt{font-size:12px;margin:0;padding:9px;border:1px solid #486173;border-radius:8px;background:#1c3545}
