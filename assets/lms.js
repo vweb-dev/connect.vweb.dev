@@ -317,7 +317,7 @@
  $('#lms-bookmark-lesson').addEventListener('click',()=>{
   const s=snapshot();if(s?.selected&&!s.playlist)bridge()?.bookmark(s.selected,s.lessonIndex);
  });
- $('#lms-back-to-courses').addEventListener('click',()=>selectView('catalog'));
+
  $('#lms-learning-record').addEventListener('click',printRecord);
  window.addEventListener('connect:lms-changed',render);
  window.addEventListener('connect:lms-classroom',()=>selectView('classroom'));
