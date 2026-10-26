@@ -9,18 +9,18 @@ function init(){
 const course=$('connect-typing-course');if(!course||$('ct-performance'))return;
 const section=document.createElement('section');
 section.id='ct-performance';section.className='ct-performance';
-section.innerHTML='<h3>Performance dashboard</h3><p id="ct-best"></p><div id="ct-attempts" aria-live="polite"></div>';
+section.innerHTML='<h3>Performance dashboard</h3><p id="ct-best"></p><div id="ct-summary"></div><div id="ct-trend" aria-label="Recent WPM trend"></div><h4>Recent attempts</h4><div id="ct-attempts" aria-live="polite"></div>';
 course.querySelector('.ct-work')?.append(section);
 let previousDisabled=false;
 function refresh(){
 const lessons=[...course.querySelectorAll('#ct-lessons button')];
 const index=lessons.findIndex(b=>b.classList.contains('ct-selected'));
 const saved=get(progressKey,{});
-const attempts=get(historyKey,[]).filter(a=>a.lesson===index);
+const attempts=get(historyKey,[]).filter(a=>a&&a.lesson===index);
 const passes=attempts.filter(a=>a.passed);
 const best=passes.sort((a,b)=>b.wpm-a.wpm)[0]||saved[index];
 $('ct-best').textContent=best?'Personal best: '+best.wpm+' WPM · '+best.accuracy+'% accuracy':'No passing attempt yet';
-const host=$('ct-attempts');host.replaceChildren();
+const summary=$('ct-summary');const all=get(historyKey,[]);const completed=Object.keys(saved).filter(k=>saved[k]&&Number(k)>=0&&Number(k)<8).length;summary.textContent=completed+'/8 lessons completed · '+all.length+' recorded attempts';const trend=$('ct-trend');trend.replaceChildren();for(const a of attempts.slice(0,8).reverse()){const bar=document.createElement('div');bar.className='ct-trend-bar';bar.style.height=Math.max(5,Math.min(100,(Number(a.wpm)||0)*2))+'%';bar.title=a.wpm+' WPM · '+a.accuracy+'% accuracy';bar.setAttribute('aria-label',bar.title);trend.append(bar)}const host=$('ct-attempts');host.replaceChildren();
 if(!attempts.length){host.textContent='Finish this lesson to see your latest attempts.';return}
 for(const a of attempts.slice(0,5)){const row=document.createElement('p');row.className='ct-attempt';row.textContent=(a.passed?'Passed':'Try again')+' · '+a.wpm+' WPM · '+a.accuracy+'% · '+a.mistakes+' mistakes';host.append(row)}
 }
