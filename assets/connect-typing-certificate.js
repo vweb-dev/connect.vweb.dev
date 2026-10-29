@@ -7,7 +7,7 @@ const button=document.createElement('button');
 button.id='ct-certificate';button.type='button';button.textContent='Print completion certificate';
 button.addEventListener('click',()=>{
 let progress={};try{progress=JSON.parse(localStorage.getItem('connect-touchtyping-progress-v1')||'{}')}catch{}
-const completed=Array.from({length:8},(_,i)=>Boolean(progress[i])).filter(Boolean).length;
+const completed=Array.from({length:8},(_,i)=>Boolean(progress[i]&&Number(progress[i].accuracy)>=90)).filter(Boolean).length;
 if(completed!==8){alert('Complete all 8 lessons with at least 90% accuracy before printing a completion certificate. '+completed+'/8 completed.');return}
 const win=window.open('','_blank','width=900,height=700');
 if(!win){alert('Please enable pop-ups to print the certificate.');return}
