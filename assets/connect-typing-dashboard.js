@@ -16,11 +16,11 @@ function refresh(){
 const lessons=[...course.querySelectorAll('#ct-lessons button')];
 const index=lessons.findIndex(b=>b.classList.contains('ct-selected'));
 const saved=get(progressKey,{});
-const attempts=get(historyKey,[]).filter(a=>a&&a.lesson===index);
+const attempts=(Array.isArray(get(historyKey,[]))?get(historyKey,[]):[]).filter(a=>a&&a.lesson===index);
 const passes=attempts.filter(a=>a.passed);
-const best=passes.sort((a,b)=>b.wpm-a.wpm)[0]||saved[index];
+const best=[...passes,...(saved[index]?[saved[index]]:[])].filter(a=>Number(a.accuracy)>=90).sort((a,b)=>Number(b.wpm)-Number(a.wpm)||Number(b.accuracy)-Number(a.accuracy))[0];
 $('ct-best').textContent=best?'Personal best: '+best.wpm+' WPM · '+best.accuracy+'% accuracy':'No passing attempt yet';
-const summary=$('ct-summary');const all=get(historyKey,[]);const completed=Object.keys(saved).filter(k=>saved[k]&&Number(k)>=0&&Number(k)<8).length;summary.textContent=completed+'/8 lessons completed · '+all.length+' recorded attempts';const trend=$('ct-trend');trend.replaceChildren();for(const a of attempts.slice(0,8).reverse()){const bar=document.createElement('div');bar.className='ct-trend-bar';bar.style.height=Math.max(5,Math.min(100,(Number(a.wpm)||0)*2))+'%';bar.title=a.wpm+' WPM · '+a.accuracy+'% accuracy';bar.setAttribute('aria-label',bar.title);trend.append(bar)}const host=$('ct-attempts');host.replaceChildren();
+const summary=$('ct-summary');const storedHistory=get(historyKey,[]);const all=Array.isArray(storedHistory)?storedHistory:[];const completed=Object.keys(saved).filter(k=>saved[k]&&Number(k)>=0&&Number(k)<8).length;summary.textContent=completed+'/8 lessons completed · '+all.length+' recorded attempts';const trend=$('ct-trend');trend.replaceChildren();for(const a of attempts.slice(0,8).reverse()){const bar=document.createElement('div');bar.className='ct-trend-bar';bar.style.height=Math.max(5,Math.min(100,(Number(a.wpm)||0)*2))+'%';bar.title=a.wpm+' WPM · '+a.accuracy+'% accuracy';bar.setAttribute('aria-label',bar.title);trend.append(bar)}const host=$('ct-attempts');host.replaceChildren();
 if(!attempts.length){host.textContent='Finish this lesson to see your latest attempts.';return}
 for(const a of attempts.slice(0,5)){const row=document.createElement('p');row.className='ct-attempt';row.textContent=(a.passed?'Passed':'Try again')+' · '+a.wpm+' WPM · '+a.accuracy+'% · '+a.mistakes+' mistakes';host.append(row)}
 }
@@ -31,7 +31,7 @@ const lessons=[...course.querySelectorAll('#ct-lessons button')];
 const index=lessons.findIndex(b=>b.classList.contains('ct-selected'));
 const accuracy=parseInt($('ct-accuracy')?.textContent||'0',10);
 const attempt={lesson:index,wpm:parseInt($('ct-wpm')?.textContent||'0',10),accuracy,mistakes:parseInt($('ct-mistakes')?.textContent||'0',10),passed:accuracy>=90,date:new Date().toISOString()};
-put(historyKey,[attempt,...get(historyKey,[])].slice(0,100));previousDisabled=true;refresh();
+const prior=get(historyKey,[]);put(historyKey,[attempt,...(Array.isArray(prior)?prior:[])].slice(0,100));previousDisabled=true;refresh();
 }));
 course.addEventListener('click',event=>{if(event.target.closest('#ct-lessons button,#ct-retry,#ct-next')){previousDisabled=false;queueMicrotask(refresh)}});
 refresh();
