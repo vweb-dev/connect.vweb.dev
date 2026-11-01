@@ -1,6 +1,6 @@
 'use strict';
 (()=>{
-const LOCAL='/apps/open-typer/index.html';
+let localEntry='/apps/open-typer/index.html';
 const SOURCE='https://github.com/Open-Typer/Open-Typer';
 const ONLINE='https://open-typer.github.io/web-app/';
 function init(){
@@ -24,7 +24,7 @@ function init(){
    holder.hidden=false;
    if(holder.firstElementChild)return;
    const frame=document.createElement('iframe');
-   frame.src=LOCAL;frame.title='Self-hosted Open-Typer';frame.loading='lazy';
+   frame.src=localEntry;frame.title='Self-hosted Open-Typer';frame.loading='lazy';
    frame.setAttribute('allowfullscreen','');holder.append(frame);
    info.textContent='Locally hosted engine detected. If it does not start, use Connect typing course.';
  }
@@ -34,11 +34,18 @@ function init(){
      const response=await fetch('/apps/open-typer/manifest.json',{cache:'no-store'});
      if(!response.ok)throw Error('No local manifest');
      const data=await response.json();
-     if(data.engine!=='Open-Typer'||data.ready!==true||!data.entrypoint)throw Error('No compiled engine');
+     if(data.engine!=='Open-Typer'||data.ready!==true||!data.entrypoint||!data.wasm||!data.javascript)throw Error('Incomplete compiled engine');
      const entry=new URL(data.entrypoint,location.origin);
      if(entry.origin!==location.origin||!entry.pathname.startsWith('/apps/open-typer/'))throw Error('Invalid entry');
-     const html=await fetch(entry.pathname,{method:'HEAD',cache:'no-store'});
-     if(!html.ok)throw Error('Missing engine entry');
+     const assets=[entry.pathname,data.wasm,data.javascript];
+     for(const asset of assets){
+       const uri=new URL(asset,location.origin);
+       if(uri.origin!==location.origin||!uri.pathname.startsWith('/apps/open-typer/'))throw Error('Unsafe engine path');
+       const probe=await fetch(uri.pathname,{method:'GET',headers:{Range:'bytes=0-7'},cache:'no-store'});
+       if(!probe.ok||!(probe.status===200||probe.status===206))throw Error('Missing engine runtime');
+       if(uri.pathname.endsWith('.wasm')){const head=new Uint8Array(await probe.arrayBuffer());if(head.length<4||head[0]!==0||head[1]!==97||head[2]!==115||head[3]!==109)throw Error('Invalid WebAssembly runtime')}
+     }
+     localEntry=entry.pathname;
      ready=true;launch.textContent='Launch local Open-Typer';
      info.textContent='Self-hosted WebAssembly entry detected. Select Launch to open it in Connect.';
    }catch{
