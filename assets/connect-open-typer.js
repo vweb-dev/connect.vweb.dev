@@ -1,25 +1,52 @@
 'use strict';
 (()=>{
-const OFFICIAL='https://open-typer.github.io/web-app/';
+const LOCAL='/apps/open-typer/index.html';
+const SOURCE='https://github.com/Open-Typer/Open-Typer';
+const ONLINE='https://open-typer.github.io/web-app/';
 function init(){
-const root=document.getElementById('connect-typing-course');
-if(!root||document.getElementById('connect-open-typer'))return;
-for(const item of [...root.children])item.hidden=true;
-const section=document.createElement('section');
-section.id='connect-open-typer';section.className='cot-container';
-section.innerHTML='<div class="cot-heading"><span>CONNECT ACADEMY · TYPING LAB</span><h2>Open-Typer</h2><p>Practice touch typing with the official open-source Open-Typer online beta. It runs on the provider\'s website and may require a modern desktop browser.</p></div><div class="cot-actions"><button type="button" id="cot-embed">Try in Connect</button><a href="https://open-typer.github.io/web-app/" target="_blank" rel="noopener noreferrer">Open full-screen ↗</a><a href="https://sourceforge.net/projects/open-typer/" target="_blank" rel="noopener noreferrer">Desktop download ↗</a></div><p id="cot-info" class="cot-info" role="status">Choose Try in Connect to load the official application. If embedding is blocked, use Open full-screen.</p><div id="cot-frame-holder" hidden></div><details class="cot-legacy"><summary>Previous Connect typing progress (archived)</summary><p>Your earlier lesson scores remain in this browser. The Open-Typer application does not automatically import them.</p><button type="button" id="cot-old">Show previous typing course</button></details>';
-root.append(section);
-const holder=document.getElementById('cot-frame-holder');
-document.getElementById('cot-embed').addEventListener('click',()=>{
- holder.hidden=false;
- if(holder.firstElementChild)return;
- const frame=document.createElement('iframe');frame.src=OFFICIAL;frame.title='Open-Typer official browser app';frame.loading='lazy';frame.referrerPolicy='no-referrer';frame.setAttribute('allowfullscreen','');holder.append(frame);
- document.getElementById('cot-info').textContent='Official Open-Typer is loading. If it remains blank or refuses to open, select Open full-screen.';
-});
-document.getElementById('cot-old').addEventListener('click',()=>{
- for(const item of [...root.children])if(item!==section)item.hidden=false;
- section.hidden=true;
-});
+ const root=document.getElementById('connect-typing-course');
+ if(!root||document.getElementById('connect-open-typer'))return;
+ const archived=[...root.children];
+ const section=document.createElement('section');
+ section.id='connect-open-typer';section.className='cot-container';
+ section.innerHTML='<div class="cot-heading"><span>CONNECT ACADEMY · TYPING LAB</span><h2>Open-Typer</h2><p>Open-source typing practice. Connect supports a locally hosted WebAssembly build, with your previous course available until the engine is installed.</p></div><div class="cot-actions"><button type="button" id="cot-launch">Check local Open-Typer</button><button type="button" id="cot-native">Use Connect typing course</button><a href="'+ONLINE+'" target="_blank" rel="noopener noreferrer">Official online beta ↗</a><a href="'+SOURCE+'" target="_blank" rel="noopener noreferrer">View source ↗</a></div><p id="cot-info" class="cot-info" role="status">Checking for a local Open-Typer WebAssembly build…</p><div id="cot-frame-holder" hidden></div><p class="cot-footnote">Open-Typer is independent GPL-3.0 software. Local lessons and certificates are Connect features; their scores are not transferred to Open-Typer.</p>';
+ archived.forEach(child=>child.hidden=true);
+ root.append(section);
+ const info=document.getElementById('cot-info');
+ const launch=document.getElementById('cot-launch');
+ const old=document.getElementById('cot-native');
+ const holder=document.getElementById('cot-frame-holder');
+ let ready=false;
+ function showLegacy(){archived.forEach(child=>child.hidden=false);section.hidden=true;}
+ old.addEventListener('click',showLegacy);
+ function openLocal(){
+   if(!ready)return;
+   holder.hidden=false;
+   if(holder.firstElementChild)return;
+   const frame=document.createElement('iframe');
+   frame.src=LOCAL;frame.title='Self-hosted Open-Typer';frame.loading='lazy';
+   frame.setAttribute('allowfullscreen','');holder.append(frame);
+   info.textContent='Locally hosted engine detected. If it does not start, use Connect typing course.';
+ }
+ launch.addEventListener('click',()=>{if(ready)openLocal();else showLegacy()});
+ async function check(){
+   try{
+     const response=await fetch('/apps/open-typer/manifest.json',{cache:'no-store'});
+     if(!response.ok)throw Error('No local manifest');
+     const data=await response.json();
+     if(data.engine!=='Open-Typer'||data.ready!==true||!data.entrypoint)throw Error('No compiled engine');
+     const entry=new URL(data.entrypoint,location.origin);
+     if(entry.origin!==location.origin||!entry.pathname.startsWith('/apps/open-typer/'))throw Error('Invalid entry');
+     const html=await fetch(entry.pathname,{method:'HEAD',cache:'no-store'});
+     if(!html.ok)throw Error('Missing engine entry');
+     ready=true;launch.textContent='Launch local Open-Typer';
+     info.textContent='Self-hosted WebAssembly entry detected. Select Launch to open it in Connect.';
+   }catch{
+     ready=false;launch.textContent='Start Connect typing course';
+     info.textContent='Self-hosted Open-Typer is not installed yet. Use Connect typing course now, or open the official online beta in a separate tab.';
+   }
+ }
+ check();
 }
 if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',init,{once:true});else init();
 })();
