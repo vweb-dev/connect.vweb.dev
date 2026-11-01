@@ -50,7 +50,11 @@ function init(){
      info.textContent='Self-hosted WebAssembly entry detected. Select Launch to open it in Connect.';
    }catch{
      ready=false;launch.textContent='Start Connect typing course';
-     info.textContent='Self-hosted Open-Typer is not installed yet. Use Connect typing course now, or open the official online beta in a separate tab.';
+     info.textContent='Self-hosted engine is not installed. Opening the working Connect typing course. The official online beta remains available separately.';
+     archived.forEach(child=>child.hidden=false);
+     section.classList.add('cot-fallback');
+     section.querySelector('.cot-heading h2').textContent='Typing course · Open-Typer not installed';
+     launch.textContent='Continue Connect typing';
    }
  }
  check();
