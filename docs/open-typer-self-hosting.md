@@ -7,7 +7,11 @@ Source: https://github.com/Open-Typer/Open-Typer
 License: GPL-3.0 (retain source, notices and corresponding-license obligations when redistributing).
 Upstream build reference: `.github/workflows/wasm-build.yml` in the upstream repository (Qt 6.5.2 / Emscripten 3.1.25 as documented at inspection time).
 
-## Deploying a compiled build
+## Preferred: prebuilt upstream web application
+
+The official [Open-Typer/web-app](https://github.com/Open-Typer/web-app) repository contains precompiled browser files. Install a pinned build locally using `bash scripts/install-open-typer-web.sh` from the Connect repository root. This requires bash, curl, and Python 3, and downloads the runtime files (including an approximately 34MB WASM binary). The selected upstream commit is `61db1f4914341b578a707f71e9df001cca4f45d8` (August 2023), so treat it as an older beta and verify browser compatibility. The script creates `apps/open-typer/index.html` and runs the manifest validator. **It does not deploy to hosting automatically.** Upload or commit the resulting assets only after reviewing license notices and testing the app.
+
+## Alternative: compiling and deploying a build
 1. Build upstream Open-Typer for WebAssembly using the upstream build instructions and matching Qt/Emscripten dependencies **on a developer machine**; do not compile on Hostinger shared hosting.
 2. Copy generated HTML, JS, WASM and supporting files to `apps/open-typer/` in the Connect web root.
 3. Make sure the compiled entry document is `apps/open-typer/index.html`. Rename or adapt paths carefully and preserve generated asset references.
