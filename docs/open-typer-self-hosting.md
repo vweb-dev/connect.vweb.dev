@@ -28,3 +28,14 @@ The official [Open-Typer/web-app](https://github.com/Open-Typer/web-app) reposit
 - Test desktop and touch/virtual keyboard behavior; the upstream Qt desktop-oriented UI might not be mobile-friendly.
 - User progress from Connect's local typing course does not automatically transfer into upstream Open-Typer.
 - Avoid CI builds in this repository when minimizing GitHub Actions usage. Build locally and upload the output artifacts to existing hosting.
+
+## Windows one-command installer (no Qt compilation)
+
+For Windows 11, clone the Connect repository and run in PowerShell from the repository root:
+
+```powershell
+powershell -ExecutionPolicy Bypass -File scripts/install-open-typer-web.ps1
+```
+
+This downloads a pinned historical official upstream WebAssembly bundle, checks for required assets and the WASM magic signature, and prepares `apps/open-typer/` with a launch manifest. **It only installs into the local repository folder.** To publish, commit the generated assets (the ~34MB WASM file is below GitHub's 100MB per-file hard limit, subject to repository limits) or upload the directory to Hostinger under the site document root. Confirm license notices and test the actual application first. Never upload a manifest without matching binaries. No GitHub Actions build is required. Watch out for service-worker caching after the upload.
+
