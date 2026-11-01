@@ -16,7 +16,7 @@ function init(){
  const launch=document.getElementById('cot-launch');
  const old=document.getElementById('cot-native');
  const holder=document.getElementById('cot-frame-holder');
- let ready=false;
+ let ready=false;let checking=false;
  function showLegacy(){archived.forEach(child=>child.hidden=false);section.hidden=true;}
  old.addEventListener('click',showLegacy);
  function openLocal(){
@@ -29,7 +29,10 @@ function init(){
    info.textContent='Locally hosted engine detected. If it does not start, use Connect typing course.';
  }
  launch.addEventListener('click',()=>{if(ready)openLocal();else showLegacy()});
+ const retry=document.createElement('button');retry.type='button';retry.textContent='Recheck installation';retry.className='cot-retry';section.querySelector('.cot-actions').append(retry);
+ retry.addEventListener('click',()=>check());
  async function check(){
+   if(checking)return;checking=true;retry.disabled=true;info.textContent='Checking local Open-Typer files…';
    try{
      const response=await fetch('/apps/open-typer/manifest.json',{cache:'no-store'});
      if(!response.ok)throw Error('No local manifest');
@@ -37,17 +40,19 @@ function init(){
      if(data.engine!=='Open-Typer'||data.ready!==true||!data.entrypoint||!data.wasm||!data.javascript)throw Error('Incomplete compiled engine');
      const entry=new URL(data.entrypoint,location.origin);
      if(entry.origin!==location.origin||!entry.pathname.startsWith('/apps/open-typer/'))throw Error('Invalid entry');
-     const assets=[entry.pathname,data.wasm,data.javascript];
+     const assets=[entry.pathname,data.wasm,data.javascript,'/apps/open-typer/qtloader.js','/apps/open-typer/open-typer.worker.js'];
      for(const asset of assets){
        const uri=new URL(asset,location.origin);
        if(uri.origin!==location.origin||!uri.pathname.startsWith('/apps/open-typer/'))throw Error('Unsafe engine path');
        const probe=await fetch(uri.pathname,{method:'GET',headers:{Range:'bytes=0-7'},cache:'no-store'});
        if(!probe.ok||!(probe.status===200||probe.status===206))throw Error('Missing engine runtime');
+       if(!uri.pathname.endsWith('.wasm'))await probe.body?.cancel();
        if(uri.pathname.endsWith('.wasm')){const reader=probe.body?.getReader();if(!reader)throw Error('No WASM stream');const chunk=await reader.read();await reader.cancel();const head=chunk.value||new Uint8Array();if(head.length<4||head[0]!==0||head[1]!==97||head[2]!==115||head[3]!==109)throw Error('Invalid WebAssembly runtime')}
      }
      localEntry=entry.pathname;
      ready=true;launch.textContent='Launch local Open-Typer';
-     info.textContent='Self-hosted WebAssembly entry detected. Select Launch to open it in Connect.';
+     info.textContent='Self-hosted WebAssembly assets detected. Select Launch to run the application. Browser compatibility still needs testing.';
+     section.classList.remove('cot-fallback');section.querySelector('.cot-heading h2').textContent='Open-Typer';
    }catch{
      ready=false;launch.textContent='Start Connect typing course';
      info.textContent='Self-hosted engine is not installed. Opening the working Connect typing course. The official online beta remains available separately.';
@@ -55,7 +60,7 @@ function init(){
      section.classList.add('cot-fallback');
      section.querySelector('.cot-heading h2').textContent='Typing course · Open-Typer not installed';
      launch.textContent='Continue Connect typing';
-   }
+   }finally{checking=false;retry.disabled=false}
  }
  check();
 }
