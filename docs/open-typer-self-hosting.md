@@ -11,11 +11,11 @@ Upstream build reference: `.github/workflows/wasm-build.yml` in the upstream rep
 1. Build upstream Open-Typer for WebAssembly using the upstream build instructions and matching Qt/Emscripten dependencies **on a developer machine**; do not compile on Hostinger shared hosting.
 2. Copy generated HTML, JS, WASM and supporting files to `apps/open-typer/` in the Connect web root.
 3. Make sure the compiled entry document is `apps/open-typer/index.html`. Rename or adapt paths carefully and preserve generated asset references.
-4. Only after all runtime files exist, create `apps/open-typer/manifest.json` containing `{"engine":"Open-Typer","ready":true,"entrypoint":"/apps/open-typer/index.html"}`.
+4. Once compiled files are present, run `python3 scripts/prepare-open-typer.py apps/open-typer` from the Connect repository root. It validates HTML/JS/WASM presence and WASM magic bytes and generates `manifest.json` with `entrypoint`, `javascript`, and `wasm`. The manifest does not guarantee successful Qt runtime initialization.
 5. Verify direct loading of `https://connect.vweb.dev/apps/open-typer/index.html` and navigation from Academy, including keyboard input, browser refresh, and WASM network/MIME loading.
 6. Keep the upstream GPL-3.0 license, copyright notices, source-access link and third-party notices available alongside the distributed build.
 
-**Do not add the ready manifest before installing the actual engine.** Without it, the Connect typing course remains the functional local fallback. Do not add placeholder `.wasm` files or assume a successful upstream build.
+**Do not add the ready manifest before installing the actual engine.** The launcher now checks for actual HTML, JavaScript and valid WebAssembly magic bytes before enabling local launch. Without it, the Connect typing course remains the functional local fallback. Do not add placeholder `.wasm` files or assume a successful upstream build.
 
 ## Operational considerations
 - WASM should be served as `application/wasm`. Hostinger static hosting may need an appropriate MIME mapping.
