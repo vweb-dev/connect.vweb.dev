@@ -10,8 +10,8 @@ function init(){
  const section=document.createElement('section');
  section.id='connect-open-typer';section.className='cot-container';
  section.innerHTML='<div class="cot-heading"><span>CONNECT ACADEMY · TYPING LAB</span><h2>Open-Typer</h2><p>Open-source typing practice. Connect supports a locally hosted WebAssembly build, with your previous course available until the engine is installed.</p></div><div class="cot-actions"><button type="button" id="cot-launch">Check local Open-Typer</button><button type="button" id="cot-native">Use Connect typing course</button><a href="'+ONLINE+'" target="_blank" rel="noopener noreferrer">Official online beta ↗</a><a href="'+SOURCE+'" target="_blank" rel="noopener noreferrer">View source ↗</a></div><p id="cot-info" class="cot-info" role="status">Checking for a local Open-Typer WebAssembly build…</p><div id="cot-frame-holder" hidden></div><p class="cot-footnote">Open-Typer is independent GPL-3.0 software. Local lessons and certificates are Connect features; their scores are not transferred to Open-Typer.</p>';
- archived.forEach(child=>child.hidden=true);
  root.append(section);
+ section.classList.add('cot-fallback');
  const info=document.getElementById('cot-info');
  const launch=document.getElementById('cot-launch');
  const old=document.getElementById('cot-native');
@@ -21,6 +21,8 @@ function init(){
  old.addEventListener('click',showLegacy);
  function openLocal(){
    if(!ready)return;
+   archived.forEach(child=>child.hidden=true);
+   section.classList.remove('cot-fallback');
    holder.hidden=false;
    if(holder.firstElementChild)return;
    const frame=document.createElement('iframe');
@@ -52,7 +54,7 @@ function init(){
      localEntry=entry.pathname;
      ready=true;launch.textContent='Launch local Open-Typer';
      info.textContent='Self-hosted WebAssembly assets detected. Select Launch to run the application. Browser compatibility still needs testing.';
-     section.classList.remove('cot-fallback');section.querySelector('.cot-heading h2').textContent='Open-Typer';
+     section.querySelector('.cot-heading h2').textContent='Open-Typer available locally';
    }catch{
      ready=false;launch.textContent='Start Connect typing course';
      info.textContent='Self-hosted engine is not installed. Opening the working Connect typing course. The official online beta remains available separately.';
