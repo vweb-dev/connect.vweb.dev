@@ -24,13 +24,17 @@ def main():
     if html is None:
         print("Rename/adapt compiled entry to index.html before release"); return 1
     wasm = max(wasm_files, key=lambda p: p.stat().st_size)
-    if wasm.read_bytes()[:4] != b"\x00asm":
+    with wasm.open("rb") as handle:
+        signature = handle.read(4)
+    if signature != b"\x00asm":
         print("Invalid WASM binary signature"); return 1
     scripts = [p for p in js_files if p.stat().st_size > 1024]
-    if not scripts:
-        print("No compiled JavaScript runtime found"); return 1
+    if not scripts or not (root / "qtloader.js").is_file() or not (root / "open-typer.worker.js").is_file():
+        print("Incomplete Qt runtime: expected compiled JS, qtloader.js and worker"); return 1
     js = max(scripts, key=lambda p: p.stat().st_size)
     root_prefix = "/apps/open-typer/"
+    if wasm.stat().st_size < 1000000:
+        print("WASM binary is unexpectedly small"); return 1
     manifest = dict(engine="Open-Typer",ready=True,
                     entrypoint=root_prefix + html.name,
                     wasm=root_prefix + wasm.name,
