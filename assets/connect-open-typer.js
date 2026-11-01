@@ -43,7 +43,7 @@ function init(){
        if(uri.origin!==location.origin||!uri.pathname.startsWith('/apps/open-typer/'))throw Error('Unsafe engine path');
        const probe=await fetch(uri.pathname,{method:'GET',headers:{Range:'bytes=0-7'},cache:'no-store'});
        if(!probe.ok||!(probe.status===200||probe.status===206))throw Error('Missing engine runtime');
-       if(uri.pathname.endsWith('.wasm')){const head=new Uint8Array(await probe.arrayBuffer());if(head.length<4||head[0]!==0||head[1]!==97||head[2]!==115||head[3]!==109)throw Error('Invalid WebAssembly runtime')}
+       if(uri.pathname.endsWith('.wasm')){const reader=probe.body?.getReader();if(!reader)throw Error('No WASM stream');const chunk=await reader.read();await reader.cancel();const head=chunk.value||new Uint8Array();if(head.length<4||head[0]!==0||head[1]!==97||head[2]!==115||head[3]!==109)throw Error('Invalid WebAssembly runtime')}
      }
      localEntry=entry.pathname;
      ready=true;launch.textContent='Launch local Open-Typer';
