@@ -12,8 +12,21 @@ New-Item -Path $stage -ItemType Directory -Force | Out-Null
 try {
   foreach ($name in $names) {
     Write-Host "Fetching $name"
-    Invoke-WebRequest -Uri "$base/$name" -OutFile (Join-Path $stage $name) -MaximumRedirection 5
-    if ((Get-Item (Join-Path $stage $name)).Length -eq 0) { throw "Empty upstream file: $name" }
+    $saved = Join-Path $stage $name
+    $sources = @("$base/$name", "https://cdn.jsdelivr.net/gh/Open-Typer/web-app@$rev/$name")
+    $downloaded = $false
+    foreach ($source in $sources) {
+      try {
+        Invoke-WebRequest -Uri $source -OutFile $saved -MaximumRedirection 5 -TimeoutSec 120
+        if ((Get-Item $saved).Length -eq 0) { throw "Empty file" }
+        $downloaded = $true
+        break
+      } catch {
+        Write-Warning ("Download failed from " + ([uri]$source).Host + ": " + $_.Exception.Message)
+        Remove-Item $saved -ErrorAction SilentlyContinue
+      }
+    }
+    if (-not $downloaded) { throw "Unable to download $name from either upstream mirror." }
   }
   Copy-Item (Join-Path $stage "open-typer.html") (Join-Path $stage "index.html")
   $wasm = Join-Path $stage "open-typer.wasm"
