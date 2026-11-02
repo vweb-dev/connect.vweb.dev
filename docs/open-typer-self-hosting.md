@@ -47,3 +47,7 @@ After the Windows installer has generated the real assets, run `powershell -Exec
 ## One-command Windows installation and optional publish
 
 From a clean Git clone in Windows PowerShell, run `powershell -ExecutionPolicy Bypass -File scripts/open-typer-one-command.ps1` to download and validate the prebuilt assets. After reviewing your downloaded files, run `powershell -ExecutionPolicy Bypass -File scripts/open-typer-one-command.ps1 -Publish` to commit and push the prepared assets to the existing `main` branch. This push requires local Git credentials and will trigger Hostinger only if automatic Git deployment is configured. The script deliberately refuses a dirty working tree. ChatGPT has not executed this on the user's Windows PC. On GitHub or Hostinger, verify asset publication before declaring the engine live.
+
+## Network fallback (Windows)
+
+The PowerShell installer first requests the pinned upstream `raw.githubusercontent.com` files and then attempts the same pinned revision through jsDelivr if the primary host is unreachable. Both endpoints may be blocked by corporate DNS, regional routing or CDN file-size restrictions; success is not guaranteed. The installer fails rather than publishing incomplete binaries. The alternative is a transport mirror, not an independent verified release. Review the downloaded files before distribution and keep the upstream GPL-3.0 source/notice links.
