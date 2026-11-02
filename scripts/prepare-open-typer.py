@@ -28,13 +28,15 @@ def main():
         signature = handle.read(4)
     if signature != b"\x00asm":
         print("Invalid WASM binary signature"); return 1
-    scripts = [p for p in js_files if p.stat().st_size > 1024]
-    if not scripts or not (root / "qtloader.js").is_file() or not (root / "open-typer.worker.js").is_file():
+    js = root / "open-typer.js"
+    if not js.is_file() or js.stat().st_size < 100000 or not (root / "qtloader.js").is_file() or not (root / "open-typer.worker.js").is_file():
         print("Incomplete Qt runtime: expected compiled JS, qtloader.js and worker"); return 1
-    js = max(scripts, key=lambda p: p.stat().st_size)
     root_prefix = "/apps/open-typer/"
     if wasm.stat().st_size < 1000000:
         print("WASM binary is unexpectedly small"); return 1
+    html_content = html.read_text(encoding="utf-8", errors="replace")
+    if "open-typer.js" not in html_content or "qtloader.js" not in html_content:
+        print("HTML entry does not reference the expected Open-Typer runtime"); return 1
     manifest = dict(engine="Open-Typer",ready=True,
                     entrypoint=root_prefix + html.name,
                     wasm=root_prefix + wasm.name,
