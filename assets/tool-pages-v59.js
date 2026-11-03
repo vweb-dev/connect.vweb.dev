@@ -2,6 +2,10 @@
 /* Dedicated tool and course routes. All processing stays in the existing modules. */
 (()=>{
  const root=document.documentElement,$=id=>document.getElementById(id);
+ const homeTitle=document.title;
+ const homeDescription=document.querySelector('meta[name="description"]')?.content||'';
+ const homeOgTitle=document.querySelector('meta[property="og:title"]')?.content||'';
+ const homeOgDescription=document.querySelector('meta[property="og:description"]')?.content||'';
  let tools=[];
  try{const value=JSON.parse($('connect-tool-route-catalog')?.textContent||'{}');tools=Array.isArray(value.tools)?value.tools:[];}catch{}
  const byPath=new Map(tools.map(t=>[t.path,t])),byId=new Map(tools.map(t=>[t.id,t]));
@@ -240,7 +244,15 @@
    if(!canonical||new URL(canonical.href,location.origin).pathname!==current)syncHead((categories[base]||'Tools')+' | VWEB.DEV Connect','Browse individual online tools and open a focused workspace.',current);
    directory(base);
   }else{
+   // Restore the original page metadata after leaving a dedicated tool or course.
+   if(current==='/'){
+     document.title=homeTitle;
+     for(const [selector,value] of [['meta[name="description"]',homeDescription],['meta[property="og:title"]',homeOgTitle],['meta[property="og:description"]',homeOgDescription]]){
+       const tag=document.querySelector(selector);if(tag&&value)tag.setAttribute('content',value);
+     }
+   }
    const canonical=document.querySelector('link[rel="canonical"]');if(canonical)canonical.href=location.origin+current;
+   const ogUrl=document.querySelector('meta[property="og:url"]');if(ogUrl)ogUrl.content=location.origin+current;
   }
  }
  const registry={tools,byId,getPath:id=>byId.get(id)?.path||null,getByPath:p=>byPath.get(p)||null,update};
