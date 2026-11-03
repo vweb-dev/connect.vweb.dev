@@ -15,7 +15,7 @@
   midnight:{dark:'#e5d7a4',dark2:'#93afc7',light:'#111b29',frame:'#192638',caption:'#f3e5bc',gradient:true,dots:'rounded',eye:'extra-rounded'}
  };
  const init=$('#qr-design'),content=$('#qr-content'),status=$('#qr-status'),preview=$('#qr-preview'),frame=$('#qr-preview-frame');
- let qr=null,loadPromise=null,logo='',payload='',renderVersion=0,debounce=null,activeType='url',pending=false,exporting=false;
+ let qr=null,loadPromise=null,logo='',payload='',renderVersion=0,logoVersion=0,debounce=null,activeType='url',pending=false,exporting=false,copying=false;
  const val=id=>String($('#'+id)?.value||'').trim();
  const setStatus=(msg,bad=false)=>{status.textContent=msg;status.classList.toggle('qr-note-warn',bad)};
  const escWifi=s=>s.replace(/([\\;,":])/g,'\\$1');
@@ -159,6 +159,7 @@
  }
  function scheduleRender(){++renderVersion;pending=false;payload='';setReady(false);clearTimeout(debounce);debounce=setTimeout(render,240);}
  async function readLogo(file){
+  const request=++logoVersion;
   if(!file)return;
   if(!['image/png','image/jpeg','image/webp'].includes(file.type)){setStatus('Logo must be PNG, JPG or WebP.',true);return;}
   if(file.size>1024*1024){setStatus('Logo must be under 1 MB.',true);return;}
@@ -166,8 +167,9 @@
    const data=await new Promise((resolve,reject)=>{
     const reader=new FileReader();reader.onload=()=>resolve(String(reader.result));reader.onerror=()=>reject(Error('Could not read logo.'));reader.readAsDataURL(file);
    });
+   if(request!==logoVersion)return;
    logo=data;$('#qr-logo-remove').disabled=false;scheduleRender();
-  }catch(e){setStatus(e.message,true);}
+  }catch(e){if(request===logoVersion)setStatus(e.message,true);}
  }
  async function svgBlob(size){
   if(!payload||pending)throw Error('Wait for a valid QR preview.');
@@ -248,11 +250,15 @@
   catch(_){setStatus('Clipboard unavailable; select the original content and copy it.',true);}
  }
  async function copyImage(){
-  if(!payload||!window.ClipboardItem||!navigator.clipboard?.write)return setStatus('Image copying is unavailable in this browser. Use PNG download.',true);
+  if(!payload||pending||copying||!window.ClipboardItem||!navigator.clipboard?.write)return setStatus('Image copying is unavailable while the QR is being updated. Use PNG download.',true);
+  const ticket=renderVersion;copying=true;
   try{
    const svg=await svgBlob(640),png=await rasterBlob(svg,'image/png',640);
-   await navigator.clipboard.write([new ClipboardItem({'image/png':png})]);setStatus('QR image copied to clipboard.');
-  }catch(e){setStatus(e.message,true);}
+   if(ticket!==renderVersion||!payload)throw Error('QR changed during image preparation. Try again.');
+   await navigator.clipboard.write([new ClipboardItem({'image/png':png})]);
+   if(ticket===renderVersion)setStatus('QR image copied to clipboard.');
+  }catch(e){if(ticket===renderVersion)setStatus(e.message,true);}
+  finally{copying=false;}
  }
  function applyPreset(name){
   const style=presets[name];if(!style)return;
@@ -279,9 +285,9 @@
  init.addEventListener('change',event=>{
   if(event.target.id==='qr-logo-file')readLogo(event.target.files?.[0]);else scheduleRender();
  });
- $('#qr-logo-remove').addEventListener('click',()=>{logo='';$('#qr-logo-file').value='';$('#qr-logo-remove').disabled=true;scheduleRender()});
+ $('#qr-logo-remove').addEventListener('click',()=>{++logoVersion;logo='';$('#qr-logo-file').value='';$('#qr-logo-remove').disabled=true;scheduleRender()});
  $('#qr-reset').addEventListener('click',()=>{
-  init.reset();logo='';$('#qr-logo-file').value='';$('#qr-logo-remove').disabled=true;
+  ++logoVersion;init.reset();logo='';$('#qr-logo-file').value='';$('#qr-logo-remove').disabled=true;
   activeType='url';
   $$('.qr-type-button').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.qrType==='url')));
   $$('[data-qr-pane]').forEach(p=>p.hidden=p.dataset.qrPane!=='url');
