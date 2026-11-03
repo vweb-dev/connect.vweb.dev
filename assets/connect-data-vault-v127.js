@@ -40,10 +40,12 @@ function validateState(value){
 }
 function validatePaths(value){
  if(!validStrings(value,100))throw Error('Invalid saved destinations.');
- return [...new Set(value.filter(p=>{
+ const valid=value.every(p=>{
   if(p.startsWith('/')&&!p.startsWith('//'))return /^\/[a-z0-9][a-z0-9/_-]{0,180}$/.test(p);
   try{const u=new URL(p);return u.protocol==='https:'&&u.username===''&&u.password===''&&u.hostname.length>0&&p.length<=500}catch{return false}
- }))];
+ });
+ if(!valid)throw Error('Backup contains an invalid saved destination.');
+ return [...new Set(value)];
 }
 function currentSnapshot(){
  const progress=readJSON(KEY);
