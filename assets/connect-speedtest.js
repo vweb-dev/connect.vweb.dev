@@ -39,16 +39,40 @@ function renderHistory(){
  }
  historyNode.append(grid);
 }
+// CSV export uses normalized date/mode and numeric fields only to prevent
+// spreadsheet-formula injection from manually modified browser storage.
+function speedHistoryCsv(items){
+ const cells=[['Timestamp (UTC)','Mode','Download (Mbps)','Upload (Mbps)','Latency (ms)','Jitter (ms)']];
+ for(const item of items){
+  const timestamp=new Date(item.date);
+  const date=Number.isFinite(timestamp.getTime())?timestamp.toISOString():'';
+  const mode=item.mode==='full'?'full':'quick';
+  const number=value=>typeof value==='number'&&Number.isFinite(value)&&value>=0?String(value):'';
+  cells.push([date,mode,number(item.down),number(item.up),number(item.latency),number(item.jitter)]);
+ }
+ return cells.map(row=>row.join(',')).join('\\r\\n')+'\\r\\n';
+}
+function downloadHistory(data,filename,mime){
+ const url=URL.createObjectURL(new Blob([data],{type:mime}));
+ const a=document.createElement('a');a.href=url;a.download=filename;document.body.append(a);a.click();a.remove();
+ setTimeout(()=>URL.revokeObjectURL(url),3000);
+}
+$('connect-speed-export-csv')?.addEventListener('click',()=>{
+ downloadHistory(speedHistoryCsv(getHistory()),'connect-speed-history.csv','text/csv;charset=utf-8');
+});
 const modeSelect=$('connect-speed-mode');
 const quickMeasurements=[{type:'latency',numPackets:12},{type:'download',bytes:100000,count:3,bypassMinDuration:true},{type:'download',bytes:1000000,count:3},{type:'upload',bytes:100000,count:3,bypassMinDuration:true},{type:'upload',bytes:1000000,count:3}];
 const fullMeasurements=[{type:'latency',numPackets:20},{type:'download',bytes:100000,count:4,bypassMinDuration:true},{type:'download',bytes:1000000,count:6},{type:'download',bytes:10000000,count:4},{type:'upload',bytes:100000,count:4,bypassMinDuration:true},{type:'upload',bytes:1000000,count:6},{type:'upload',bytes:10000000,count:4}];
 $('connect-speed-export')?.addEventListener('click',()=>{
- const data=JSON.stringify({schema:1,results:getHistory()},null,2);
- const url=URL.createObjectURL(new Blob([data],{type:'application/json'}));
- const a=document.createElement('a');a.href=url;a.download='connect-speed-history.json';document.body.append(a);a.click();a.remove();
- setTimeout(()=>URL.revokeObjectURL(url),3000);
+ downloadHistory(JSON.stringify({schema:1,results:getHistory()},null,2),
+  'connect-speed-history.json','application/json');
 });
-$('connect-speed-clear')?.addEventListener('click',()=>{try{localStorage.removeItem(historyKey)}catch{}renderHistory()});
+$('connect-speed-clear')?.addEventListener('click',()=>{
+ if(!getHistory().length)return;
+ if(!window.confirm('Delete all saved speed-test results from this browser? This cannot be undone.'))return;
+ try{localStorage.removeItem(historyKey)}catch{}
+ renderHistory();
+});
 renderHistory();
 const numeric=(fn)=>{try{const v=fn();return Number.isFinite(v)&&v>=0?v:null;}catch{return null;}};
 function put(id,value,digits=1){const e=$(id);if(e)e.textContent=value===null?'—':value.toFixed(digits);}
