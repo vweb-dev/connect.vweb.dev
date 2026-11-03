@@ -3,7 +3,7 @@
 (()=>{
 const $=id=>document.getElementById(id);
 const esc=s=>String(s||'').toLowerCase().normalize('NFKD').replace(/[\u0300-\u036f]/g,'');
-const GROUPS=[['all','All'],['favorites','Saved'],['tools','Tools'],['convert','Convert'],['qr','QR Studio'],['ai','AI'],['pc','Windows'],['network','Internet'],['academy','Learn']];
+const GROUPS=[['all','All'],['favorites','Saved'],['tools','Tools'],['convert','Convert'],['qr','QR Studio'],['ai','AI'],['pc','Windows'],['network','Internet'],['daily','Daily Desk'],['academy','Learn'],['apps','Apps']];
 function init(){
  if($('connect-command-center'))return;
  let catalog={tools:[]};try{catalog=JSON.parse($('connect-tool-route-catalog')?.textContent||'{}')}catch{}
@@ -16,7 +16,7 @@ function init(){
  }
  for(const t of catalog.tools||[])add(t.title,t.path,t.section,t.description);
  for(const c of academy.courses||[])add(c.title,'/academy/course/'+encodeURIComponent(c.id),'academy',c.description);
- for(const [title,path,section] of [['All tools','/tools','tools'],['Convert Studio','/convert','convert'],['QR Code Studio','/qr','qr'],['AI Studio','/ai','ai'],['Connect Academy','/academy','academy'],['Windows & Office','/pc','pc'],['Internet Utilities','/network','network'],['Home','/','all']])add(title,path,section);
+ for(const [title,path,section] of [['All tools','/tools','tools'],['Convert Studio','/convert','convert'],['QR Code Studio','/qr','qr'],['AI Studio','/ai','ai'],['Connect Academy','/academy','academy'],['Windows & Office','/pc','pc'],['Internet Utilities','/network','network'],['Daily Desk','/daily','daily'],['App Directory','/apps','apps'],['Home','/','all']])add(title,path,section);
  const memoryKey='connect-command-recent-v1';
  const favoriteKey='connect-command-saved-v1';
  const saved=()=>{try{const v=JSON.parse(localStorage.getItem(favoriteKey)||'[]');return Array.isArray(v)?v.filter(x=>typeof x==='string').slice(0,100):[]}catch{return[]}};
