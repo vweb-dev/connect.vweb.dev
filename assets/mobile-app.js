@@ -51,12 +51,16 @@
   const destination=previous===route()?'home':previous;
   // Dedicated paths are real pages; changing only the hash leaves the focused tool open.
   if(location.pathname!=='/'&&location.pathname!=='/index.html'){
-   // A focused tool or course should return to its parent directory first.
+   // Nested tools keep their documented parent route and must not be
+   // replaced with a top-level hash navigation.
    const segments=location.pathname.split('/').filter(Boolean);
    if(segments.length>1){
     const parent=segments[0]==='academy'&&segments[1]==='course'?'/academy':'/'+(segments[0]==='windows'?'pc':segments[0]);
     location.assign(parent);return;
    }
+   // SPA route transitions carry a history marker. On an external/direct
+   // entry there may be no same-app entry to go back to.
+   if(history.state&&history.state.connectRoute){history.back();return;}
    location.assign(destination==='home'?'/':'/'+destination);
    return;
   }
@@ -155,7 +159,7 @@
  window.addEventListener('appinstalled',syncInstall);
  window.addEventListener('pageshow',syncInstall);
  syncInstall();
- window.addEventListener('hashchange',updateScreen);window.addEventListener('popstate',updateScreen);
+ window.addEventListener('hashchange',updateScreen);window.addEventListener('popstate',updateScreen);window.addEventListener('connect:routechange',updateScreen);
  window.addEventListener('resize',()=>{if(!mobile())closeSheet()});
  updateScreen();
 })();
