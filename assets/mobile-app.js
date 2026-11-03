@@ -80,6 +80,10 @@
  }
  function openSearch(){
   closeSheet();
+  // Prefer the project-wide search covering tools, courses, apps and saved destinations.
+  if(typeof window.ConnectCommandCenter?.open==='function'){
+   window.ConnectCommandCenter.open();return;
+  }
   const button=$('#hub-command-open');if(button)button.click();
  }
  for(const id of ['mobile-more','mobile-app-open-menu']){
@@ -100,10 +104,10 @@
  drawer.querySelectorAll('a').forEach(link=>link.addEventListener('click',closeSheet));
  document.addEventListener('keydown',event=>{
   if(drawer.hidden)return;
-  if(event.key==='Escape'){event.preventDefault();closeSheet();return;}
+  if(event.key==='Escape'){event.preventDefault();sheetBack();return;}
   if(event.key!=='Tab')return;
-  const focusable=Array.from(panel.querySelectorAll('button,a,input,[tabindex="0"]'))
-   .filter(el=>!el.disabled&&!el.hidden&&el.getClientRects().length>0);
+  const focusable=Array.from(panel.querySelectorAll('button,a[href],input,select,[tabindex="0"]'))
+   .filter(el=>!el.disabled&&!el.hidden&&!el.closest('[hidden]')&&el.getClientRects().length>0);
   if(!focusable.length)return;
   const first=focusable[0],last=focusable[focusable.length-1];
   if(event.shiftKey&&document.activeElement===first){event.preventDefault();last.focus();}
