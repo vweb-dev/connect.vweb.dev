@@ -4,3 +4,13 @@
 .cv127-actions{display:flex;gap:10px;align-items:center;flex-wrap:wrap}.cv127-actions button{border:1px solid #e1bf89;border-radius:11px;min-height:46px;padding:11px 16px;font:750 13px system-ui;cursor:pointer;color:#192731;background:#e8c88f}.cv127-actions #cv127-import{color:#f2d4a7;background:#294152}.cv127-actions button:focus-visible{outline:3px solid #fff;outline-offset:2px}
 #cv127-status{font-size:12px;line-height:1.5;color:#cbdce4;flex-basis:100%;margin:0}#cv127-status[data-error="true"]{color:#ffcead}
 @media(max-width:650px){.cv127-vault{display:block}.cv127-actions{margin:17px 0}.cv127-actions button{flex:1;min-width:135px}}
+
+/* v128: Academy-local backup controls */
+.cv128-academy-vault{margin:18px 0;padding:15px 18px;background:#1b3442;border:1px solid #997c50;border-radius:14px;color:#f7ebd8}
+.cv128-academy-vault strong{font-size:15px}.cv128-academy-vault p{font-size:12px;color:#ccdae3;line-height:1.6;margin:7px 0}
+.cv128-academy-vault>div{display:flex;flex-wrap:wrap;gap:9px;margin-top:12px}
+.cv128-academy-vault button{min-height:44px;padding:9px 13px;border-radius:10px;border:1px solid #d5b27a;background:#e7c78e;color:#182a35;cursor:pointer;font:750 12px system-ui}
+.cv128-academy-vault button:nth-child(2){background:#294454;color:#f3d6a1}
+.cv128-academy-vault button:focus-visible{outline:3px solid #fff;outline-offset:2px}
+.cv128-academy-vault .cv128-vault-note[data-error=true]{color:#ffc8ae}
+@media(max-width:480px){.cv128-academy-vault button{flex:1;min-width:120px}}
