@@ -18,7 +18,9 @@ const validMap=(v,key)=>{
   if(key==='notes')return typeof value==='string'&&value.length<=12000;
   if(key==='position')return Number.isInteger(value)&&value>=0&&value<10000;
   if(key==='completed'||key==='bookmarks')return Array.isArray(value)&&value.length<=400&&value.every(n=>Number.isInteger(n)&&n>=0&&n<10000);
-  if(key==='assessments')return isRecord(value)&&Object.keys(value).length<=100&&Object.values(value).every(item=>isRecord(item)&&Number.isFinite(item.score)&&Number.isFinite(item.total)&&item.score>=0&&item.score<=item.total&&item.total>=1&&item.total<=100);
+  if(key==='assessments')return isRecord(value)&&Object.keys(value).length<=100&&Object.entries(value).every(([module,item])=>
+   /^\\d{1,3}$/.test(module)&&isRecord(item)&&Number.isInteger(item.score)&&Number.isInteger(item.total)&&item.score>=0&&item.score<=item.total&&item.total>=1&&item.total<=100&&(!own(item,'updated')||(Number.isFinite(item.updated)&&item.updated>=0))
+  );
   return false;
  });
 };
@@ -33,12 +35,15 @@ function validateState(value){
   if(!ok)throw Error('Invalid or oversized learning field: '+key);
   clean[key]=v;
  }
- if(!Object.keys(clean).length)throw Error('No valid learning data found.');
+ // Empty learning data is valid for users who only backed up saved tools.
  return clean;
 }
 function validatePaths(value){
  if(!validStrings(value,100))throw Error('Invalid saved destinations.');
- return value.filter(p=>p.startsWith('/')&&!p.startsWith('//')&&/^\/[a-z0-9][a-z0-9/_-]{0,180}$/.test(p)||/^https:\/\/[^\s]+$/i.test(p));
+ return [...new Set(value.filter(p=>{
+  if(p.startsWith('/')&&!p.startsWith('//'))return /^\\/[a-z0-9][a-z0-9/_-]{0,180}$/.test(p);
+  try{const u=new URL(p);return u.protocol==='https:'&&u.username===''&&u.password===''&&u.hostname.length>0&&p.length<=500}catch{return false}
+ }))];
 }
 function currentSnapshot(){
  const progress=readJSON(KEY);
@@ -73,7 +78,8 @@ async function importBackup(file){
  if(!window.confirm('Restore this backup? It will replace local Connect learning progress, notes and saved tools on THIS device. Courses enrolled in backup: '+courseCount+'. Export your current data first.')){status('Restore cancelled; existing data unchanged.');return}
  const existing=readJSON(KEY);
  const learning={...(isRecord(existing)?existing:{})};
- for(const field of scopedFields)delete learning[field];
+ // Restore only fields explicitly included in the backup: partial files must not erase
+ // unrelated progress, notes, app favourites or existing assessment records.
  Object.assign(learning,backup.learning);
  try{
   const changes=[[KEY,JSON.stringify(learning)],[WORKSPACE,JSON.stringify(backup.workspace)],[SAVED,JSON.stringify(backup.saved)]];
