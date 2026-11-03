@@ -5,7 +5,7 @@
  let tools=[];
  try{const value=JSON.parse($('connect-tool-route-catalog')?.textContent||'{}');tools=Array.isArray(value.tools)?value.tools:[];}catch{}
  const byPath=new Map(tools.map(t=>[t.path,t])),byId=new Map(tools.map(t=>[t.id,t]));
- const areas=new Set(['tools','convert','qr','ai','daily','pc']);
+ const areas=new Set(['tools','convert','qr','ai','daily','pc','network']);
  const categories={tools:'Browser tools',convert:'File converters',qr:'QR Studio',ai:'AI Studio',daily:'Daily Desk',pc:'Windows & Office',network:'Internet utilities'};
  let courses=[];try{const x=JSON.parse($('hub-offline-catalog')?.textContent||'{}');courses=Array.isArray(x.courses)?x.courses.filter(c=>c&&typeof c.id==='string'&&typeof c.title==='string'):[];}catch{}
  const byCourse=new Map(courses.map(c=>['/academy/course/'+c.id,c]));
