@@ -226,7 +226,7 @@
   const btn=$('[data-qr-export="'+format+'"]');
   if(!btn)return;
   exporting=true;
-  $('.qr-export-button').forEach(b=>b.disabled=true);
+  $$('.qr-export-button').forEach(b=>b.disabled=true);
   const ticket=renderVersion;
   try{
    setStatus('Preparing '+format.toUpperCase()+' export…');
