@@ -50,7 +50,7 @@ function speedHistoryCsv(items){
   const number=value=>typeof value==='number'&&Number.isFinite(value)&&value>=0?String(value):'';
   cells.push([date,mode,number(item.down),number(item.up),number(item.latency),number(item.jitter)]);
  }
- return cells.map(row=>row.join(',')).join('\\r\\n')+'\\r\\n';
+ return cells.map(row=>row.join(',')).join('\r\n')+'\r\n';
 }
 function downloadHistory(data,filename,mime){
  const url=URL.createObjectURL(new Blob([data],{type:mime}));
