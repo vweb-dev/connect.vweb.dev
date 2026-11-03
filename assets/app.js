@@ -53,10 +53,43 @@ function route(focusHeading){
   }
   window.scrollTo(0,0);
 }
-window.addEventListener('hashchange',function(){const key=location.hash.slice(1);if(routes.includes(key)){history.replaceState(null,'','/'+(key==='home'?'':key));route(true);}else if(!key){route(false);}/* Keep genuine on-page anchors working. */});
+// Keep top-level route navigation inside the SPA without hijacking nested tool
+// routes, external links, downloads, modified clicks or on-page anchors.
+function navigateTopLevel(key){
+ var next=key==='home'?'/':'/'+key;
+ if(location.pathname===next&&!location.hash)return;
+ history.pushState({connectRoute:key},'',next);
+ route(true);
+ window.dispatchEvent(new Event('connect:routechange',{detail:{route:key}}));
+}
+window.addEventListener('hashchange',function(){
+ const key=location.hash.slice(1);
+ if(routes.includes(key)){
+  history.replaceState(history.state,'','/'+(key==='home'?'':key));
+  route(true);
+  window.dispatchEvent(new Event('connect:routechange',{detail:{route:key}}));
+ }else if(!key){route(false);}
+ /* Keep genuine on-page anchors working. */
+});
 window.addEventListener('popstate',function(){route(false);});
-document.addEventListener('click',function(event){const link=event.target.closest('a[href^="#"]');if(!link||event.defaultPrevented||event.ctrlKey||event.metaKey||event.shiftKey||event.altKey)return;const key=link.getAttribute('href').slice(1);if(!routes.includes(key))return;event.preventDefault();history.pushState(null,'','/'+(key==='home'?'':key));route(true);window.dispatchEvent(new Event('popstate'));});
-if(location.hash&&routes.includes(location.hash.slice(1))){history.replaceState(null,'','/'+(location.hash.slice(1)==='home'?'':location.hash.slice(1)));}
+document.addEventListener('click',function(event){
+ const link=event.target.closest('a[href]');
+ if(!link||event.defaultPrevented||event.button!==0||event.ctrlKey||event.metaKey||event.shiftKey||event.altKey||link.hasAttribute('download')||link.target&&link.target!=='_self')return;
+ const raw=link.getAttribute('href');
+ if(!raw||raw.startsWith('#')&&!routes.includes(raw.slice(1)))return;
+ let target;try{target=new URL(raw,location.href);}catch(_){return;}
+ if(target.origin!==location.origin)return;
+ let key=null;
+ if(raw.startsWith('#'))key=raw.slice(1);
+ else if(!target.search&&!target.hash){
+  const match=target.pathname.match(/^\/(?:([a-z]+)\/?)?$/);
+  if(match&&routes.includes(match[1]||'home'))key=match[1]||'home';
+ }
+ if(!key)return;
+ event.preventDefault();
+ navigateTopLevel(key);
+});
+if(location.hash&&routes.includes(location.hash.slice(1))){history.replaceState(history.state,'/'+(location.hash.slice(1)==='home'?'':location.hash.slice(1)));}
 route(false);
 // Mobile app navigation is handled independently by assets/mobile-app.js.
 $('#year').textContent=new Date().getFullYear();
