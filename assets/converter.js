@@ -327,7 +327,8 @@ $('#convert-pdf-run').addEventListener('click',function(){busy('pdf',this,async(
  if(!source.length)throw Error('Choose the required files first.');
  if(source.reduce((n,f)=>n+f.size,0)>150*1024*1024)throw Error('Total input is over 150 MB. Split into smaller batches.');
  if(pdfMode==='merge'&&source.length<2)throw Error('Choose at least two PDFs to merge.');
- if(pdfMode!=='merge'&&source.length!==1)throw Error('Choose exactly one PDF for this operation.');
+ if((pdfMode==='extract'||pdfMode==='split')&&source.length!==1)throw Error('Choose exactly one PDF for this operation.');
+ if(pdfMode==='photos'&&source.length>30)throw Error('Choose up to 30 images per PDF.');
  status('pdf','Loading PDF processing engine…','working');
  const PDF=await getPdfLib();
  cleanupResults('pdf');status('pdf','Processing '+source.length+' document(s) on your device…','working');
@@ -386,15 +387,33 @@ $('#convert-pdf-run').addEventListener('click',function(){busy('pdf',this,async(
 });});
 // Explicit image/PDF type guard at interaction boundary.
 const pdfInput=inputs.pdf, pdfDrop=$('#convert-pdf-drop');
+function pdfSelection(existing,incoming,mode){
+ const list=[...incoming];
+ const imageMode=mode==='photos';
+ const matches=list.filter(file=>imageMode?
+  (/^image\/(?:png|jpeg|webp)$/i.test(file.type)||/\.(?:png|jpe?g|webp)$/i.test(file.name)):
+  (file.type==='application/pdf'||/\.pdf$/i.test(file.name)));
+ if(!matches.length)return {files:[...existing],error:'Select '+(imageMode?'PNG, JPEG or WebP images.':'PDF documents.')};
+ if(matches.some(file=>file.size===0))return {files:[...existing],error:'Empty files cannot be processed.'};
+ if(matches.some(file=>file.size>100*1024*1024))return {files:[...existing],error:'Each input file must be under 100 MB.'};
+ const unique=new Map();
+ for(const file of [...existing,...matches]){
+  const id=[file.name,file.size,file.lastModified].join(':');
+  if(!unique.has(id))unique.set(id,file);
+ }
+ const result=(mode==='extract'||mode==='split')?matches.slice(-1):[...unique.values()];
+ if(result.length>30)return {files:[...existing],error:'Use up to 30 files per PDF batch.'};
+ if(result.reduce((sum,file)=>sum+file.size,0)>150*1024*1024)
+  return {files:[...existing],error:'PDF batch exceeds 150 MB. Select smaller files.'};
+ return {files:result,warning:matches.length<list.length?'Some unsupported file types were skipped.':''};
+}
 function pdfPick(items){
- const arr=[...items],matches=pdfMode==='photos'?
-  arr.filter(x=>x.type.startsWith('image/')||/\.(jpg|jpeg|png|webp|avif)$/i.test(x.name)):
-  arr.filter(x=>x.type==='application/pdf'||/\.pdf$/i.test(x.name));
- if(matches.length!==arr.length)status('pdf','Unsupported file type for this PDF operation.','error');
- if(!matches.length)return;
- files.pdf=(pdfMode==='extract'||pdfMode==='split')?matches.slice(0,1):[...files.pdf,...matches].slice(0,30);
+ if(processing.has('pdf'))return;
+ const selection=pdfSelection(files.pdf,items,pdfMode);
+ if(selection.error){status('pdf',selection.error,'error');return}
+ files.pdf=selection.files;
  pdfInput.value='';showFiles('pdf');cleanupResults('pdf');
- status('pdf',files.pdf.length+' input file(s) ready.');
+ status('pdf',selection.warning||files.pdf.length+' input file(s) ready.',selection.warning?'error':undefined);
 }
 // Capture input before the generic handler, so PDF mode-specific types
 // are handled exactly once via stopImmediatePropagation.
