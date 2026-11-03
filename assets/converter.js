@@ -393,7 +393,10 @@ $('#convert-pdf-run').addEventListener('click',function(){busy('pdf',this,async(
    const file=source[i];if(!(/^image\/(?:png|jpeg|webp)$/i.test(file.type)||/\.(?:png|jpe?g|webp)$/i.test(file.name)))throw Error('Photo to PDF accepts PNG, JPEG or WebP only.');
    const jpeg=await imageAsBlob(file,{mime:'image/jpeg',width:2000,rotate:0,quality:0.87});
    const image=await doc.embedJpg(await jpeg.arrayBuffer());
-   const width=595.28,height=841.89;
+   // Preserve a photo's natural orientation in the A4 PDF instead of
+   // shrinking every landscape image into a portrait-only page.
+   const landscape=image.width>image.height;
+   const width=landscape?841.89:595.28,height=landscape?595.28:841.89;
    const page=doc.addPage([width,height]);
    const scale=Math.min((width-2*margin)/image.width,(height-2*margin)/image.height);
    const w=image.width*scale,h=image.height*scale;
