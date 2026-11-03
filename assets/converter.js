@@ -242,13 +242,16 @@ $('#convert-image-run').addEventListener('click',function(){busy('image',this,as
  const width=Number($('#convert-image-width').value);
  if(!Number.isInteger(width)||width<0||width>8000)throw Error('Enter a width between 0 and 8000 px.');
  const options={mime,width,rotate:Number($('#convert-image-rotate').value),quality:Number($('#convert-image-quality').value)/100};
- const done=[],errors=[];
+ const done=[],errors=[],usedNames=new Set();
  for(let i=0;i<selection.length;i++){
   const f=selection[i];status('image','Converting '+(i+1)+' of '+selection.length+': '+f.name,'working');
   await new Promise(r=>setTimeout(r,8));
   try{
    const output=await imageAsBlob(f,options);
-   const name=baseName(f.name)+'-vweb.'+extension(mime);
+   const base=baseName(f.name)+'-vweb';
+   let name=base+'.'+extension(mime),suffix=2;
+   while(usedNames.has(name.toLowerCase()))name=base+'-'+suffix++ +'.'+extension(mime);
+   usedNames.add(name.toLowerCase());
    done.push({name,blob:output});
    result('image',name,output,name,prettySize(f.size)+' → '+prettySize(output.size));
   }catch(err){errors.push(f.name+': '+err.message);}
