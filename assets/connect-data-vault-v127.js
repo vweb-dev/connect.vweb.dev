@@ -61,7 +61,7 @@ function download(){
  document.body.append(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),5000);
  status('Backup exported locally. Keep the file private: it contains your learning notes.');
 }
-function status(message,error=false){for(const id of ['cv127-status','cv128-academy-status']){const el=$(id);if(el){el.textContent=message;el.dataset.error=String(error)}}}
+function status(message,error=false){for(const el of [document.getElementById('cv127-status'),...document.querySelectorAll('.cv128-vault-note')]){if(el){el.textContent=message;el.dataset.error=String(error)}}}
 async function importBackup(file){
  if(!file)return;
  if(file.size>MAX_FILE){status('Backup exceeds the 1 MB safety limit.',true);return}
