@@ -14,7 +14,7 @@ const callback=src.slice(callbackStart,callbackEnd);
 const csvStart=src.indexOf('function speedHistoryCsv(items){');
 const csvEnd=src.indexOf('function downloadHistory(',csvStart);
 assert.ok(csvStart>=0&&csvEnd>csvStart,'History CSV builder available');
-const csv=new Function(csv=>(csv))(src.slice(csvStart,csvEnd)+'return speedHistoryCsv;')();
+const csv=new Function(src.slice(csvStart,csvEnd)+'return speedHistoryCsv;')();
 const measurements=()=>({
  getDownloadBandwidth:()=>72000000,getUploadBandwidth:()=>14000000,
  getUnloadedLatency:()=>19,getUnloadedJitter:()=>4
