@@ -157,7 +157,7 @@
   }catch(e){if(ticket!==renderVersion)return;payload='';qr=null;preview.replaceChildren();$('#qr-preview-state').textContent='PREVIEW UNAVAILABLE';setReady(false);setStatus(e.message,true);}
   finally{if(ticket===renderVersion)pending=false;}
  }
- function scheduleRender(){setReady(false);clearTimeout(debounce);debounce=setTimeout(render,240);}
+ function scheduleRender(){++renderVersion;pending=false;payload='';setReady(false);clearTimeout(debounce);debounce=setTimeout(render,240);}
  async function readLogo(file){
   if(!file)return;
   if(!['image/png','image/jpeg','image/webp'].includes(file.type)){setStatus('Logo must be PNG, JPG or WebP.',true);return;}
