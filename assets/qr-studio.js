@@ -15,7 +15,7 @@
   midnight:{dark:'#e5d7a4',dark2:'#93afc7',light:'#111b29',frame:'#192638',caption:'#f3e5bc',gradient:true,dots:'rounded',eye:'extra-rounded'}
  };
  const init=$('#qr-design'),content=$('#qr-content'),status=$('#qr-status'),preview=$('#qr-preview'),frame=$('#qr-preview-frame');
- let qr=null,loadPromise=null,logo='',payload='',renderVersion=0,debounce=null,activeType='url',pending=false;
+ let qr=null,loadPromise=null,logo='',payload='',renderVersion=0,debounce=null,activeType='url',pending=false,exporting=false;
  const val=id=>String($('#'+id)?.value||'').trim();
  const setStatus=(msg,bad=false)=>{status.textContent=msg;status.classList.toggle('qr-note-warn',bad)};
  const escWifi=s=>s.replace(/([\\;,":])/g,'\\$1');
@@ -220,10 +220,12 @@
   setTimeout(()=>URL.revokeObjectURL(url),2500);
  }
  async function download(format){
-  if(!payload||pending)return;
+  if(!payload||pending||exporting)return;
   const btn=$('[data-qr-export="'+format+'"]');
   if(!btn)return;
-  btn.disabled=true;
+  exporting=true;
+  $('.qr-export-button').forEach(b=>b.disabled=true);
+  const ticket=renderVersion;
   try{
    setStatus('Preparing '+format.toUpperCase()+' export…');
    const dimension=Math.max(256,Math.min(2048,Number(val('qr-export-size'))||1024));
@@ -234,10 +236,11 @@
     blob=await rasterBlob(svg,mime,dimension);
     if(blob.type!==mime)throw Error(format.toUpperCase()+' export is not supported by this browser.');
    }
+   if(ticket!==renderVersion||!payload)throw Error('QR content changed while exporting. Generate the latest QR and try again.');
    saveBlob(blob,'vweb-connect-qr.'+(format==='jpeg'?'jpg':format));
    setStatus(format.toUpperCase()+' downloaded. Scan-test before distributing.');
   }catch(e){setStatus(e.message,true);}
-  finally{btn.disabled=false;}
+  finally{exporting=false;setReady(!!payload&&!pending);}
  }
  async function copyText(){
   if(!payload)return;
