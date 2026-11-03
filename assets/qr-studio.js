@@ -207,8 +207,11 @@
    const canvas=document.createElement('canvas');canvas.width=image.naturalWidth||size;canvas.height=image.naturalHeight||size;
    const context=canvas.getContext('2d');
    if(!context)throw Error('Canvas export not supported in this browser.');
+   if(mime==='image/jpeg'){context.fillStyle='#ffffff';context.fillRect(0,0,canvas.width,canvas.height);}
    context.drawImage(image,0,0);
-   return await new Promise((resolve,reject)=>canvas.toBlob(blob=>blob?resolve(blob):reject(Error('Could not encode the image.')),mime,.94));
+   const blob=await new Promise((resolve,reject)=>canvas.toBlob(blob=>blob?resolve(blob):reject(Error('Could not encode the image.')),mime,.94));
+   if(blob.type!==mime)throw Error('This browser does not support '+mime+' export. Choose PNG or SVG.');
+   return blob;
   }finally{URL.revokeObjectURL(url)}
  }
  function saveBlob(blob,name){
@@ -298,8 +301,11 @@
   const header=document.querySelector('#mobile-app-title');
   if(header)header.textContent='QR Code Studio';
  }
- window.addEventListener('hashchange',()=>{ensureQrVisible();if(location.hash==='#qr'&&(!qr||!payload))render();});
+ function onQrRoute(){return location.hash==='#qr'||location.pathname==='/qr'||location.pathname.startsWith('/qr/')}
+ window.addEventListener('hashchange',()=>{ensureQrVisible();if(onQrRoute()&&(!qr||!payload))render();});
+ window.addEventListener('popstate',()=>{if(onQrRoute()&&(!qr||!payload))render();});
+ window.addEventListener('connect:tool-route',()=>{if(onQrRoute()&&(!qr||!payload))render();});
  updateFrame();setReady(false);
  ensureQrVisible();
- if(location.hash==='#qr')render();
+ if(onQrRoute())render();
 })();
