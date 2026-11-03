@@ -320,9 +320,13 @@ $$('[data-pdf-mode]').forEach(btn=>btn.addEventListener('click',()=>{
 // Apply mode-specific input type checks through PDF drop/input filtering.
 // Update PDF file attachments directly in response handlers below.
 $('#convert-pdf-run').addEventListener('click',function(){busy('pdf',this,async()=>{
- const source=[...files.pdf],PDF=await getPdfLib();
+ const source=[...files.pdf];
  if(!source.length)throw Error('Choose the required files first.');
  if(source.reduce((n,f)=>n+f.size,0)>150*1024*1024)throw Error('Total input is over 150 MB. Split into smaller batches.');
+ if(pdfMode==='merge'&&source.length<2)throw Error('Choose at least two PDFs to merge.');
+ if(pdfMode!=='merge'&&source.length!==1)throw Error('Choose exactly one PDF for this operation.');
+ status('pdf','Loading PDF processing engine…','working');
+ const PDF=await getPdfLib();
  cleanupResults('pdf');status('pdf','Processing '+source.length+' document(s) on your device…','working');
  if(pdfMode==='merge'){
   if(source.length<2)throw Error('Choose at least two PDFs to merge.');
