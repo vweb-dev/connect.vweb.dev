@@ -19,7 +19,7 @@ const validMap=(v,key)=>{
   if(key==='position')return Number.isInteger(value)&&value>=0&&value<10000;
   if(key==='completed'||key==='bookmarks')return Array.isArray(value)&&value.length<=400&&value.every(n=>Number.isInteger(n)&&n>=0&&n<10000);
   if(key==='assessments')return isRecord(value)&&Object.keys(value).length<=100&&Object.entries(value).every(([module,item])=>
-   /^\\d{1,3}$/.test(module)&&isRecord(item)&&Number.isInteger(item.score)&&Number.isInteger(item.total)&&item.score>=0&&item.score<=item.total&&item.total>=1&&item.total<=100&&(!own(item,'updated')||(Number.isFinite(item.updated)&&item.updated>=0))
+   /^\d{1,3}$/.test(module)&&isRecord(item)&&Number.isInteger(item.score)&&Number.isInteger(item.total)&&item.score>=0&&item.score<=item.total&&item.total>=1&&item.total<=100&&(!own(item,'updated')||(Number.isFinite(item.updated)&&item.updated>=0))
   );
   return false;
  });
@@ -41,7 +41,7 @@ function validateState(value){
 function validatePaths(value){
  if(!validStrings(value,100))throw Error('Invalid saved destinations.');
  return [...new Set(value.filter(p=>{
-  if(p.startsWith('/')&&!p.startsWith('//'))return /^\\/[a-z0-9][a-z0-9/_-]{0,180}$/.test(p);
+  if(p.startsWith('/')&&!p.startsWith('//'))return /^\/[a-z0-9][a-z0-9/_-]{0,180}$/.test(p);
   try{const u=new URL(p);return u.protocol==='https:'&&u.username===''&&u.password===''&&u.hostname.length>0&&p.length<=500}catch{return false}
  }))];
 }
