@@ -146,7 +146,7 @@ function render(){
  }
 }
 function selectItem(i){if(!i.external&&new URL(i.url,location.origin).origin===location.origin){go(i.url,{courseId:i.courseId});return;}selectedItem=i;query.value='';stage='detail';render();}
-function back(){if(query.value){query.value='';stage='groups';render();return;}if(stage==='detail')stage='list';else if(stage==='list')stage='groups';else return;render();}
+function back(){if(query.value){query.value='';selectedItem=null;stage=selectedGroup?'list':'groups';render();query.focus();return;}if(stage==='detail'){selectedItem=null;stage=selectedGroup?'list':'groups';}else if(stage==='list'){selectedGroup=null;stage='groups';}else{close();return;}render();}
 function open(which='more'){if(!overlay.hidden)return;section=menus[which]?which:'more';stage=desk57Wide()?'list':'groups';selectedGroup=desk57Wide()?(menus[section]?.[0]||null):null;selectedItem=null;lastFocused=document.activeElement;query.value='';overlay.hidden=false;document.body.classList.add('ct53-open');render();requestAnimationFrame(()=>sheet.focus({preventScroll:true}));}
 function close(){if(overlay.hidden)return;overlay.hidden=true;document.body.classList.remove('ct53-open');if(lastFocused?.isConnected)lastFocused.focus({preventScroll:true});}
 for(const id of ['connect-nav-top-back','connect-nav-bottom-back'])$(id)?.addEventListener('click',back);
@@ -161,7 +161,7 @@ handle?.addEventListener('pointercancel',()=>{touchY=null;});
 document.addEventListener('keydown',e=>{
  if(overlay.hidden)return;
  if(e.key==='Escape'){e.preventDefault();close();return;}
- if(e.key==='Tab'){const options=[...sheet.querySelectorAll('button:not([disabled]),input:not([disabled])')].filter(x=>x.getClientRects().length);const first=options[0],last=options[options.length-1];if(!first)return;if(e.shiftKey&&document.activeElement===first){e.preventDefault();last.focus();}else if(!e.shiftKey&&document.activeElement===last){e.preventDefault();first.focus();}}
+ if(e.key==='Tab'){const options=[...sheet.querySelectorAll('button:not([disabled]),input:not([disabled]),a[href]:not([tabindex="-1"]),select:not([disabled])')].filter(x=>x.getClientRects().length);const first=options[0],last=options[options.length-1];if(!first)return;if(e.shiftKey&&document.activeElement===first){e.preventDefault();last.focus();}else if(!e.shiftKey&&document.activeElement===last){e.preventDefault();first.focus();}}
 });
 document.addEventListener('click',event=>{
  if(event.defaultPrevented||event.button!==0||event.ctrlKey||event.metaKey||event.altKey||event.shiftKey)return;
