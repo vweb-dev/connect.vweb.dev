@@ -11,11 +11,23 @@ function init(){
  const entries=[];
  const seen=new Set();
  function add(title,path,section,desc){
-   if(!title||!path||!path.startsWith('/')||path.startsWith('//')||seen.has(path))return;
-   seen.add(path);entries.push({title,path,section,desc:desc||''});
+   if(!title||typeof path!=='string'||seen.has(path))return;
+   const internal=path.startsWith('/')&&!path.startsWith('//');
+   let external=false;
+   if(!internal){
+     try{const url=new URL(path);external=url.protocol==='https:'&&!!url.hostname;}
+     catch{return}
+     if(!external)return;
+   }
+   seen.add(path);entries.push({title,path,section,desc:desc||'',external});
  }
  for(const t of catalog.tools||[])add(t.title,t.path,t.section,t.description);
  for(const c of academy.courses||[])add(c.title,'/academy/course/'+encodeURIComponent(c.id),'academy',c.description);
+ for(const app of academy.apps||[]){
+   if(!app||typeof app.name!=='string'||typeof app.open!=='string')continue;
+   const description=[app.category,app.kind,app.desc,...(Array.isArray(app.tags)?app.tags.slice(0,5):[])].filter(Boolean).join(' · ');
+   add(app.name,app.open,'apps',description);
+ }
  for(const [title,path,section] of [['All tools','/tools','tools'],['Convert Studio','/convert','convert'],['QR Code Studio','/qr','qr'],['AI Studio','/ai','ai'],['Connect Academy','/academy','academy'],['Windows & Office','/pc','pc'],['Internet Utilities','/network','network'],['Daily Desk','/daily','daily'],['App Directory','/apps','apps'],['Home','/','all']])add(title,path,section);
  const memoryKey='connect-command-recent-v1';
  const favoriteKey='connect-command-saved-v1';
@@ -51,11 +63,11 @@ function init(){
    shown=shown.slice(0,40);
    selected=0;results.replaceChildren();
    for(let i=0;i<shown.length;i++){
-     const item=shown[i],row=document.createElement('a');row.className='cc-result';row.href=item.path;row.id='cc-result-'+i;row.setAttribute('role','option');row.setAttribute('aria-selected',String(i===selected));row.tabIndex=0;
+     const item=shown[i],row=document.createElement('a');row.className='cc-result';row.href=item.path;if(item.external){row.target='_blank';row.rel='noopener noreferrer';}row.id='cc-result-'+i;row.setAttribute('role','option');row.setAttribute('aria-selected',String(i===selected));row.tabIndex=0;
      const main=document.createElement('span');main.className='cc-result-copy';
      const title=document.createElement('strong');title.textContent=item.title;
      const desc=document.createElement('small');desc.textContent=item.desc||item.path;
-     main.append(title,desc);const tag=document.createElement('span');tag.className='cc-result-tag';tag.textContent=item.section;
+     main.append(title,desc);const tag=document.createElement('span');tag.className='cc-result-tag';tag.textContent=item.external?'External app':item.section;
      row.append(main,tag);row.addEventListener('mouseenter',()=>select(i));row.addEventListener('focus',()=>select(i,false));row.addEventListener('click',()=>remember(item.path));results.append(row);
    }
    saveButton.disabled=!shown.length;
@@ -93,7 +105,12 @@ function init(){
    if(e.altKey&&e.key.toLowerCase()==='f'){e.preventDefault();toggleSaved();return}
    if(e.key==='ArrowDown'&&shown.length){e.preventDefault();select((selected+1)%shown.length);return}
    if(e.key==='ArrowUp'&&shown.length){e.preventDefault();select((selected-1+shown.length)%shown.length);return}
-   if(e.key==='Enter'&&document.activeElement===input&&shown.length){e.preventDefault();remember(shown[selected].path);location.assign(shown[selected].path);return}
+   if(e.key==='Enter'&&document.activeElement===input&&shown.length){
+     e.preventDefault();const item=shown[selected];remember(item.path);
+     if(item.external){window.open(item.path,'_blank','noopener,noreferrer');close();}
+     else location.assign(item.path);
+     return;
+   }
    if(e.key==='Tab'){
      const focusables=[...modal.querySelectorAll('button:not([disabled]),input,a[href]')].filter(el=>el.getClientRects().length);
      const first=focusables[0],last=focusables[focusables.length-1];
