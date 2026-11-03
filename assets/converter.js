@@ -52,7 +52,25 @@ function showFiles(kind){
    showFiles(kind);cleanupResults(kind);
    status(kind,files[kind].length?files[kind].length+' file(s) remaining.':'File removed. Choose a new file.');
   });
-  row.append(kindLabel,info,remove);root.append(row);
+  const controls=text('div','','convert-file-actions');
+  if((kind==='image'||kind==='pdf')&&files[kind].length>1){
+   for(const [direction,symbol] of [[-1,'↑'],[1,'↓']]){
+    const destination=index+direction;
+    const move=text('button',symbol,'convert-reorder');
+    move.type='button';move.disabled=destination<0||destination>=files[kind].length;
+    move.setAttribute('aria-label','Move '+file.name+(direction<0?' up':' down'));
+    move.addEventListener('click',()=>{
+     if(processing.has(kind)||move.disabled)return;
+     [files[kind][index],files[kind][destination]]=[files[kind][destination],files[kind][index]];
+     showFiles(kind);cleanupResults(kind);
+     status(kind,'File order updated. Convert to apply the new order.');
+     const buttons=root.querySelectorAll('.convert-file-row');
+     buttons[destination]?.querySelector(direction<0?'button[aria-label$=" up"]':'button[aria-label$=" down"]')?.focus();
+    });
+    controls.append(move);
+   }
+  }
+  controls.append(remove);row.append(kindLabel,info,controls);root.append(row);
  });
 }
 function attachFiles(kind,values) {
@@ -217,7 +235,9 @@ async function zipStored(entries){
   const name=encoder.encode(entry.name.replace(/[\/\\]+/g,'_'));
   if(name.length>500)throw Error('Filename too long for ZIP.');
   const body=new Uint8Array(await entry.blob.arrayBuffer()),size=body.byteLength,crc=crc32(body);
-  const dosDate=((2026-1980)<<9)|(1<<5)|1, dosTime=0,flags=0x0800;
+  const now=new Date(),year=Math.max(1980,Math.min(2107,now.getFullYear()));
+  const dosDate=((year-1980)<<9)|((now.getMonth()+1)<<5)|now.getDate();
+  const dosTime=(now.getHours()<<11)|(now.getMinutes()<<5)|Math.floor(now.getSeconds()/2),flags=0x0800;
   const local=new Uint8Array([
    0x50,0x4b,0x03,0x04,...u16(20),...u16(flags),...u16(0),...u16(dosTime),...u16(dosDate),
    ...u32(crc),...u32(size),...u32(size),...u16(name.length),...u16(0),...name
@@ -370,7 +390,7 @@ $('#convert-pdf-run').addEventListener('click',function(){busy('pdf',this,async(
  } else if(pdfMode==='photos'){
   const doc=await PDF.PDFDocument.create(),margin=25;
   for(let i=0;i<source.length;i++){
-   const file=source[i];if(!file.type.startsWith('image/'))throw Error('Photo to PDF accepts image files only.');
+   const file=source[i];if(!(/^image\/(?:png|jpeg|webp)$/i.test(file.type)||/\.(?:png|jpe?g|webp)$/i.test(file.name)))throw Error('Photo to PDF accepts PNG, JPEG or WebP only.');
    const jpeg=await imageAsBlob(file,{mime:'image/jpeg',width:2000,rotate:0,quality:0.87});
    const image=await doc.embedJpg(await jpeg.arrayBuffer());
    const width=595.28,height=841.89;
