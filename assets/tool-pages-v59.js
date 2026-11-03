@@ -151,10 +151,10 @@
   form.setAttribute('role','search');
   const label=el('label','visually-hidden','Search '+title);label.htmlFor='tool60-search-input';
   const input=el('input','tool60-search-input');
-  input.type='search';input.id='tool60-search-input';input.autocomplete='off';input.placeholder='Search tools — PDF, WhatsApp, image, JSON, Windows…';
+  input.type='search';input.id='tool60-search-input';input.autocomplete='off';input.placeholder='Search tools — PDF, WhatsApp, image, JSON, Windows…';input.value=(new URLSearchParams(location.search).get('q')||'').slice(0,100);
   const clear=el('button','tool60-clear','Clear');clear.type='button';clear.hidden=true;
-  clear.addEventListener('click',()=>{input.value='';selected='all';limit=12;render();input.focus();});
-  form.append(label,input,clear);form.addEventListener('submit',event=>{event.preventDefault();const first=grid.querySelector('a');first?.focus();});
+  clear.addEventListener('click',()=>{input.value='';selected='all';limit=12;const url=new URL(location.href);url.searchParams.delete('q');history.replaceState(history.state,'',url.pathname+url.search+url.hash);render();input.focus();});
+  form.append(label,input,clear);form.addEventListener('submit',event=>{event.preventDefault();const first=grid.querySelector('a');if(first){location.assign(first.href)}else input.focus();});
   if(area==='convert'){const suite=$('convert72-suite');if(suite)block.append(suite);}
   block.append(form);
   const status=el('p','tool60-result-count');status.setAttribute('role','status');status.setAttribute('aria-live','polite');
@@ -192,7 +192,7 @@
     chips.append(button);
    }
   }
-  input.addEventListener('input',()=>{limit=12;render();});
+  input.addEventListener('input',()=>{limit=12;render();const url=new URL(location.href);if(input.value.trim())url.searchParams.set('q',input.value.trim().slice(0,100));else url.searchParams.delete('q');history.replaceState(history.state,'',url.pathname+url.search+url.hash);});
   more.addEventListener('click',()=>{limit+=12;render();});
   render();
   for(const child of page.children){if(child!==block)child.classList.add('tool59-hidden');}
