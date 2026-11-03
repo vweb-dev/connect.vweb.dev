@@ -6,7 +6,7 @@ async function loadSpeedTest(){
  if(speedTestLoader)return speedTestLoader;
  speedTestLoader=(async()=>{
    let lastError;
-   for(const url of ['https://cdn.jsdelivr.net/npm/@cloudflare/speedtest@1.6.0/+esm','https://cdn.skypack.dev/@cloudflare/speedtest']){
+   for(const url of ['https://cdn.jsdelivr.net/npm/@cloudflare/speedtest@1.14.2/+esm','https://cdn.skypack.dev/@cloudflare/speedtest@1.14.2']){
      try{
        const loaded=await Promise.race([import(url),new Promise((_,reject)=>setTimeout(()=>reject(Error('Engine download timed out')),14000))]);
        const Engine=loaded.default||loaded.SpeedTest;
