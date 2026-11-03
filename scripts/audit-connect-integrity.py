@@ -32,6 +32,32 @@ def main():
     html.feed((ROOT / "index.html").read_text(encoding="utf-8"))
     errors = []
     ids, paths = set(), set()
+    content = (ROOT / "index.html").read_text(encoding="utf-8")
+    catalog_match = re.search(r'<script[^>]+id="hub-offline-catalog"[^>]*>(.*?)</script>', content, re.S)
+    if not catalog_match:
+        errors.append("Offline course and app catalog is missing")
+        offline = {}
+    else:
+        try:
+            offline = json.loads(catalog_match.group(1))
+        except json.JSONDecodeError:
+            errors.append("Offline catalog JSON is invalid")
+            offline = {}
+    app_ids = set()
+    for app in offline.get("apps", []):
+        identifier = app.get("id")
+        if not identifier or identifier in app_ids:
+            errors.append("Missing/duplicate app id: " + str(identifier))
+        app_ids.add(identifier)
+        url = app.get("open", "")
+        if not isinstance(url, str) or not url.startswith("https://"):
+            errors.append("App link must use HTTPS: " + str(identifier))
+    course_ids = set()
+    for course in offline.get("courses", []):
+        identifier = course.get("id")
+        if not identifier or identifier in course_ids:
+            errors.append("Missing/duplicate course id: " + str(identifier))
+        course_ids.add(identifier)
     for item in catalog["tools"]:
         if item["id"] in ids:
             errors.append("Duplicate tool id: " + item["id"])
@@ -62,7 +88,7 @@ def main():
         if not any(required in url for url in html.scripts):
             errors.append("Required controller not loaded: " + required)
     print("Connect static audit:", len(catalog["tools"]), "tools,", len(paths), "routes,",
-          len(html.scripts), "scripts,", len(html.styles), "styles")
+          len(app_ids), "apps,", len(course_ids), "courses,",len(html.scripts), "scripts,", len(html.styles), "styles")
     print("PWA cache:", match.group(1) if match else "MISSING")
     if errors:
         for issue in errors:
