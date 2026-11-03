@@ -8,8 +8,9 @@ const save=x=>{
  const next=[...new Set(x.filter(internal))].slice(0,30);
  try{
   localStorage.setItem(key,JSON.stringify(next));
-  const external=read(commandKey).filter(p=>typeof p==='string'&&/^https:\/\//i.test(p));
-  localStorage.setItem(commandKey,JSON.stringify([...next,...external].slice(0,100)));
+  // Preserve saved top-level sections and external apps that My Workspace does not manage.
+  const other=read(commandKey).filter(p=>typeof p==='string'&&!internal(p));
+  localStorage.setItem(commandKey,JSON.stringify([...new Set([...next,...other])].slice(0,100)));
  }catch{}
  window.dispatchEvent(new Event('connect:favorites-changed'));
 };
