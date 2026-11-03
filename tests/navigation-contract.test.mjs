@@ -25,7 +25,7 @@ test('mobile shell listens for custom route transitions', () => {
  assert.match(mobile, /history\.back\(\)/);
 });
 test('PWA offline fallback covers all top-level routes', () => {
- const expression = sw.match(/const appRoute=(\/\^\\\/(?:[^\n]+?)\/)\.test\(pathname\)/);
+ const expression = sw.match(/const appRoute=(.+?)\.test\(pathname\);/);
  assert.ok(expression, 'service worker includes appRoute regexp');
  const pattern = Function('return ' + expression[1])();
  for (const route of routes) assert.ok(pattern.test('/'+route), route);
