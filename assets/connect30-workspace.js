@@ -1,6 +1,18 @@
 'use strict';
 /* Connect 3.0: browser-local workspace, universal discovery shortcuts, QR templates and course bookmarks. */
-(()=>{const $=id=>document.getElementById(id),key='connect30-favorites';const get=()=>{try{return JSON.parse(localStorage.getItem(key)||'[]')}catch{return[]}},save=x=>{try{localStorage.setItem(key,JSON.stringify(x))}catch{}};
+(()=>{const $=id=>document.getElementById(id),key='connect30-favorites';const commandKey='connect-command-saved-v1';
+const internal=p=>typeof p==='string'&&/^\/(?:tools|convert|qr|academy|ai|daily|network|windows|pc)\/[a-z0-9-]+(?:\/[a-z0-9-]+)?\/?$/.test(p);
+const read=k=>{try{const v=JSON.parse(localStorage.getItem(k)||'[]');return Array.isArray(v)?v:[]}catch{return[]}};
+const get=()=>[...new Set([...read(key),...read(commandKey)].filter(internal))].slice(0,30);
+const save=x=>{
+ const next=[...new Set(x.filter(internal))].slice(0,30);
+ try{
+  localStorage.setItem(key,JSON.stringify(next));
+  const external=read(commandKey).filter(p=>typeof p==='string'&&/^https:\/\//i.test(p));
+  localStorage.setItem(commandKey,JSON.stringify([...next,...external].slice(0,100)));
+ }catch{}
+ window.dispatchEvent(new Event('connect:favorites-changed'));
+};
 const esc=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 function shell(){let host=$('connect30-workspace');if(host)return host;const home=$('page-home');if(!home)return null;host=document.createElement('section');host.id='connect30-workspace';host.className='connect30-workspace';host.innerHTML='<header><div><small>MY CONNECT · ON THIS DEVICE</small><h2>My Workspace</h2><p>Favorite tools and courses, saved locally in your browser.</p></div><button type="button" id="connect30-open-search">⌕ Search everything</button></header><div id="connect30-favorites" class="connect30-links"></div><p id="connect30-empty">No favorites yet. Open a tool or course and select ☆ Save.</p><div class="connect30-data-actions"><button type="button" id="connect30-backup">Export favorites</button><button type="button" id="connect30-restore">Import favorites</button><input type="file" id="connect30-restore-file" accept="application/json,.json" hidden><span id="connect30-data-status" role="status"></span></div>';const hero=home.querySelector(".hub-hero");if(hero)hero.after(host);else home.prepend(host);$('connect30-open-search').addEventListener('click',()=>$('hub-command-open')?.click());return host}
 function backup(){const blob=new Blob([JSON.stringify({version:1,favorites:get()},null,2)],{type:'application/json'}),url=URL.createObjectURL(blob),a=document.createElement('a');a.href=url;a.download='connect-favorites.json';a.click();setTimeout(()=>URL.revokeObjectURL(url),1200)}
@@ -10,5 +22,5 @@ function favorite(){const path=location.pathname,ok=/^\/(tools|convert|qr|academ
 function qrTemplates(){const form=$('qr-design');if(!form||$('connect30-qr-presets'))return;const holder=document.createElement('aside');holder.id='connect30-qr-presets';holder.className='connect30-presets';holder.innerHTML='<strong>Quick start templates</strong><div><button type="button" data-c30-qr="url">Website</button><button type="button" data-c30-qr="wifi">Wi-Fi</button><button type="button" data-c30-qr="contact">Contact</button><button type="button" data-c30-qr="whatsapp">WhatsApp</button></div>';form.prepend(holder);holder.querySelectorAll('[data-c30-qr]').forEach(b=>b.addEventListener('click',()=>form.querySelector('[data-qr-type="'+b.dataset.c30Qr+'"]')?.click()))}
 function init(){render();favorite();qrTemplates()}
 function actions(){shell();$('connect30-backup')?.addEventListener('click',backup);$('connect30-restore')?.addEventListener('click',()=>$('connect30-restore-file').click());$('connect30-restore-file')?.addEventListener('change',e=>{restore(e.target.files?.[0]);e.target.value=''})}
-window.addEventListener('DOMContentLoaded',actions,{once:true});window.addEventListener('popstate',()=>requestAnimationFrame(init));window.addEventListener('pageshow',init);if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',init,{once:true});else init();
+window.addEventListener('DOMContentLoaded',actions,{once:true});window.addEventListener('popstate',()=>requestAnimationFrame(init));window.addEventListener('pageshow',init);window.addEventListener('connect:favorites-changed',()=>{render();favorite()});if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',init,{once:true});else init();
 })();
