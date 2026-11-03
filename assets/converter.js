@@ -44,7 +44,14 @@ function showFiles(kind){
   const info=text('div','','convert-file-info');
   info.append(text('strong',file.name),text('small',prettySize(file.size)+' · on your device'));
   const remove=text('button','×');remove.type='button';remove.setAttribute('aria-label','Remove '+file.name);
-  remove.addEventListener('click',()=>{if(processing.has(kind))return;files[kind].splice(index,1);inputs[kind].value='';showFiles(kind);cleanupResults(kind);});
+  remove.addEventListener('click',()=>{
+   if(processing.has(kind))return;
+   files[kind].splice(index,1);inputs[kind].value='';
+   if(kind==='audio'){const player=$('#convert-audio-preview');player.pause();player.removeAttribute('src');player.hidden=true;revokeURL(audioSrc);audioSrc=null;$('#convert-audio-meta').textContent='';}
+   if(kind==='video'){const player=$('#convert-video-preview');player.pause();player.removeAttribute('src');player.hidden=true;revokeURL(videoSrc);videoSrc=null;$('#convert-video-meta').textContent='';}
+   showFiles(kind);cleanupResults(kind);
+   status(kind,files[kind].length?files[kind].length+' file(s) remaining.':'File removed. Choose a new file.');
+  });
   row.append(kindLabel,info,remove);root.append(row);
  });
 }
@@ -56,6 +63,7 @@ function attachFiles(kind,values) {
   kind==='pdf'?list.filter(f=>f.type==='application/pdf'||/\.pdf$/i.test(f.name)):
   kind==='audio'?list.filter(f=>f.type.startsWith('audio/')||/\.(mp3|wav|m4a|ogg|aac|flac)$/i.test(f.name)):
    list.filter(f=>f.type.startsWith('video/')||/\.(mp4|webm|mov)$/i.test(f.name));
+ if(!accepted.length){status(kind,'No supported files selected. Existing files have been kept.','error');return;}
  if(accepted.length!==list.length)status(kind,'Some files were not recognized as supported input types.','error');
  const maximum=kind==='image'?20:kind==='pdf'?30:1;
  if(accepted.some(f=>f.size>100*1024*1024)){
@@ -69,8 +77,11 @@ function attachFiles(kind,values) {
   files[kind]=accepted.slice(0,1);
  }else{
   const prev=files[kind];
-  files[kind]=[...prev,...accepted].slice(0,maximum);
-  if(prev.length+accepted.length>maximum)status(kind,'Maximum '+maximum+' files allowed in one batch.','error');
+  const unique=new Map();
+  for(const file of [...prev,...accepted]){const key=[file.name,file.size,file.lastModified].join(':');if(!unique.has(key))unique.set(key,file);}
+  const combined=[...unique.values()];
+  files[kind]=combined.slice(0,maximum);
+  if(combined.length>maximum)status(kind,'Maximum '+maximum+' files allowed in one batch.','error');
  }
  showFiles(kind);cleanupResults(kind);
  if(kind==='audio'){
