@@ -1,0 +1,7 @@
+/* Connect v130: keyboard-accessible, responsive batch file reordering */
+.convert-file-actions{display:flex;align-items:center;gap:5px;margin-left:auto;flex-shrink:0}
+.convert-file-actions button{display:grid;place-items:center;min-width:34px;min-height:38px;padding:3px 7px;border-radius:9px;border:1px solid #6f7881;background:#263847;color:#f5d7a0;font:750 15px system-ui;cursor:pointer}
+.convert-file-actions button:last-child{border-color:#745659;background:#362b32;color:#ffe5e4}
+.convert-file-actions button:disabled{opacity:.38;cursor:not-allowed}
+.convert-file-actions button:focus-visible{outline:3px solid #eac38d;outline-offset:2px}
+@media(max-width:550px){.convert-file-row{gap:8px;padding:10px}.convert-file-type{width:30px;height:30px}.convert-file-actions{gap:3px}.convert-file-actions button{min-width:30px;min-height:40px;padding:3px 5px}.convert-file-info strong{font-size:11px}}
