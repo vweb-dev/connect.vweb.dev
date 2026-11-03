@@ -31,7 +31,12 @@ function init(){
  for(const [title,path,section] of [['All tools','/tools','tools'],['Convert Studio','/convert','convert'],['QR Code Studio','/qr','qr'],['AI Studio','/ai','ai'],['Connect Academy','/academy','academy'],['Windows & Office','/pc','pc'],['Internet Utilities','/network','network'],['Daily Desk','/daily','daily'],['App Directory','/apps','apps'],['Home','/','all']])add(title,path,section);
  const memoryKey='connect-command-recent-v1';
  const favoriteKey='connect-command-saved-v1';
- const saved=()=>{try{const v=JSON.parse(localStorage.getItem(favoriteKey)||'[]');return Array.isArray(v)?v.filter(x=>typeof x==='string').slice(0,100):[]}catch{return[]}};
+ const workspaceKey='connect30-favorites';
+ const workspacePath=p=>typeof p==='string'&&/^\/(?:tools|convert|qr|academy|ai|daily|network|windows|pc)\/[a-z0-9-]+(?:\/[a-z0-9-]+)?\/?$/.test(p);
+ const saved=()=>{
+   const read=key=>{try{const v=JSON.parse(localStorage.getItem(key)||'[]');return Array.isArray(v)?v.filter(x=>typeof x==='string'):[]}catch{return[]}};
+   return [...new Set([...read(favoriteKey),...read(workspaceKey)])].slice(0,100);
+ };
  const read=()=>{try{const value=JSON.parse(localStorage.getItem(memoryKey)||'[]');return Array.isArray(value)?value.filter(x=>typeof x==='string').slice(0,8):[]}catch{return[]}};
  const remember=path=>{try{localStorage.setItem(memoryKey,JSON.stringify([path,...read().filter(x=>x!==path)].slice(0,8)))}catch{}};
  const active=entries.find(e=>e.path===location.pathname);
@@ -93,7 +98,17 @@ function init(){
      button.addEventListener('click',()=>{group=id;filter();draw();input.focus()});filters.append(button);
    }
  }
- function toggleSaved(){const item=shown[selected];if(!item)return;const values=saved();const next=values.includes(item.path)?values.filter(x=>x!==item.path):[item.path,...values];try{localStorage.setItem(favoriteKey,JSON.stringify(next))}catch{}filter();draw();input.focus()}
+ function toggleSaved(){
+   const item=shown[selected];if(!item)return;
+   const values=saved();
+   const next=values.includes(item.path)?values.filter(x=>x!==item.path):[item.path,...values];
+   try{
+     localStorage.setItem(favoriteKey,JSON.stringify(next.slice(0,100)));
+     localStorage.setItem(workspaceKey,JSON.stringify(next.filter(workspacePath).slice(0,30)));
+   }catch{}
+   window.dispatchEvent(new Event('connect:favorites-changed'));
+   filter();draw();input.focus();
+ }
  saveButton.addEventListener('click',toggleSaved);
  function open(){if(!modal.hidden)return;prevFocus=document.activeElement;modal.hidden=false;document.body.classList.add('cc-open');group='all';input.value='';filter();draw();input.focus()}
  function close(){if(modal.hidden)return;modal.hidden=true;document.body.classList.remove('cc-open');input.removeAttribute('aria-activedescendant');prevFocus?.focus?.()}
