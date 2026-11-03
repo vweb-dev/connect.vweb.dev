@@ -89,7 +89,7 @@ document.addEventListener('click',function(event){
  event.preventDefault();
  navigateTopLevel(key);
 });
-if(location.hash&&routes.includes(location.hash.slice(1))){history.replaceState(history.state,'/'+(location.hash.slice(1)==='home'?'':location.hash.slice(1)));}
+if(location.hash&&routes.includes(location.hash.slice(1))){history.replaceState(history.state,'','/'+(location.hash.slice(1)==='home'?'':location.hash.slice(1)));}
 route(false);
 // Mobile app navigation is handled independently by assets/mobile-app.js.
 $('#year').textContent=new Date().getFullYear();
