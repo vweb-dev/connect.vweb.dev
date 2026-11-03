@@ -142,7 +142,7 @@
   const ticket=++renderVersion;clearTimeout(debounce);updateFrame();
   let data;
   try{data=buildPayload();const n=countBytes(data);if(n>850)throw Error('Content exceeds 850 UTF-8 bytes. Shorten it to keep the code scan-friendly.');}
-  catch(e){payload='';setReady(false);setStatus(e.message,true);return;}
+  catch(e){payload='';qr=null;preview.replaceChildren();$('#qr-preview-state').textContent='ADD VALID CONTENT';setReady(false);setStatus(e.message,true);return;}
   pending=true;setReady(false);setStatus('Generating your live QR preview…');
   try{
    const QR=await loadLibrary();if(ticket!==renderVersion)return;
@@ -154,7 +154,7 @@
      ($('#qr-gradient').checked?' Gradient applied · check scan contrast.':' Test on a real phone before printing.');
    setStatus('QR ready. Generated in your browser.'+caution);
    $('#qr-preview-state').textContent='LIVE PREVIEW';
-  }catch(e){if(ticket!==renderVersion)return;payload='';setReady(false);setStatus(e.message,true);}
+  }catch(e){if(ticket!==renderVersion)return;payload='';qr=null;preview.replaceChildren();$('#qr-preview-state').textContent='PREVIEW UNAVAILABLE';setReady(false);setStatus(e.message,true);}
   finally{if(ticket===renderVersion)pending=false;}
  }
  function scheduleRender(){setReady(false);clearTimeout(debounce);debounce=setTimeout(render,240);}
