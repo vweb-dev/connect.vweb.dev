@@ -49,14 +49,14 @@ function init(){
    shown=shown.slice(0,40);
    selected=0;results.replaceChildren();
    for(let i=0;i<shown.length;i++){
-     const item=shown[i],row=document.createElement('a');row.className='cc-result';row.href=item.path;row.id='cc-result-'+i;row.setAttribute('role','option');row.setAttribute('aria-selected',String(i===selected));row.tabIndex=-1;
+     const item=shown[i],row=document.createElement('a');row.className='cc-result';row.href=item.path;row.id='cc-result-'+i;row.setAttribute('role','option');row.setAttribute('aria-selected',String(i===selected));row.tabIndex=0;
      const main=document.createElement('span');main.className='cc-result-copy';
      const title=document.createElement('strong');title.textContent=item.title;
      const desc=document.createElement('small');desc.textContent=item.desc||item.path;
      main.append(title,desc);const tag=document.createElement('span');tag.className='cc-result-tag';tag.textContent=item.section;
-     row.append(main,tag);row.addEventListener('mouseenter',()=>select(i));row.addEventListener('click',()=>remember(item.path));results.append(row);
+     row.append(main,tag);row.addEventListener('mouseenter',()=>select(i));row.addEventListener('focus',()=>select(i,false));row.addEventListener('click',()=>remember(item.path));results.append(row);
    }
-   if(!shown.length){const empty=document.createElement('p');empty.className='cc-empty';empty.textContent='No matches. Try another term or select All.';results.append(empty)}
+   if(!shown.length){input.removeAttribute('aria-activedescendant');const empty=document.createElement('p');empty.className='cc-empty';empty.textContent='No matches. Try another term or select All.';results.append(empty)}
    summary.textContent=shown.length+(shown.length===40?'+':'')+' destinations'+(!terms.length?' · recently used first':'');
    select(0,false);
  }
@@ -64,7 +64,7 @@ function init(){
    if(!shown.length)return;
    selected=Math.max(0,Math.min(index,shown.length-1));
    results.querySelectorAll('[role="option"]').forEach((row,i)=>row.setAttribute('aria-selected',String(i===selected)));
-   const row=$('cc-result-'+selected);input.setAttribute('aria-activedescendant',row?.id||'');
+   const row=$('cc-result-'+selected);if(row)input.setAttribute('aria-activedescendant',row.id);else input.removeAttribute('aria-activedescendant');
    if(scroll)row?.scrollIntoView({block:'nearest'});
  }
  function filter(){
@@ -83,12 +83,12 @@ function init(){
  input.addEventListener('input',draw);
  modal.addEventListener('keydown',e=>{
    if(e.key==='Escape'){e.preventDefault();close();return}
-   if(e.key==='ArrowDown'){e.preventDefault();select((selected+1)%shown.length);return}
-   if(e.key==='ArrowUp'){e.preventDefault();select((selected-1+shown.length)%shown.length);return}
+   if(e.key==='ArrowDown'&&shown.length){e.preventDefault();select((selected+1)%shown.length);return}
+   if(e.key==='ArrowUp'&&shown.length){e.preventDefault();select((selected-1+shown.length)%shown.length);return}
    if(e.key==='Enter'&&document.activeElement===input&&shown.length){e.preventDefault();remember(shown[selected].path);location.assign(shown[selected].path);return}
    if(e.key==='Tab'){
      const focusables=[...modal.querySelectorAll('button:not([disabled]),input,a[href]')].filter(el=>el.getClientRects().length);
-     const first=focusables[0],last=focusables.at(-1);
+     const first=focusables[0],last=focusables[focusables.length-1];
      if(e.shiftKey&&document.activeElement===first){e.preventDefault();last?.focus()}
      else if(!e.shiftKey&&document.activeElement===last){e.preventDefault();first?.focus()}
    }
