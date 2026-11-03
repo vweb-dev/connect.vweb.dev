@@ -267,15 +267,28 @@ $('#convert-image-run').addEventListener('click',function(){busy('image',this,as
 function getPdfLib(){
  if(window.PDFLib)return Promise.resolve(window.PDFLib);
  if(pdfLoad)return pdfLoad;
- pdfLoad=new Promise((resolve,reject)=>{
-  const script=document.createElement('script');
-  const timer=setTimeout(()=>{script.remove();pdfLoad=null;reject(Error('PDF helper download timed out. Check jsDelivr connectivity.'));},15000);
-  script.src='https://cdn.jsdelivr.net/npm/pdf-lib@1.17.1/dist/pdf-lib.min.js';
-  script.async=true;
-  script.onload=()=>{clearTimeout(timer);if(window.PDFLib)resolve(window.PDFLib);else{pdfLoad=null;reject(Error('PDF helper loaded without PDF functionality.'));}};
-  script.onerror=()=>{clearTimeout(timer);pdfLoad=null;reject(Error('Cannot load the PDF helper on this network. Try later.'));};
-  document.head.append(script);
- });
+ // Fallback is a mirror of the same pinned open-source version; user PDFs never leave the browser.
+ const sources=[
+  'https://cdn.jsdelivr.net/npm/pdf-lib@1.17.1/dist/pdf-lib.min.js',
+  'https://unpkg.com/pdf-lib@1.17.1/dist/pdf-lib.min.js'
+ ];
+ pdfLoad=(async()=>{
+  for(const src of sources){
+   try{
+    await new Promise((resolve,reject)=>{
+     const script=document.createElement('script');
+     script.async=true;script.src=src;script.referrerPolicy='no-referrer';
+     let done=false;
+     const finish=(error)=>{if(done)return;done=true;clearTimeout(timer);if(error){script.remove();reject(error)}else resolve()};
+     const timer=setTimeout(()=>finish(Error('PDF helper download timed out.')),15000);
+     script.onload=()=>finish();script.onerror=()=>finish(Error('PDF helper unavailable.'));
+     document.head.append(script);
+    });
+    if(window.PDFLib)return window.PDFLib;
+   }catch(error){console.warn('PDF helper source failed',new URL(src).host,error.message)}
+  }
+  throw Error('Cannot load PDF processing library from either source. Check your internet connection and retry.');
+ })().catch(error=>{pdfLoad=null;throw error});
  return pdfLoad;
 }
 function parseRange(text,maxPage){
