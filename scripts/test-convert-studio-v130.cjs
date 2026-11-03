@@ -21,7 +21,8 @@ const checks=[
  ['Reject combined input over 150 MB',()=>assert.ok(select([],[file('a.png','image/png',80*1024*1024),file('b.png','image/png',80*1024*1024)],'photos').error)],
  ['Invalid new file keeps existing selection',()=>{const value=select([file('a.pdf','application/pdf')],[file('c.txt','text/plain')],'merge');assert.ok(value.error);assert.equal(value.files.length,1)}],
  ['Batch operation allows 2+ photos',()=>assert.match(source,/\(pdfMode==='extract'\|\|pdfMode==='split'\)\&\&source\.length!==1/)],
- ['Image/PDF reorder buttons exist',()=>assert.ok(source.includes('convert-file-actions')&&source.includes('Move '+"'"))]
+ ['Image/PDF reorder buttons exist',()=>assert.ok(source.includes('convert-file-actions')&&source.includes('Move '+"'"))],
+ ['Photo PDF page matches image orientation',()=>assert.match(source,/const landscape=image\.width>image\.height/)]
 ];
 let failures=0;
 for(const [name,fn] of checks){try{fn();console.log('PASS '+name)}catch(error){failures++;console.error('FAIL '+name+': '+error.message)}}
