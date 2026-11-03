@@ -48,7 +48,13 @@
   if(!drawer.hidden){sheetBack();return;}
   if(route()==='home')return;
   const previous=screens.length>1?screens[screens.length-2]:'home';
-  location.hash='#'+(previous===route()?'home':previous);
+  const destination=previous===route()?'home':previous;
+  // Dedicated paths are real pages; changing only the hash leaves the focused tool open.
+  if(location.pathname!=='/'&&location.pathname!=='/index.html'){
+   location.assign(destination==='home'?'/':'/'+destination);
+   return;
+  }
+  location.hash='#'+destination;
  }
  function updateScreen(){
   const key=route();
