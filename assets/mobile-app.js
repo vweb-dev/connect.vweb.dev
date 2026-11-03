@@ -51,6 +51,12 @@
   const destination=previous===route()?'home':previous;
   // Dedicated paths are real pages; changing only the hash leaves the focused tool open.
   if(location.pathname!=='/'&&location.pathname!=='/index.html'){
+   // A focused tool or course should return to its parent directory first.
+   const segments=location.pathname.split('/').filter(Boolean);
+   if(segments.length>1){
+    const parent=segments[0]==='academy'&&segments[1]==='course'?'/academy':'/'+(segments[0]==='windows'?'pc':segments[0]);
+    location.assign(parent);return;
+   }
    location.assign(destination==='home'?'/':'/'+destination);
    return;
   }
