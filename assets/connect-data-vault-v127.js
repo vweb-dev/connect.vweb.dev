@@ -61,7 +61,7 @@ function download(){
  document.body.append(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),5000);
  status('Backup exported locally. Keep the file private: it contains your learning notes.');
 }
-function status(message,error=false){const el=$('cv127-status');if(el){el.textContent=message;el.dataset.error=String(error)}}
+function status(message,error=false){for(const id of ['cv127-status','cv128-academy-status']){const el=$(id);if(el){el.textContent=message;el.dataset.error=String(error)}}}
 async function importBackup(file){
  if(!file)return;
  if(file.size>MAX_FILE){status('Backup exceeds the 1 MB safety limit.',true);return}
@@ -103,6 +103,19 @@ function mount(){
  $('cv127-export').addEventListener('click',download);
  $('cv127-import').addEventListener('click',()=>$('cv127-file').click());
  $('cv127-file').addEventListener('change',e=>{importBackup(e.target.files?.[0]);e.target.value=''});
+ // Classroom and overview screens hide the home panel. Offer the same local vault
+ // without duplicating storage logic or adding a network endpoint.
+ const classroom=$('lms-view-classroom'),overview=$('lms-view-overview');
+ const addAcademyLink=(target)=>{
+  if(!target||target.querySelector('.cv128-academy-vault'))return;
+  const panel=document.createElement('aside');panel.className='cv128-academy-vault';
+  panel.innerHTML='<strong>Learning progress backup</strong><p>Keep a private copy of your lessons, notes and saved tools on your device.</p><div><button type="button" data-vault-export>Download backup</button><button type="button" data-vault-import>Restore backup</button></div><p class="cv128-vault-note" role="status" aria-live="polite"></p>';
+  panel.querySelector('[data-vault-export]').addEventListener('click',()=>{download();panel.querySelector('.cv128-vault-note').textContent='Download started. Store this file privately.'});
+  panel.querySelector('[data-vault-import]').addEventListener('click',()=>$('cv127-file').click());
+  target.append(panel);
+ };
+ addAcademyLink(overview);
+ addAcademyLink(classroom);
 }
 if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',mount,{once:true});else mount();
 })();
