@@ -56,3 +56,68 @@ jobs:
           done
 
 # Browser smoke checks are planned separately from the source gate.
+
+  browser-smoke:
+    name: Chromium desktop and mobile smoke
+    runs-on: ubuntu-latest
+    needs: source-regression
+    timeout-minutes: 15
+    steps:
+      - name: Check out Connect
+        uses: actions/checkout@v4
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Install free Chromium test runtime
+        run: |
+          npm install --no-save --package-lock=false playwright@1.56.1
+          npx playwright install --with-deps chromium
+      - name: Serve committed portal files locally
+        run: |
+          python3 -m http.server 4173 --bind 127.0.0.1 >/tmp/connect-browser-server.log 2>&1 &
+          echo $! >/tmp/connect-browser-server.pid
+      - name: Exercise real browser navigation
+        run: |
+          node --input-type=module <<'NODE'
+          import assert from 'node:assert/strict';
+          import { chromium } from 'playwright';
+          const browser=await chromium.launch({headless:true});
+          const base='http://127.0.0.1:4173/';
+          let count=0;
+          async function smoke(name,width,height,fn){
+            const context=await browser.newContext({viewport:{width,height},serviceWorkers:'block'});
+            const page=await context.newPage();
+            page.setDefaultTimeout(12000);
+            try{
+              await page.goto(base,{waitUntil:'domcontentloaded'});
+              await fn(page);
+              count++;
+              console.log('PASS '+name);
+            }finally{await context.close();}
+          }
+          try{
+            await smoke('desktop tools and QR',1366,900,async page=>{
+              await page.locator('a[data-nav="tools"]').first().click();
+              await page.waitForURL('**/tools');
+              assert.equal(await page.locator('#page-tools').isVisible(),true);
+              await page.locator('a[data-nav="qr"]').first().click();
+              await page.waitForURL('**/qr');
+              assert.equal(await page.locator('#page-qr').isVisible(),true);
+              assert.equal(await page.locator('#qr-design').isVisible(),true);
+            });
+            await smoke('desktop LMS catalog',1366,900,async page=>{
+              await page.locator('a[data-nav="academy"]').first().click();
+              await page.waitForURL('**/academy');
+              await page.locator('[data-lms-view="catalog"]').first().click();
+              assert.equal(await page.locator('#lms-view-catalog').isVisible(),true);
+            });
+            await smoke('mobile app navigation',390,844,async page=>{
+              assert.equal(await page.locator('#mobile-app-topbar').isVisible(),true);
+              await page.locator('.mobile-app-tabs a[data-mobile-tab="academy"]').first().click();
+              await page.waitForURL('**/academy');
+              assert.equal(await page.locator('#page-academy').isVisible(),true);
+            });
+            console.log('PASS '+count+' browser interaction scenarios');
+          }finally{await browser.close();}
+          NODE
