@@ -45,7 +45,7 @@ test('dedicated tool catalog has unique, well-formed paths and mounted sections'
  assert.ok(tools.length>=49,'expected 49 existing dedicated tool routes');
  const seen=new Set();
  for(const tool of tools){
-  assert.match(tool.path,/^\\/(?:tools|convert|qr|ai|daily|pc|network)\\/[a-z0-9-]+$/,'valid '+tool.id);
+  assert.match(tool.path,/^\/(?:tools|convert|qr|ai|daily|pc|network|windows)\/[a-z0-9-]+$/,'valid '+tool.id);
   assert.equal(seen.has(tool.path),false,'duplicate '+tool.path);
   seen.add(tool.path);
   assert.ok(html.includes('id="page-'+tool.section+'"'),'mounted '+tool.section);
