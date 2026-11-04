@@ -88,6 +88,7 @@ jobs:
           async function smoke(name,width,height,fn){
             const context=await browser.newContext({viewport:{width,height},serviceWorkers:'block'});
             const page=await context.newPage();
+            page.on('pageerror',err=>console.log('BROWSER ERROR:',err.message));
             page.setDefaultTimeout(12000);
             try{
               await page.goto(base,{waitUntil:'domcontentloaded'});
@@ -98,7 +99,11 @@ jobs:
           }
           try{
             await smoke('desktop tools and QR',1366,900,async page=>{
+              console.log('TOOLS href:',await page.locator('a[data-nav="tools"]').first().getAttribute('href'));
               await page.locator('a[data-nav="tools"]').first().click();
+              console.log('BROWSER state after click:',await page.evaluate(()=>({path:location.pathname,hash:location.hash,ready:document.readyState,active:document.querySelector('.page:not([hidden])')?.id})));
+              await page.evaluate(()=>document.querySelector('a[data-nav="tools"]').dispatchEvent(new MouseEvent('click',{bubbles:true,cancelable:true,button:0})));
+              console.log('BROWSER state after synthetic click:',await page.evaluate(()=>({path:location.pathname,active:document.querySelector('.page:not([hidden])')?.id})));
               console.log('tools click ->',page.url(), 'visible=',await page.locator('#page-tools').isVisible());
               assert.equal(new URL(page.url()).pathname,'/tools','tools click did not navigate');
               assert.equal(await page.locator('#page-tools').isVisible(),true);
