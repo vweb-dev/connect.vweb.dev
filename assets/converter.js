@@ -328,12 +328,12 @@ function parseRange(text,maxPage){
  if(all.length>350)throw Error('Too many pages selected; choose up to 350.');
  return all;
 }
-$('[data-pdf-mode]').forEach(btn=>{
+$$('[data-pdf-mode]').forEach(btn=>{
  btn.setAttribute('aria-pressed',String(btn.dataset.pdfMode===pdfMode));
  btn.addEventListener('click',()=>{
  if(processing.has('pdf'))return;
  pdfMode=btn.dataset.pdfMode;
- $('[data-pdf-mode]').forEach(other=>{
+ $$('[data-pdf-mode]').forEach(other=>{
   const active=other===btn;
   other.classList.toggle('active',active);
   other.setAttribute('aria-pressed',String(active));
