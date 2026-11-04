@@ -1,33 +1,51 @@
-const CACHE='vweb-connect-static-v138';
+const CACHE='vweb-connect-static-v139';
 const APP=['/assets/connect-ui-v137.css','/assets/connect-ui-v137.js','/assets/connect-integrity-v133.css','/assets/connect-integrity-v133.js','/assets/connect-converter-v130.css','/assets/connect-data-vault-v127.css','/assets/connect-data-vault-v127.js','/assets/connect-network-speed-v120.css','/assets/connect-command-center-v117.js','/assets/connect-command-center-v117.css','/assets/connect-open-typer.js','/assets/connect-open-typer.css','/assets/connect-typing-certificate.js','/assets/connect-typing-report-v2.js','/assets/connect-typing-export.js','/assets/connect-typing-finger-guide.js','/assets/connect-typing-dashboard.js','/assets/connect-mouse-course.js','/assets/connect-mouse-course.css','/assets/connect-typing-course.js','/assets/connect-typing-course.css','/assets/academy-edclub.css','/assets/academy-edclub.js','/assets/academy-classroom-controls.css','/assets/academy-classroom-controls.js','/assets/connect-api-discovery.js','/assets/connect-api-discovery.css','/assets/academy-study-plan.css','/assets/academy-study-plan.js','/assets/academy-productivity-v4.css','/assets/academy-productivity-v4.js','/assets/academy-studio-v3.css','/assets/academy-studio-v3.js','/assets/academy-practice-arena.css','/assets/academy-practice-arena.js','/assets/learning-reading.css','/assets/learning-reading.js','/assets/connect31-features.css','/assets/connect31-features.js','/assets/connect30-experience.css','/assets/connect30-export.js','/assets/connect30-workspace.css','/assets/connect30-workspace.js','/assets/connect21-journey.css','/assets/connect21-journey.js','/assets/connect-release-v80.css','/assets/connect-release-v80.js','/assets/connect-brand-promos-v77.css','/assets/connect-ui-polish-v74.css','/assets/connect-ui-polish-v74.js','/assets/conversion-suite-v72.css','/assets/conversion-suite-v72.js','/assets/connect-tools-professional-v61.css','/assets/search-repair-v61.js','/assets/tool-enhancements-v61.js','/assets/tool-pages-v59.css','/assets/tool-pages-v59.js','/data/tool-routes.json','/assets/lms-menu-thumbnails-v58.css','/assets/desktop-explorer-v57.css','/assets/apps-studio-v56.js','/assets/unified-navigation-v56.js','/assets/unified-navigation-v56.css','/assets/mobile-tools-activation-apps-v54.css','/assets/apps-recovery-v54.js','/assets/tools-explorer-v53.css','/assets/tools-explorer-v53.js','/assets/daily-essentials-v51.css','/assets/daily-essentials-v51.js','/assets/daily-desk-v50.css','/assets/daily-desk-v50.js','/assets/connect-apple-system-v49.css','/','/index.html','/assets/style.css','/assets/mobile-app.css','/assets/app.js','/assets/mobile-app.js','/assets/puter-ai.js','/assets/entertainment.js','/assets/converter.js','/assets/hub.js','/assets/connect-180.png','/assets/connect-192.png','/assets/lms.js','/assets/lms.css','/assets/connect-enhancements.css','/assets/windows-page-polish.css','/assets/windows-command-center.css','/assets/network-center.css','/assets/network-status.js','/assets/connect-speedtest.js','/assets/social-inline.js','/assets/network-intelligence.js','/assets/network-revamp.js','/assets/connect-enhancements.js','/assets/qr-studio.css','/assets/qr-studio.js','/data/connect-hub.json','/assets/connect-icon.svg','/manifest.webmanifest'];
+// App shell is essential. Do not activate a new worker without its offline entry.
+const OFFLINE_SHELL='/index.html';
+const knownNavigation=path=>path==='/'||path==='/index.html'||/^\/(?:home|daily|studios|academy|network|pc|apps|dashboard|convert|tools|qr|ai|play|offers|community|account|windows)(?:\/|$)/.test(path);
 self.addEventListener('install',event=>{event.waitUntil((async()=>{
  const cache=await caches.open(CACHE);
- // Bound simultaneous downloads to reduce pressure on existing shared hosting.
+ const shell=await fetch(OFFLINE_SHELL,{cache:'reload'});
+ if(!shell.ok||!shell.headers.get('content-type')?.includes('text/html'))throw new Error('Cannot cache valid Connect shell');
+ await cache.put(OFFLINE_SHELL,shell);
+ // Limit concurrency and tolerate noncritical tools being temporarily unavailable.
  for(let i=0;i<APP.length;i+=6){
    await Promise.all(APP.slice(i,i+6).map(async path=>{
+     if(path===OFFLINE_SHELL)return;
      try{const response=await fetch(path,{cache:'reload'});if(response.ok)await cache.put(path,response);}
      catch(error){console.warn('Offline cache skipped',path,error);}
    }));
  }
-})());self.skipWaiting();});
-self.addEventListener('activate',event=>{event.waitUntil((async()=>{const keys=await caches.keys();await Promise.all(keys.filter(k=>k.startsWith('vweb-connect-static-v')&&k!==CACHE).map(k=>caches.delete(k)));await self.clients.claim();})());});
-self.addEventListener('fetch',event=>{const request=event.request;if(request.method!=='GET'||new URL(request.url).origin!==self.location.origin)return;
-// Qt WASM runtime must never receive the SPA offline HTML fallback or oversized PWA precache.
-if(new URL(request.url).pathname.startsWith('/apps/open-typer/')){event.respondWith(fetch(request));return;}
-if(request.mode==='navigate'){
- event.respondWith((async()=>{
+ self.skipWaiting();
+})());});
+self.addEventListener('activate',event=>{event.waitUntil((async()=>{
+ const cache=await caches.open(CACHE);
+ if(!await cache.match(OFFLINE_SHELL))throw new Error('Connect offline shell missing');
+ const keys=await caches.keys();
+ await Promise.all(keys.filter(k=>k.startsWith('vweb-connect-static-v')&&k!==CACHE).map(k=>caches.delete(k)));
+ await self.clients.claim();
+})());});
+self.addEventListener('fetch',event=>{
+ const request=event.request;
+ if(request.method!=='GET'||new URL(request.url).origin!==self.location.origin)return;
+ // Open-Typer's WASM runtime needs real asset responses, not a cached app HTML page.
+ if(new URL(request.url).pathname.startsWith('/apps/open-typer/')){event.respondWith(fetch(request));return;}
+ if(request.mode==='navigate'){
+  event.respondWith((async()=>{
    const pathname=new URL(request.url).pathname;
-   const appRoute=/^\/(?:home|daily|studios|academy|network|pc|apps|dashboard|convert|tools|qr|ai|play|offers|community|account|windows)(?:\/|$)/.test(pathname);
+   const appRoute=knownNavigation(pathname);
    try{
-     const response=await fetch(request);
-     if(response.ok||!appRoute||response.status!==404)return response;
-     // Deep links on hosts without SPA rewrites still open the app shell.
-     return (await caches.match('/index.html'))||(await fetch('/index.html',{cache:'reload'}));
+    const response=await fetch(request);
+    if(response.ok||!appRoute||response.status!==404)return response;
+    // Only known Connect routes may use the SPA entry after a hosting 404.
+    return (await caches.match(OFFLINE_SHELL))||(await fetch(OFFLINE_SHELL,{cache:'reload'}));
    }catch{
-     return (await caches.match('/index.html'))||Response.error();
+    // Never turn arbitrary missing files or unknown URLs into the homepage.
+    if(!appRoute)return Response.error();
+    return (await caches.match(OFFLINE_SHELL))||Response.error();
    }
- })());return;
-}
+  })());return;
+ }
 const path=new URL(request.url).pathname;
 // Network-first for modules which change frequently. Avoid serving old code after a deploy.
 const currentModules=new Set(['/assets/connect-ui-v137.css','/assets/connect-ui-v137.js','/assets/connect-integrity-v133.js','/assets/connect-integrity-v133.css','/assets/converter.js','/assets/connect-converter-v130.css','/assets/connect-data-vault-v127.js','/assets/connect-data-vault-v127.css','/assets/converter.js','/assets/connect-speedtest.js','/assets/connect-network-speed-v120.css','/assets/connect-command-center-v117.js','/assets/connect-command-center-v117.css','/assets/tool-pages-v59.js','/assets/learning-reading.js','/assets/learning-reading.css','/assets/search-repair-v61.js','/assets/conversion-suite-v72.js','/assets/qr-studio.js','/assets/lms.js','/assets/connect-open-typer.js']);
