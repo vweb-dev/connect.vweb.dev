@@ -40,7 +40,7 @@ test('service worker requires a valid cached HTML shell before activation',()=>{
  assert.match(sw,/shell\.headers\.get\('content-type'\)/);
  assert.match(sw,/cache\.put\(OFFLINE_SHELL,shell\)/);
  assert.match(sw,/cache\.match\(OFFLINE_SHELL\)/);
- assert.match(sw,/vweb-connect-static-v143/);
+ assert.match(sw,/vweb-connect-static-v144/);
 });
 test('49+ dedicated tool paths are unique and have compatible targets',()=>{
  assert.ok(catalog.tools.length>=49);
@@ -100,4 +100,11 @@ test('Academy listens to path-based SPA events',()=>{
  assert.match(academy,/const onAcademyRoute=/);
  assert.match(academy,/addEventListener\('connect:routechange',syncAcademyRoute\)/);
  assert.match(html,/\/assets\/lms\.js\?v=142/);
+});
+
+test('PDF Studio exposes accessible operation selection states',()=>{
+ const converter=file('assets/converter.js');
+ assert.match(converter,/setAttribute\('aria-pressed',String\(btn\.dataset\.pdfMode===pdfMode\)\)/);
+ assert.match(converter,/other\.setAttribute\('aria-pressed',String\(active\)\)/);
+ assert.match(html,/\/assets\/converter\.js\?v=144/);
 });
