@@ -9,7 +9,7 @@ const html=file('index.html'),sw=file('sw.js'),app=file('assets/app.js'),mobile=
 const routes=['home','daily','studios','academy','network','pc','apps','dashboard','convert','tools','qr','ai','play','offers','community','account'];
 const catalog=JSON.parse(html.match(/<script type="application\/json" id="connect-tool-route-catalog">([\s\S]*?)<\/script>/)[1]);
 test('core scripts parse without syntax errors',()=>{
- for(const name of ['sw.js','assets/app.js','assets/mobile-app.js','assets/connect-integrity-v133.js','assets/connect-ui-v137.js']){
+ for(const name of ['sw.js','assets/app.js','assets/mobile-app.js','assets/connect-integrity-v133.js','assets/connect-ui-v137.js','assets/connect-connection-v139.js']){
   assert.doesNotThrow(()=>new vm.Script(file(name),{filename:name}),name);
  }
 });
@@ -57,4 +57,15 @@ test('essential first-party UI and diagnostics are linked and cached',()=>{
   assert.ok(html.includes('/assets/'+name),'HTML '+name);
   assert.ok(sw.includes("'/assets/"+name+"'"),'offline '+name);
  }
+});
+
+test('offline status UI is linked and cached without automated reloads',()=>{
+ for(const name of ['connect-connection-v139.js','connect-connection-v139.css']){
+  assert.ok(html.includes('/assets/'+name),'HTML '+name);
+  assert.ok(sw.includes("'/assets/"+name+"'"),'PWA cache '+name);
+ }
+ const ui=file('assets/connect-connection-v139.js');
+ assert.match(ui,/addEventListener\('offline'/);
+ assert.match(ui,/addEventListener\('online'/);
+ assert.doesNotMatch(ui,/location\.reload\(/);
 });
