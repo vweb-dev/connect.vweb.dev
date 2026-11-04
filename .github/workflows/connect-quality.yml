@@ -142,6 +142,21 @@ jobs:
               await page.locator('#qr-byte-count').waitFor();
               assert.match(await page.locator('#qr-byte-count').innerText(),/[1-9][0-9]* \/ 850/);
             });
+            await smoke('LMS enrollment persists after reload',1366,900,async page=>{
+              await page.locator('a[data-nav="academy"]').first().click();
+              const courseId=await page.evaluate(()=>{
+                const api=window.ConnectLMS;
+                if(!api?.snapshot||!api?.enroll)throw Error('LMS storage bridge unavailable');
+                const id=api.snapshot().courses[0]?.id;
+                if(!id)throw Error('Course catalog is empty');
+                api.enroll(id);
+                return id;
+              });
+              await page.reload({waitUntil:'domcontentloaded'});
+              await page.waitForFunction(()=>Boolean(window.ConnectLMS?.snapshot()?.courses?.length));
+              const persists=await page.evaluate(id=>window.ConnectLMS.snapshot().enrolled.includes(id),courseId);
+              assert.ok(persists,'LMS enrollment was lost on browser reload');
+            });
             console.log('PASS '+count+' browser interaction scenarios');
           }finally{await browser.close();}
           NODE
