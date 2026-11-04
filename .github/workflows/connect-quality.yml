@@ -216,7 +216,18 @@ jobs:
               const png=Buffer.from('iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/x8AAwMCAO+jRZkAAAAASUVORK5CYII=','base64');
               await page.locator('#convert-pdf-input').setInputFiles({name:'picture.png',mimeType:'image/png',buffer:png});
               await page.locator('#convert-pdf-run').click();
-              await page.locator('#convert-pdf-status[data-state="success"]').waitFor({timeout:40000});
+              try{
+                await page.locator('#convert-pdf-status[data-state="success"]').waitFor({timeout:25000});
+              }catch(error){
+                const details=await page.evaluate(()=>({
+                  status:document.getElementById('convert-pdf-status')?.textContent,
+                  state:document.getElementById('convert-pdf-status')?.dataset.state,
+                  files:[...document.querySelectorAll('#convert-pdf-list .convert-file-row')].map(x=>x.textContent),
+                  helper:typeof window.PDFLib,
+                  buttonDisabled:document.getElementById('convert-pdf-run')?.disabled
+                }));
+                throw Error('Photo to PDF: '+JSON.stringify(details)+' / '+error.message);
+              }
               const pdf=page.locator('#convert-pdf-results a[download]');
               assert.ok(await pdf.count()>0,'Photo-to-PDF result missing');
               assert.ok((await pdf.first().getAttribute('download')).endsWith('.pdf'));
