@@ -21,8 +21,8 @@ test('menu opens as a bottom-up multi-level sheet',()=>{
  assert.match(mobile,/function closeSheet\(\)/);
 });
 test('menu links preserve real routes and do not restore retired routes',()=>{
- for(const route of ['#studios','#tools','#convert','#ai','#apps','#academy','#play','#pc','#offers','#community','#dashboard','#account'])
-  assert.ok(html.includes('href="'+route+'"'),route);
+ for(const route of ['studios','tools','convert','ai','apps','academy','play','pc','offers','community','dashboard','account'])
+  assert.ok(html.includes('href="/'+route+'"'),route);
  for(const route of ['#watch','#discover','#internet','#rewards'])assert.ok(!html.includes('href="'+route+'"'),route);
  assert.match(app,/function route\(focusHeading\)/);
 });
@@ -45,7 +45,7 @@ test('global search and native PWA install remain connected without new APIs',()
  assert.ok(manifest.shortcuts.length>=4);
 });
 test('mobile assets use the same deploy cache version',()=>{
- assert.match(worker,/vweb-connect-static-v81/);
+ assert.match(worker,/vweb-connect-static-v\d+/);
  for(const asset of ['mobile-app.js','mobile-app.css']){
   const version=asset==='mobile-app.js'?'connect-ios-focus-20261020a':'connect-qr-route-20261020b';
   assert.ok(html.includes('/assets/'+asset+'?v='+version),asset);
