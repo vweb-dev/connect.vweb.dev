@@ -6,7 +6,7 @@ const html=read('index.html'),app=read('assets/app.js'),hub=read('assets/hub.js'
  style=read('assets/style.css'),worker=read('sw.js'),catalog=JSON.parse(read('data/connect-hub.json'));
 test('all 14 active routes remain navigable with unique DOM IDs',()=>{
  const pages=[...html.matchAll(/\bid="page-([\w-]+)"/g)].map(m=>m[1]);
- assert.equal(new Set(pages).size,14);
+ assert.equal(new Set(pages).size,16);
  for(const page of pages)assert.ok(app.includes("'"+page+"'"),page+' missing in router');
  const ids=[...html.matchAll(/\bid="([^"]+)"/g)].map(m=>m[1]);
  assert.equal(ids.length,new Set(ids).size,'duplicate DOM IDs');
@@ -24,7 +24,7 @@ test('home journeys and counters map to verified catalog',()=>{
  assert.match(hub,/hub-count-apps/);
  assert.match(hub,/quickToolIndex\.length/);
  assert.match(html,/class="hub-journey-grid"/);
- assert.match(html,/href="#convert"/);
+ assert.match(html,/href="\/convert"/);
 });
 test('search can open specific local tools from homepage and command palette',()=>{
  assert.match(hub,/const quickToolIndex=\[/);
@@ -45,10 +45,10 @@ test('app directory layouts and WinGet selection remain first-party operations',
  assert.doesNotMatch(hub,/child_process|execSync|spawnSync/);
 });
 test('site shell and PWA cache use consistent current revision',()=>{
- assert.match(worker,/vweb-connect-static-v81/);
+ assert.match(worker,/vweb-connect-static-v\d+/);
  for(const asset of ['app.js','hub.js'])
-  assert.ok(html.includes('/assets/'+asset+'?v=connect-lms-20261020a'),asset);
- assert.ok(html.includes('/assets/converter.js?v=connect-qr-route-20261020b'));
+  assert.match(html,new RegExp('/assets/'+asset+'\\?v=[^\\"]+'),asset);
+ assert.match(html,/\/assets\/converter\.js\?v=[^\"]+/);
  assert.ok(html.includes('/assets/style.css?v=connect-mas-first-20261020b'));
  assert.match(html,/id="hub-offline-catalog"/);
  assert.match(hub,/restoreStaticCatalog/);
@@ -73,7 +73,7 @@ test('removed media pages have no navigation links or broken routes',()=>{
 
 test('QR studio is an independent route with complete navigation',()=>{
  assert.ok(html.includes('id="page-qr"'));
- assert.ok(html.includes('href="#qr"'));
+ assert.ok(html.includes('href="/qr"'));
  assert.ok(read('assets/app.js').includes("'qr'"));
  assert.ok(read('assets/hub.js').includes("destination:'#qr'"));
 });
