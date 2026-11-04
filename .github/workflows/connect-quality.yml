@@ -179,10 +179,20 @@ jobs:
               await page.locator('#qr-url').fill('https://vweb.dev/qa');
               await page.locator('[data-qr-export="svg"]:not([disabled])').waitFor({timeout:35000});
               for(const kind of ['svg','png']){
-                const [download]=await Promise.all([
-                  page.waitForEvent('download',{timeout:25000}),
-                  page.locator('[data-qr-export="'+kind+'"]').click()
-                ]);
+                let download;
+                try{
+                  [download]=await Promise.all([
+                    page.waitForEvent('download',{timeout:12000}),
+                    page.locator('[data-qr-export="'+kind+'"]').click()
+                  ]);
+                }catch(error){
+                  const details=await page.evaluate(()=>({
+                    status:document.getElementById('qr-status')?.textContent,
+                    state:document.getElementById('qr-preview-state')?.textContent,
+                    ready:[...document.querySelectorAll('.qr-export-button')].map(b=>({format:b.dataset.qrExport,disabled:b.disabled}))
+                  }));
+                  throw Error('QR '+kind+' export: '+JSON.stringify(details)+' / '+error.message);
+                }
                 assert.ok(download.suggestedFilename().endsWith('.'+kind),'Incorrect QR export extension');
                 const filePath=await download.path();
                 assert.ok(filePath,'Missing '+kind+' export');
