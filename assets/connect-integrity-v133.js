@@ -63,7 +63,7 @@
     const tools=Array.isArray(registry.tools)?registry.tools:[];
     const known=new Set(),issues=[];
     tools.forEach(tool=>{
-     if(!tool||typeof tool.path!=='string'||!/^\\/(tools|convert|qr|ai|daily|pc|network)\\/[a-z0-9-]+$/.test(tool.path)){issues.push('invalid route');return;}
+     if(!tool||typeof tool.path!=='string'||!/^\/(?:tools|convert|qr|ai|daily|pc|network|windows)\/[a-z0-9-]+$/.test(tool.path)){issues.push('invalid route');return;}
      if(known.has(tool.path))issues.push('duplicate '+tool.path);
      known.add(tool.path);
      if(!document.getElementById('page-'+tool.section))issues.push('missing section '+tool.section);
