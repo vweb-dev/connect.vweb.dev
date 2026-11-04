@@ -1,0 +1,7 @@
+/* Connect v139 — persistent offline state without covering bottom app controls */
+.cx139-status{position:fixed;inset:auto 18px 18px auto;z-index:180;display:flex;align-items:center;gap:11px;width:min(480px,calc(100vw - 36px));padding:13px 14px;color:#fff4e0;background:#2b2420;border:1px solid #b58b57;border-radius:15px;box-shadow:0 15px 42px rgba(0,0,0,.35);font-size:12px;line-height:1.55}
+.cx139-status[hidden]{display:none!important}.cx139-dot{flex:none;width:9px;height:9px;border-radius:50%;background:#e6ae64;box-shadow:0 0 0 4px rgba(230,174,100,.12)}.cx139-copy{flex:1;min-width:0;overflow-wrap:anywhere}
+.cx139-status button{flex:none;min-height:36px;padding:6px 10px;border-radius:9px;border:1px solid #806a4c;background:transparent;color:#fff4e0;font-size:11px;font-weight:700}
+.cx139-status.cx139-restored{background:#173329;border-color:#5fa98e}.cx139-restored .cx139-dot{background:#6ed1aa}
+@media(max-width:800px){.cx139-status{inset:auto 10px calc(var(--app-bar,70px) + env(safe-area-inset-bottom) + 12px) 10px;width:auto;padding:11px}}
+@media(prefers-reduced-motion:reduce){.cx139-status{transition:none!important}}
