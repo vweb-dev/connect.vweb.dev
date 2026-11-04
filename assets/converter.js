@@ -120,12 +120,12 @@ function attachFiles(kind,values) {
  else if(accepted.length)status(kind,'File ready. Configure settings and process locally.');
 }
 for(const kind of tabs){
- inputs[kind].addEventListener('change',event=>{attachFiles(kind,event.target.files);});
+ if(kind!=='pdf')inputs[kind].addEventListener('change',event=>{attachFiles(kind,event.target.files);});
  const drop=$('#convert-'+kind+'-drop');
  // Native file input handles tap/browse. Drag and drop is an additional path.
  drop.addEventListener('dragover',ev=>{ev.preventDefault();drop.classList.add('is-dragging');});
  drop.addEventListener('dragleave',ev=>{if(!drop.contains(ev.relatedTarget))drop.classList.remove('is-dragging');});
- drop.addEventListener('drop',ev=>{ev.preventDefault();drop.classList.remove('is-dragging');attachFiles(kind,ev.dataTransfer.files);});
+ if(kind!=='pdf')drop.addEventListener('drop',ev=>{ev.preventDefault();drop.classList.remove('is-dragging');attachFiles(kind,ev.dataTransfer.files);});
  $('#convert-'+kind+'-clear').addEventListener('click',()=>clearKind(kind));
 }
 function clearKind(kind){
