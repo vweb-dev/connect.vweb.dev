@@ -201,6 +201,7 @@ jobs:
             });
             await smoke('PDF Studio rejects unsupported uploads',1366,900,async page=>{
               await page.locator('a[data-nav="convert"]').first().click();
+              await page.locator('#convert-tab-pdf').click();
               await page.locator('[data-pdf-mode="merge"]').first().click();
               await page.locator('#convert-pdf-input').setInputFiles({
                 name:'not-a-pdf.txt',mimeType:'text/plain',buffer:Buffer.from('This is not a PDF')
@@ -210,6 +211,7 @@ jobs:
             });
             await smoke('PDF Studio converts photos into a downloadable PDF',1366,900,async page=>{
               await page.locator('a[data-nav="convert"]').first().click();
+              await page.locator('#convert-tab-pdf').click();
               await page.locator('[data-pdf-mode="photos"]').first().click();
               const png=Buffer.from('iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/x8AAwMCAO+jRZkAAAAASUVORK5CYII=','base64');
               await page.locator('#convert-pdf-input').setInputFiles({name:'picture.png',mimeType:'image/png',buffer:png});
