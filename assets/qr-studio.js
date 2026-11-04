@@ -181,12 +181,26 @@
  }
  async function svgBlob(size){
   if(!payload||pending)throw Error('Wait for a valid QR preview.');
-  const QR=await loadLibrary();
-  const generator=new QR(optsFor(payload,size));
-  const result=await generator.getRawData('svg');
-  if(!result)throw Error('Could not export SVG.');
-  const xml=await result.text(),doc=new DOMParser().parseFromString(xml,'image/svg+xml');
-  if(doc.querySelector('parsererror')||doc.documentElement.localName!=='svg')throw Error('SVG export failed.');
+  // The live preview already contains the fully styled SVG. Reusing it avoids
+  // starting a second QR engine that can hang while preparing raw SVG data.
+  let artwork=preview.querySelector('svg')?.cloneNode(true);
+  if(!artwork){
+   const QR=await loadLibrary();
+   const generator=new QR(optsFor(payload,size));
+   const raw=await Promise.race([
+    generator.getRawData('svg'),
+    new Promise((_,reject)=>setTimeout(()=>reject(Error('QR export preparation timed out. Retry the preview.')),9000))
+   ]);
+   if(!raw)throw Error('Could not export SVG.');
+   const xml=await raw.text(),doc=new DOMParser().parseFromString(xml,'image/svg+xml');
+   if(doc.querySelector('parsererror')||doc.documentElement.localName!=='svg')throw Error('SVG export failed.');
+   artwork=doc.documentElement;
+  }
+  if(!artwork.getAttribute('viewBox')){
+   const originalWidth=parseFloat(artwork.getAttribute('width'))||300;
+   const originalHeight=parseFloat(artwork.getAttribute('height'))||300;
+   artwork.setAttribute('viewBox','0 0 '+originalWidth+' '+originalHeight);
+  }
   const margin=Math.max(24,Math.round(size*.055)),caption=val('qr-caption').slice(0,40);
   const captionHeight=caption?Math.round(size*.105):0;
   const total=size+margin*2;
@@ -196,7 +210,7 @@
   const bg=document.createElementNS(ns,'rect');
   bg.setAttribute('width',String(total));bg.setAttribute('height',String(total+captionHeight));
   bg.setAttribute('rx',String(Math.max(8,Math.round(size*.025))));bg.setAttribute('fill',val('qr-frame-color'));wrap.append(bg);
-  const artwork=document.importNode(doc.documentElement,true);
+  artwork=document.importNode(artwork,true);
   artwork.setAttribute('x',String(margin));artwork.setAttribute('y',String(margin));artwork.setAttribute('width',String(size));artwork.setAttribute('height',String(size));
   wrap.append(artwork);
   if(caption){
