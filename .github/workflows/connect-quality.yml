@@ -99,23 +99,16 @@ jobs:
           }
           try{
             await smoke('desktop tools and QR',1366,900,async page=>{
-              console.log('TOOLS href:',await page.locator('a[data-nav="tools"]').first().getAttribute('href'));
               await page.locator('a[data-nav="tools"]').first().click();
-              console.log('BROWSER state after click:',await page.evaluate(()=>({path:location.pathname,hash:location.hash,ready:document.readyState,active:document.querySelector('.page:not([hidden])')?.id})));
-              await page.evaluate(()=>document.querySelector('a[data-nav="tools"]').dispatchEvent(new MouseEvent('click',{bubbles:true,cancelable:true,button:0})));
-              console.log('BROWSER state after synthetic click:',await page.evaluate(()=>({path:location.pathname,active:document.querySelector('.page:not([hidden])')?.id})));
-              console.log('tools click ->',page.url(), 'visible=',await page.locator('#page-tools').isVisible());
               assert.equal(new URL(page.url()).pathname,'/tools','tools click did not navigate');
               assert.equal(await page.locator('#page-tools').isVisible(),true);
               await page.locator('a[data-nav="qr"]').first().click();
-              console.log('qr click ->',page.url());
               assert.equal(new URL(page.url()).pathname,'/qr');
               assert.equal(await page.locator('#page-qr').isVisible(),true);
               assert.equal(await page.locator('#qr-design').isVisible(),true);
             });
             await smoke('desktop LMS catalog',1366,900,async page=>{
               await page.locator('a[data-nav="academy"]').first().click();
-              console.log('academy click ->',page.url());
               assert.equal(new URL(page.url()).pathname,'/academy');
               await page.locator('[data-lms-view="catalog"]').first().click();
               assert.equal(await page.locator('#lms-view-catalog').isVisible(),true);
@@ -125,6 +118,9 @@ jobs:
               await page.locator('.mobile-app-tabs a[data-mobile-tab="academy"]').first().click();
               await page.waitForURL('**/academy');
               assert.equal(await page.locator('#page-academy').isVisible(),true);
+              await page.locator('#mobile-app-back').click();
+              await page.waitForURL(base);
+              assert.equal(await page.locator('#page-home').isVisible(),true);
             });
             console.log('PASS '+count+' browser interaction scenarios');
           }finally{await browser.close();}
