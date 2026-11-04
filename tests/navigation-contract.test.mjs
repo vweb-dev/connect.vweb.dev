@@ -40,7 +40,7 @@ test('service worker requires a valid cached HTML shell before activation',()=>{
  assert.match(sw,/shell\.headers\.get\('content-type'\)/);
  assert.match(sw,/cache\.put\(OFFLINE_SHELL,shell\)/);
  assert.match(sw,/cache\.match\(OFFLINE_SHELL\)/);
- assert.match(sw,/vweb-connect-static-v139/);
+ assert.match(sw,/vweb-connect-static-v141/);
 });
 test('49+ dedicated tool paths are unique and have compatible targets',()=>{
  assert.ok(catalog.tools.length>=49);
