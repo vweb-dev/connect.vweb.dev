@@ -227,6 +227,26 @@ jobs:
               });
               assert.equal(result.header,'%PDF-','Result is not a PDF');
               assert.ok(result.bytes>100,'Output PDF is empty');
+              const pdfBytes=await page.evaluate(async()=>{
+                const link=document.querySelector('#convert-pdf-results a[download]');
+                return [...new Uint8Array(await (await fetch(link.href)).arrayBuffer())];
+              });
+              await page.locator('[data-pdf-mode="merge"]').click();
+              await page.locator('#convert-pdf-input').setInputFiles([
+                {name:'first.pdf',mimeType:'application/pdf',buffer:Buffer.from(pdfBytes)},
+                {name:'second.pdf',mimeType:'application/pdf',buffer:Buffer.from(pdfBytes)}
+              ]);
+              await page.locator('#convert-pdf-run').click();
+              await page.locator('#convert-pdf-status[data-state="success"]').waitFor({timeout:25000});
+              const merged=await page.evaluate(async()=>{
+                const link=document.querySelector('#convert-pdf-results a[download]');
+                if(!link)return null;
+                const bytes=await (await fetch(link.href)).arrayBuffer();
+                const doc=await window.PDFLib.PDFDocument.load(bytes);
+                return {filename:link.getAttribute('download'),pages:doc.getPageCount()};
+              });
+              assert.equal(merged?.pages,2,'Merged PDF should contain exactly two pages');
+              assert.ok(merged.filename.endsWith('.pdf'));
             });
             console.log('PASS '+count+' browser interaction scenarios');
           }finally{await browser.close();}
