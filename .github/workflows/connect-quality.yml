@@ -191,6 +191,7 @@ jobs:
                     state:document.getElementById('qr-preview-state')?.textContent,
                     ready:[...document.querySelectorAll('.qr-export-button')].map(b=>({format:b.dataset.qrExport,disabled:b.disabled}))
                   }));
+                  console.log('QR download diagnostic',JSON.stringify(details));
                   throw Error('QR '+kind+' export: '+JSON.stringify(details)+' / '+error.message);
                 }
                 assert.ok(download.suggestedFilename().endsWith('.'+kind),'Incorrect QR export extension');
