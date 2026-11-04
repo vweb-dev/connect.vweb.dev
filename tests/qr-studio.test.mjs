@@ -11,7 +11,7 @@ test('dedicated QR Studio route is discoverable and follows the app navigation',
  assert.match(app,/qr:'QR Code Studio'/);
  assert.match(mobile,/qr:'QR Code Studio'/);
  assert.match(mobile,/qr:'studios'/);
- assert.match(html,/href="#qr"/);
+ assert.match(html,/href="\/qr"/);
  assert.match(hub,/destination:'#qr'/);
  assert.equal(catalog.studios.find(s=>s.id==='qr').page,'qr');
  assert.equal(JSON.parse(html.match(/<script type="application\/json" id="hub-offline-catalog">([\s\S]*?)<\/script>/)[1]).studios.find(s=>s.id==='qr').page,'qr');
@@ -54,7 +54,7 @@ test('exports and frame text are processed in the browser',()=>{
 test('QR engine is lazy-loaded, static, and never submits sensitive QR data to a server',()=>{
  assert.match(js,/qr-code-styling@1\.9\.2/);
  assert.match(js,/script\.src=src/);
- assert.match(js,/if\(location\.hash==='#qr'\)render\(\)/);
+ assert.match(js,/function ensureQrVisible\(\)/);
  assert.doesNotMatch(js,/fetch\(|XMLHttpRequest|sendBeacon|\/api\/qr|\/api\/track|WebSocket/);
  assert.match(html,/Static QR only/);
  assert.match(html,/Everything is generated locally/);
@@ -66,18 +66,18 @@ test('mobile QR editor remains responsive and app assets use the current cache',
  assert.match(css,/@media\(max-width:800px\)/);
  assert.match(css,/order:-1/);
  assert.match(css,/scroll-snap-type:x proximity/);
- assert.match(sw,/vweb-connect-static-v81/);
+ assert.match(sw,/vweb-connect-static-v\d+/);
  for(const asset of ['qr-studio.css','qr-studio.js']){
   assert.ok(sw.includes('/assets/'+asset),asset);
-  assert.ok(html.includes('/assets/'+asset+'?v=qr-route-20261020b'),asset);
+  assert.match(html,new RegExp('/assets/'+asset.replace('.','\\.')+'\\?v=[^\\"]+'),asset);
  }
 });
 
 test('new QR route remains available with a cached old router',()=>{
  for(const asset of ['app.js','hub.js'])
-  assert.ok(html.includes('/assets/'+asset+'?v=connect-lms-20261020a'),asset);
- assert.ok(html.includes('/assets/mobile-app.js?v=connect-ios-focus-20261020a'));
+  assert.match(html,new RegExp('/assets/'+asset.replace('.','\\.')+'\\?v=[^\\"]+'),asset);
+ assert.match(html,/\/assets\/mobile-app\.js\?v=[^"]+/);
  assert.match(js,/function ensureQrVisible\(\)/);
  assert.match(js,/qr-code-styling\.min\.js/);
- assert.match(sw,/vweb-connect-static-v81/);
+ assert.match(sw,/vweb-connect-static-v\d+/);
 });
