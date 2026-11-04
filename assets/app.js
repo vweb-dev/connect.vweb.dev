@@ -88,7 +88,7 @@ document.addEventListener('click',function(event){
  if(!key)return;
  event.preventDefault();
  navigateTopLevel(key);
-});
+},true);
 if(location.hash&&routes.includes(location.hash.slice(1))){history.replaceState(history.state,'','/'+(location.hash.slice(1)==='home'?'':location.hash.slice(1)));}
 route(false);
 // Mobile app navigation is handled independently by assets/mobile-app.js.
