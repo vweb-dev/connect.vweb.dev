@@ -54,3 +54,5 @@ jobs:
           do
             node --check "$file"
           done
+
+# Browser smoke checks are planned separately from the source gate.
