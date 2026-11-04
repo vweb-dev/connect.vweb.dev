@@ -230,7 +230,7 @@
   setTimeout(()=>URL.revokeObjectURL(url),2500);
  }
  async function download(format){
-  if(!payload||pending||exporting)return;
+  if(!payload||pending||exporting){setStatus('QR export is not ready yet. Wait for the preview to finish, then retry.',true);return;}
   const btn=$('[data-qr-export="'+format+'"]');
   if(!btn)return;
   exporting=true;
