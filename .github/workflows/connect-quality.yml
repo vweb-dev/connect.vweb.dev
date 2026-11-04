@@ -88,11 +88,13 @@ jobs:
           async function smoke(name,width,height,fn){
             const context=await browser.newContext({viewport:{width,height},serviceWorkers:'block'});
             const page=await context.newPage();
-            page.on('pageerror',err=>console.log('BROWSER ERROR:',err.message));
+            const uncaught=[];
+            page.on('pageerror',err=>{uncaught.push(err.message);console.error('BROWSER ERROR:',err.message);});
             page.setDefaultTimeout(12000);
             try{
               await page.goto(base,{waitUntil:'domcontentloaded'});
               await fn(page);
+              assert.deepEqual(uncaught,[],'Unexpected browser JavaScript errors during '+name);
               count++;
               console.log('PASS '+name);
             }finally{await context.close();}
