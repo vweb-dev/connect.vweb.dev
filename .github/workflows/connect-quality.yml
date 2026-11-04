@@ -157,6 +157,40 @@ jobs:
               const persists=await page.evaluate(id=>window.ConnectLMS.snapshot().enrolled.includes(id),courseId);
               assert.ok(persists,'LMS enrollment was lost on browser reload');
             });
+            await smoke('LMS lesson completion persists',1366,900,async page=>{
+              await page.locator('a[data-nav="academy"]').first().click();
+              const courseId=await page.evaluate(()=>{
+                const api=window.ConnectLMS;
+                const id=api?.snapshot()?.courses?.[0]?.id;
+                if(!id)throw Error('Course not available');
+                api.open(id,0);
+                return id;
+              });
+              await page.locator('#hub-lesson-complete').click();
+              const before=await page.evaluate(id=>window.ConnectLMS.snapshot().completed[id]||[],courseId);
+              assert.ok(before.includes(0),'Lesson was not marked complete');
+              await page.goto(base,{waitUntil:'domcontentloaded'});
+              await page.waitForFunction(()=>Boolean(window.ConnectLMS?.snapshot()?.courses?.length));
+              const after=await page.evaluate(id=>window.ConnectLMS.snapshot().completed[id]||[],courseId);
+              assert.ok(after.includes(0),'Completed lesson was lost on reload');
+            });
+            await smoke('QR SVG and PNG downloads',1366,900,async page=>{
+              await page.locator('a[data-nav="qr"]').first().click();
+              await page.locator('#qr-url').fill('https://vweb.dev/qa');
+              await page.locator('[data-qr-export="svg"]:not([disabled])').waitFor({timeout:35000});
+              for(const kind of ['svg','png']){
+                const [download]=await Promise.all([
+                  page.waitForEvent('download',{timeout:25000}),
+                  page.locator('[data-qr-export="'+kind+'"]').click()
+                ]);
+                assert.match(download.suggestedFilename(),new RegExp('\\.'+kind+'
+          }finally{await browser.close();}
+          NODE
+));
+                const filePath=await download.path();
+                assert.ok(filePath,'Missing '+kind+' export');
+              }
+            });
             console.log('PASS '+count+' browser interaction scenarios');
           }finally{await browser.close();}
           NODE
