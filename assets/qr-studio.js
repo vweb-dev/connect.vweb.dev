@@ -157,7 +157,15 @@
   }catch(e){if(ticket!==renderVersion)return;payload='';qr=null;preview.replaceChildren();$('#qr-preview-state').textContent='PREVIEW UNAVAILABLE';setReady(false);setStatus(e.message,true);}
   finally{if(ticket===renderVersion)pending=false;}
  }
- function scheduleRender(){++renderVersion;pending=false;payload='';setReady(false);clearTimeout(debounce);debounce=setTimeout(render,240);}
+ function updateByteCount(){
+  try{countBytes(buildPayload());}
+  catch(_){countBytes(activeType==='text'?val('qr-text'):'');}
+ }
+ function scheduleRender(){
+  ++renderVersion;pending=false;payload='';setReady(false);
+  updateByteCount();
+  clearTimeout(debounce);debounce=setTimeout(render,240);
+ }
  async function readLogo(file){
   const request=++logoVersion;
   if(!file)return;
