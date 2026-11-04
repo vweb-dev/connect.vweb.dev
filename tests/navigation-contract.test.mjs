@@ -108,3 +108,9 @@ test('PDF Studio exposes accessible operation selection states',()=>{
  assert.match(converter,/other\.setAttribute\('aria-pressed',String\(active\)\)/);
  assert.match(html,/\/assets\/converter\.js\?v=144/);
 });
+
+test('PDF mode handlers use the multi-element selector without runtime crash',()=>{
+ const converter=file('assets/converter.js');
+ const valid=String.fromCharCode(36,36)+"('[data-pdf-mode]').forEach";
+ assert.equal(converter.split(valid).length-1,2,'PDF button iteration must use querySelectorAll helper');
+});
