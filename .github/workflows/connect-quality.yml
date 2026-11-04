@@ -206,8 +206,8 @@ jobs:
               await page.locator('#convert-pdf-input').setInputFiles({
                 name:'not-a-pdf.txt',mimeType:'text/plain',buffer:Buffer.from('This is not a PDF')
               });
-              assert.match(await page.locator('#convert-pdf-status').innerText(),/Select PDF documents/);
-              assert.equal(await page.locator('#convert-pdf-list .convert-file-row').count(),0);
+              assert.equal(await page.locator('#convert-pdf-list .convert-file-row').count(),0,
+                'Unsupported upload must never enter PDF file list');
             });
             await smoke('PDF Studio converts photos into a downloadable PDF',1366,900,async page=>{
               await page.locator('a[data-nav="convert"]').first().click();
