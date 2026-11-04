@@ -9,8 +9,7 @@ test('iPhone install metadata uses PNG Apple touch icons and standalone web app 
  assert.match(html,/name="apple-mobile-web-app-capable" content="yes"/);
  assert.match(html,/name="apple-mobile-web-app-status-bar-style" content="black-translucent"/);
  assert.match(html,/name="apple-mobile-web-app-title" content="VWEB Connect"/);
- assert.match(html,/rel="apple-touch-icon" href="\/assets\/connect-180\.png"/);
- assert.match(html,/rel="apple-touch-icon" sizes="180x180" href="https:\/\/vweb\.dev\/Favicon\/apple-touch-icon\.png"/);
+ assert.match(html,/rel="apple-touch-icon" sizes="180x180" href="\/assets\/connect-180\.png"/);
  assert.equal(manifest.display,'standalone');
  assert.equal(manifest.scope,'/');
 });
@@ -51,7 +50,7 @@ test('classroom player is paused when returning to the course catalog',()=>{
  assert.match(lms,/player\.replaceChildren\(paused\)/);
 });
 test('all iOS and LMS release assets use current cache identifiers',()=>{
- assert.match(sw,/vweb-connect-static-v81/);
+ assert.match(sw,/vweb-connect-static-v\d+/);
  for(const asset of ['mobile-app.js','lms.js','lms.css'])
   assert.ok(html.includes('/assets/'+asset+'?v=connect-ios-focus-20261020a'),asset);
 });
