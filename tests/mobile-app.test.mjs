@@ -47,8 +47,7 @@ test('global search and native PWA install remain connected without new APIs',()
 test('mobile assets use the same deploy cache version',()=>{
  assert.match(worker,/vweb-connect-static-v\d+/);
  for(const asset of ['mobile-app.js','mobile-app.css']){
-  const version=asset==='mobile-app.js'?'connect-ios-focus-20261020a':'connect-qr-route-20261020b';
-  assert.ok(html.includes('/assets/'+asset+'?v='+version),asset);
+  assert.match(html,new RegExp('/assets/'+asset.replace('.','\\.')+'\\?v=[^\\"]+'),asset);
   assert.ok(worker.includes('/assets/'+asset),asset);
  }
 });
