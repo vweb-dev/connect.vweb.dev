@@ -40,7 +40,7 @@ test('service worker requires a valid cached HTML shell before activation',()=>{
  assert.match(sw,/shell\.headers\.get\('content-type'\)/);
  assert.match(sw,/cache\.put\(OFFLINE_SHELL,shell\)/);
  assert.match(sw,/cache\.match\(OFFLINE_SHELL\)/);
- assert.match(sw,/vweb-connect-static-v141/);
+ assert.match(sw,/vweb-connect-static-v142/);
 });
 test('49+ dedicated tool paths are unique and have compatible targets',()=>{
  assert.ok(catalog.tools.length>=49);
@@ -87,4 +87,17 @@ test('service worker precache references resolve to repository files',()=>{
   if(path==='/')continue;
   assert.ok(existsSync(new URL('..'+path,import.meta.url)),path+' missing from offline cache');
  }
+});
+
+test('QR byte feedback updates before deferred rendering',()=>{
+ const qr=file('assets/qr-studio.js');
+ assert.match(qr,/function updateByteCount\(\)/);
+ assert.match(qr,/function scheduleRender\(\)\s*\{[^}]*updateByteCount\(\)/);
+ assert.match(html,/\/assets\/qr-studio\.js\?v=142/);
+});
+test('Academy listens to path-based SPA events',()=>{
+ const academy=file('assets/lms.js');
+ assert.match(academy,/const onAcademyRoute=/);
+ assert.match(academy,/addEventListener\('connect:routechange',syncAcademyRoute\)/);
+ assert.match(html,/\/assets\/lms\.js\?v=142/);
 });
