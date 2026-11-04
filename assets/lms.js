@@ -321,11 +321,20 @@
  $('#lms-learning-record').addEventListener('click',printRecord);
  window.addEventListener('connect:lms-changed',render);
  window.addEventListener('connect:lms-classroom',()=>selectView('classroom'));
- window.addEventListener('hashchange',()=>{if(location.hash==='#academy'&&!visible)render();visible=location.hash==='#academy'});
+ const onAcademyRoute=()=>location.pathname==='/academy'||location.pathname.startsWith('/academy/')||location.hash==='#academy';
+ const syncAcademyRoute=()=>{
+  const now=onAcademyRoute();
+  if(now&&!visible)render();
+  visible=now;
+ };
+ window.addEventListener('hashchange',syncAcademyRoute);
+ window.addEventListener('popstate',syncAcademyRoute);
+ window.addEventListener('connect:routechange',syncAcademyRoute);
+ window.addEventListener('connect:tool-route',syncAcademyRoute);
  // Existing links that start a lesson should land inside the classroom, not the overview.
  root.addEventListener('click',event=>{
   if(event.target.closest('#hub-course-list button,#hub-curriculum button'))selectView('classroom');
  });
  let initial='overview';try{const saved=sessionStorage.getItem('connect-academy-view');if(viewNames.includes(saved)&&['overview','catalog','classroom'].includes(saved))initial=saved}catch{}
- selectView(initial);render();visible=location.hash==='#academy';
+ selectView(initial);render();visible=onAcademyRoute();
 })();
