@@ -301,7 +301,14 @@
   $$('[data-qr-pane]').forEach(p=>p.hidden=p.dataset.qrPane!=='url');
   applyPreset('classic');
  });
- $$('.qr-export-button').forEach(button=>button.addEventListener('click',()=>download(button.dataset.qrExport)));
+ // Capture export actions at the studio root; handles dynamically refreshed controls
+ // even if older UI modules replace an export button after initialization.
+ root.addEventListener('click',event=>{
+  const button=event.target.closest('[data-qr-export]');
+  if(!button||!root.contains(button)||button.disabled)return;
+  event.preventDefault();
+  download(button.dataset.qrExport);
+ },true);
  $('#qr-copy-data').addEventListener('click',copyText);
  $('#qr-copy-image').addEventListener('click',copyImage);
  $('#qr-retry').addEventListener('click',render);
