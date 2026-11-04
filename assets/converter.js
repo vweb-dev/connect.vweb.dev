@@ -328,10 +328,16 @@ function parseRange(text,maxPage){
  if(all.length>350)throw Error('Too many pages selected; choose up to 350.');
  return all;
 }
-$$('[data-pdf-mode]').forEach(btn=>btn.addEventListener('click',()=>{
+$('[data-pdf-mode]').forEach(btn=>{
+ btn.setAttribute('aria-pressed',String(btn.dataset.pdfMode===pdfMode));
+ btn.addEventListener('click',()=>{
  if(processing.has('pdf'))return;
  pdfMode=btn.dataset.pdfMode;
- $$('[data-pdf-mode]').forEach(other=>other.classList.toggle('active',other===btn));
+ $('[data-pdf-mode]').forEach(other=>{
+  const active=other===btn;
+  other.classList.toggle('active',active);
+  other.setAttribute('aria-pressed',String(active));
+ });
  $('#convert-extract-settings').hidden=pdfMode!=='extract';
  inputs.pdf.accept=pdfMode==='photos'?'image/*':'application/pdf,.pdf';
  inputs.pdf.multiple=pdfMode!=='extract'&&pdfMode!=='split';
@@ -339,7 +345,8 @@ $$('[data-pdf-mode]').forEach(btn=>btn.addEventListener('click',()=>{
   pdfMode==='extract'?'Choose a PDF and enter page numbers to extract.':pdfMode==='split'?'Choose one PDF to split into separate pages.':'Choose two or more PDFs. Files merge in the order shown.';
  files.pdf=[];inputs.pdf.value='';showFiles('pdf');cleanupResults('pdf');
  status('pdf','Ready for '+({merge:'PDF merging',extract:'page extraction',split:'splitting into pages',photos:'image-to-PDF conversion'}[pdfMode])+'.');
-}));
+ });
+});
 // Apply mode-specific input type checks through PDF drop/input filtering.
 // Update PDF file attachments directly in response handlers below.
 $('#convert-pdf-run').addEventListener('click',function(){busy('pdf',this,async()=>{
