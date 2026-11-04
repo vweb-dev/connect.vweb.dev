@@ -1,0 +1,31 @@
+/* Connect v136: four studio workspaces and LMS consistency without replacing tool engines. */
+:root{--cx136-panel:#17222d;--cx136-outline:rgba(212,222,232,.16);--cx136-copy:#c6d0da;--cx136-accent:#e6bf82}
+:where(#page-tools,#page-convert,#page-ai,#page-qr)>.studio48-switcher{display:flex;align-items:center;flex-wrap:nowrap;gap:8px;overflow-x:auto;overscroll-behavior-inline:contain;scrollbar-width:thin;scroll-padding-inline:12px;margin:0 0 20px;padding:7px;border:1px solid var(--cx136-outline);border-radius:16px;background:rgba(18,28,39,.95)}
+:where(#page-tools,#page-convert,#page-ai,#page-qr)>.studio48-switcher>a{display:flex;align-items:center;justify-content:center;gap:7px;min-height:44px;flex:1 0 auto;padding:10px 14px;border:1px solid transparent;border-radius:11px;color:#cbd6e0;background:transparent;white-space:nowrap;font-size:12px;font-weight:700;transition:background .16s,border-color .16s}
+:where(#page-tools,#page-convert,#page-ai,#page-qr)>.studio48-switcher>a:hover{background:rgba(255,255,255,.06);border-color:rgba(255,255,255,.11)}
+:where(#page-tools,#page-convert,#page-ai,#page-qr)>.studio48-switcher>a[aria-current=page]{background:linear-gradient(115deg,rgba(230,191,130,.21),rgba(230,191,130,.06));border-color:rgba(230,191,130,.43);color:#f3d29f}
+:where(#page-tools,#page-convert,#page-ai,#page-qr)>.studio48-spotlight{border:1px solid rgba(230,191,130,.25);border-radius:20px;background:radial-gradient(circle at 97% 12%,rgba(230,191,130,.10),transparent 42%),linear-gradient(135deg,#222e3b,#151e29);padding:clamp(17px,2.7vw,29px);margin:0 0 19px}
+:where(#page-tools,#page-convert,#page-ai,#page-qr)>.studio48-spotlight h2{font-size:clamp(22px,2.4vw,33px);line-height:1.15;margin:7px 0 9px}
+:where(#page-tools,#page-convert,#page-ai,#page-qr)>.studio48-spotlight p{line-height:1.65;max-width:65ch;color:var(--cx136-copy)}
+:where(#page-tools,#page-convert,#page-ai,#page-qr)>.studio48-spotlight .studio48-actions{gap:9px;flex-wrap:wrap}
+:where(#page-tools,#page-convert,#page-ai,#page-qr)>.studio48-spotlight .studio48-actions :is(a,button){min-height:44px;border-radius:10px;white-space:normal;text-align:center}
+:where(#page-tools,#page-convert,#page-ai,#page-qr) :is(.hub-panel,.tool-card,.convert-panel,.qr-editor-card,.qr-preview-card){min-width:0;overflow-wrap:anywhere}
+#page-qr .qr-workbench{align-items:start}#page-qr .qr-workbench>*{min-width:0}
+#page-qr .qr-preview-card{max-width:100%}#page-qr .qr-preview-card :is(canvas,svg,img){max-width:100%;height:auto}
+#page-convert :is(.convert72-tabs,.convert-tabs,.studio48-switcher),#page-academy .lms-nav{scrollbar-width:thin;overscroll-behavior-x:contain}
+#page-academy .lms-nav{display:flex;overflow-x:auto;flex-wrap:nowrap;gap:8px;padding:6px;background:#17212c;border:1px solid var(--cx136-outline);border-radius:15px}
+#page-academy .lms-nav-tab{flex:1 0 auto;min-width:max-content;min-height:45px;border-radius:10px;white-space:nowrap}
+#page-academy .lms-nav-tab[aria-current=page]{background:rgba(226,182,111,.16);border-color:rgba(226,182,111,.45);color:#f3d29f}
+#page-academy :is(.lms-view,.lms-classroom-overview,.lms-course-card){min-width:0}
+#page-academy :is(.lms-view,.lms-course-card) :is(p,h2,h3){overflow-wrap:anywhere}
+:where(#page-tools,#page-convert,#page-ai,#page-qr,#page-academy) :is(button,a,input,textarea,select):focus-visible{outline:2px solid #f2c780!important;outline-offset:3px}
+@media(min-width:801px){:where(#page-tools,#page-convert,#page-ai,#page-qr)>.studio48-switcher{position:sticky;top:85px;z-index:23;backdrop-filter:blur(14px)}}
+@media(max-width:800px){:where(#page-tools,#page-convert,#page-ai,#page-qr)>.studio48-switcher{position:sticky;top:calc(62px + env(safe-area-inset-top));z-index:36;margin-bottom:12px;padding:5px;background:rgba(15,23,32,.98)}
+:where(#page-tools,#page-convert,#page-ai,#page-qr)>.studio48-switcher>a{min-height:42px;font-size:11px;padding:9px 11px}
+:where(#page-tools,#page-convert,#page-ai,#page-qr)>.studio48-spotlight{padding:17px 15px;border-radius:16px}
+:where(#page-tools,#page-convert,#page-ai,#page-qr)>.studio48-spotlight .studio48-actions{display:grid;grid-template-columns:repeat(2,minmax(0,1fr))}
+:where(#page-tools,#page-convert,#page-ai,#page-qr)>.studio48-spotlight .studio48-actions>*{min-width:0;width:100%}
+#page-academy .lms-nav{position:relative;margin-top:12px}#page-academy .lms-nav-tab{min-height:44px}
+}
+@media(max-width:390px){:where(#page-tools,#page-convert,#page-ai,#page-qr)>.studio48-switcher>a{padding:8px 10px}}
+@media(prefers-reduced-motion:reduce){:where(#page-tools,#page-convert,#page-ai,#page-qr)>.studio48-switcher>a{transition:none}}
