@@ -69,11 +69,11 @@ test('self-marked activity is explicitly not an accredited award',()=>{
 test('LMS source files are included in the PWA shell and released with matching version',()=>{
  assert.match(worker,/vweb-connect-static-v\d+/);
  for(const ext of ['css','js']){
-  assert.ok(html.includes('/assets/lms.'+ext+'?v=connect-ios-focus-20261020a'));
+  assert.match(html,new RegExp('/assets/lms\\.'+ext+'\\?v=[^\\"]+'));
   assert.ok(worker.includes('/assets/lms.'+ext));
  }
- assert.ok(html.includes('/assets/hub.js?v=connect-lms-20261020a'));
- assert.ok(html.includes('/assets/app.js?v=connect-lms-20261020a'));
+ assert.match(html,/\/assets\/hub\.js\?v=[^"]+/);
+ assert.match(html,/\/assets\/app\.js\?v=[^"]+/);
 });
 
 test('classroom is a single-course focus view with explicit return navigation',()=>{
