@@ -56,6 +56,22 @@
    add('Essential first-party assets',bad.length?'fail':'pass',bad.length?('Unavailable: '+bad.map(x=>x.path+' ('+x.status+')').join(', ')):(results.length+' asset requests succeeded'));
    const pageCount=document.querySelectorAll('.page').length;
    add('Page mounting',pageCount>=requiredRoutes.length?'pass':'warn',pageCount+' .page elements detected');
+   // Validate dedicated tool registry against currently mounted, first-party UI.
+   // Quick tools and QR modes are resolved by their controllers, not DOM IDs.
+   try{
+    const registry=JSON.parse(document.querySelector('#connect-tool-route-catalog')?.textContent||'{}');
+    const tools=Array.isArray(registry.tools)?registry.tools:[];
+    const known=new Set(),issues=[];
+    tools.forEach(tool=>{
+     if(!tool||typeof tool.path!=='string'||!/^\\/(tools|convert|qr|ai|daily|pc|network)\\/[a-z0-9-]+$/.test(tool.path)){issues.push('invalid route');return;}
+     if(known.has(tool.path))issues.push('duplicate '+tool.path);
+     known.add(tool.path);
+     if(!document.getElementById('page-'+tool.section))issues.push('missing section '+tool.section);
+     if(!['quick','qr'].includes(tool.mode)&&tool.target&&!document.getElementById(tool.target))issues.push('missing target '+tool.target);
+     if(tool.mode==='qr'&&tool.target&&!document.querySelector('[data-qr-type="'+CSS.escape(tool.target)+'"]'))issues.push('missing QR type '+tool.target);
+    });
+    add('Dedicated tool routes',tools.length?(issues.length?'fail':'pass'):'warn',issues.length?issues.slice(0,12).join(', '):(tools.length+' routes validated against sections and controls'));
+   }catch(error){add('Dedicated tool routes','warn','Tool registry could not be parsed');}
    report.summary={passed:report.checks.filter(x=>x.state==='pass').length,warnings:report.checks.filter(x=>x.state==='warn').length,failed:report.checks.filter(x=>x.state==='fail').length};
    status.textContent=report.summary.failed?'Issues found':report.summary.warnings?'Review warnings':'Checks passed';
    copy.disabled=false;
