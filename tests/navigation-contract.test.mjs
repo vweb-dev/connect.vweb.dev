@@ -4,6 +4,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
 import vm from 'node:vm';
+import { existsSync } from 'node:fs';
 const file = name => readFileSync(new URL('../'+name,import.meta.url),'utf8');
 const html=file('index.html'),sw=file('sw.js'),app=file('assets/app.js'),mobile=file('assets/mobile-app.js');
 const routes=['home','daily','studios','academy','network','pc','apps','dashboard','convert','tools','qr','ai','play','offers','community','account'];
@@ -68,4 +69,22 @@ test('offline status UI is linked and cached without automated reloads',()=>{
  assert.match(ui,/addEventListener\('offline'/);
  assert.match(ui,/addEventListener\('online'/);
  assert.doesNotMatch(ui,/location\.reload\(/);
+});
+
+test('all first-party script and stylesheet files linked in HTML exist',()=>{
+ const linked=[...html.matchAll(/<(?:script|link)\b[^>]*?\b(?:src|href)="(\/assets\/[^"?#]+\.(?:js|css))(?:\?[^"]*)?"[^>]*>/g)].map(x=>x[1]);
+ assert.ok(linked.length>=10,'at least ten first-party modules referenced');
+ for(const asset of new Set(linked)){
+  assert.ok(existsSync(new URL('..'+asset,import.meta.url)),asset+' missing from repository');
+ }
+});
+test('service worker precache references resolve to repository files',()=>{
+ const match=sw.match(/const APP=\[([\s\S]*?)\];/);
+ assert.ok(match,'static app precache list exists');
+ const entries=[...match[1].matchAll(/'([^']+)'/g)].map(x=>x[1]);
+ assert.ok(entries.length>=30,'expected app shell assets');
+ for(const path of new Set(entries)){
+  if(path==='/')continue;
+  assert.ok(existsSync(new URL('..'+path,import.meta.url)),path+' missing from offline cache');
+ }
 });
