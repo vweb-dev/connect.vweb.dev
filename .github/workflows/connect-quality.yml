@@ -247,6 +247,38 @@ jobs:
               });
               assert.equal(merged?.pages,2,'Merged PDF should contain exactly two pages');
               assert.ok(merged.filename.endsWith('.pdf'));
+              const mergedBytes=await page.evaluate(async()=>{
+                const link=document.querySelector('#convert-pdf-results a[download]');
+                return [...new Uint8Array(await (await fetch(link.href)).arrayBuffer())];
+              });
+              await page.locator('[data-pdf-mode="extract"]').click();
+              assert.equal(await page.locator('[data-pdf-mode="extract"]').getAttribute('aria-pressed'),'true');
+              assert.equal(await page.locator('[data-pdf-mode="merge"]').getAttribute('aria-pressed'),'false');
+              await page.locator('#convert-pdf-input').setInputFiles({
+                name:'merged.pdf',mimeType:'application/pdf',buffer:Buffer.from(mergedBytes)
+              });
+              await page.locator('#convert-pdf-range').fill('2');
+              await page.locator('#convert-pdf-run').click();
+              await page.locator('#convert-pdf-status[data-state="success"]').waitFor({timeout:25000});
+              const extracted=await page.evaluate(async()=>{
+                const link=document.querySelector('#convert-pdf-results a[download]');
+                const bytes=await (await fetch(link.href)).arrayBuffer();
+                return (await window.PDFLib.PDFDocument.load(bytes)).getPageCount();
+              });
+              assert.equal(extracted,1,'Extract page 2 should create exactly one page');
+              await page.locator('[data-pdf-mode="split"]').click();
+              await page.locator('#convert-pdf-input').setInputFiles({
+                name:'merged.pdf',mimeType:'application/pdf',buffer:Buffer.from(mergedBytes)
+              });
+              await page.locator('#convert-pdf-run').click();
+              await page.locator('#convert-pdf-status[data-state="success"]').waitFor({timeout:25000});
+              const archive=await page.evaluate(async()=>{
+                const link=document.querySelector('#convert-pdf-results a[download]');
+                const bytes=new Uint8Array(await (await fetch(link.href)).arrayBuffer());
+                return {filename:link.getAttribute('download'),magic:[...bytes.slice(0,4)]};
+              });
+              assert.ok(archive.filename.endsWith('.zip'));
+              assert.deepEqual(archive.magic,[80,75,3,4],'Split output must be a valid ZIP header');
             });
             console.log('PASS '+count+' browser interaction scenarios');
           }finally{await browser.close();}
