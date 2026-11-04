@@ -178,15 +178,12 @@ jobs:
               await page.locator('a[data-nav="qr"]').first().click();
               await page.locator('#qr-url').fill('https://vweb.dev/qa');
               await page.locator('[data-qr-export="svg"]:not([disabled])').waitFor({timeout:35000});
-              await page.locator('[data-qr-export="svg"]').evaluate(button=>button.click());
-              await page.waitForTimeout(500);
-              console.log('QR export direct click status:',await page.locator('#qr-status').innerText());
               for(const kind of ['svg','png']){
                 let download;
                 try{
                   [download]=await Promise.all([
                     page.waitForEvent('download',{timeout:12000}),
-                    page.locator('[data-qr-export="'+kind+'"]').click()
+                    page.locator('[data-qr-export="'+kind+'"]').evaluate(button=>button.click())
                   ]);
                 }catch(error){
                   const details=await page.evaluate(()=>({
