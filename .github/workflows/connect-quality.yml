@@ -122,6 +122,26 @@ jobs:
               await page.waitForURL(base);
               assert.equal(await page.locator('#page-home').isVisible(),true);
             });
+            await smoke('Convert Studio processes local image',1366,900,async page=>{
+              await page.locator('a[data-nav="convert"]').first().click();
+              assert.equal(new URL(page.url()).pathname,'/convert');
+              const png=Buffer.from('iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/x8AAwMCAO+jRZkAAAAASUVORK5CYII=','base64');
+              await page.locator('#convert-image-input').setInputFiles({name:'smoke.png',mimeType:'image/png',buffer:png});
+              await page.locator('#convert-image-format').selectOption('image/png');
+              await page.locator('#convert-image-run').click();
+              await page.locator('#convert-image-status[data-state="success"]').waitFor({timeout:12000});
+              const result=page.locator('#convert-image-results a[download]');
+              assert.ok(await result.count()>0,'Converted image missing download link');
+            });
+            await smoke('QR content switching and validation',1366,900,async page=>{
+              await page.locator('a[data-nav="qr"]').first().click();
+              await page.locator('[data-qr-type="text"]').first().click();
+              assert.equal(await page.locator('[data-qr-pane="text"]').isVisible(),true);
+              const input=page.locator('[data-qr-pane="text"] textarea').first();
+              await input.fill('Connect browser QA');
+              await page.locator('#qr-byte-count').waitFor();
+              assert.match(await page.locator('#qr-byte-count').innerText(),/[1-9][0-9]* \/ 850/);
+            });
             console.log('PASS '+count+' browser interaction scenarios');
           }finally{await browser.close();}
           NODE
