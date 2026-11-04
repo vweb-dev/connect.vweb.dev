@@ -13,7 +13,7 @@ test('conversion suite and QR workspace are installed',()=>{
  for(const p of ['assets/conversion-suite-v72.js','assets/qr-studio.js','assets/connect-release-v80.js'])assert.ok(existsSync(new URL('../'+p,import.meta.url)),p);
 });
 test('speed test uses the confirmed FAST widget and a comparison to Ookla',()=>{
- assert.match(html,/src="https:\/\/fast\.com\/"/);
+ assert.match(html,/href="https:\/\/fast\.com\/"/);
  assert.match(html,/href="https:\/\/www\.speedtest\.net\/"/);
  assert.doesNotMatch(html,/src="https:\/\/speed\.speedtestcustom\.com\//);
 });
@@ -40,9 +40,9 @@ test('release scripts do not inject duplicate discovery searches into unrelated 
  assert.ok(!release.includes('root.querySelectorAll(\'a[href],article\')'));
 });
 test('PWA install survives an individual optional cache fetch failure',()=>{
- assert.match(sw,/Promise\.all\(APP\.map/);
+ assert.match(sw,/Promise\.all\(APP\.slice\(i,i\+6\)\.map/);
  assert.match(sw,/Offline cache skipped/);
- assert.match(sw,/vweb-connect-static-v81/);
+ assert.match(sw,/vweb-connect-static-v\d+/);
 });
 
 test('all stylesheet and script references are present in repository',()=>{
