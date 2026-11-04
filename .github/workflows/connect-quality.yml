@@ -1,0 +1,56 @@
+name: Connect Quality Gate
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'index.html'
+      - 'sw.js'
+      - 'assets/**'
+      - 'data/**'
+      - 'tests/**'
+      - '.github/workflows/connect-quality.yml'
+  pull_request:
+    paths:
+      - 'index.html'
+      - 'sw.js'
+      - 'assets/**'
+      - 'data/**'
+      - 'tests/**'
+      - '.github/workflows/connect-quality.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: connect-quality-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  source-regression:
+    name: Source, routes and PWA contracts
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Check out Connect
+        uses: actions/checkout@v4
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Run Connect contract tests
+        run: node --test tests/navigation-contract.test.mjs
+      - name: Check JavaScript source syntax
+        run: |
+          for file in \
+            assets/app.js \
+            assets/mobile-app.js \
+            assets/tool-pages-v59.js \
+            assets/connect-integrity-v133.js \
+            assets/connect-ui-v137.js \
+            assets/connect-connection-v139.js \
+            sw.js
+          do
+            node --check "$file"
+          done
