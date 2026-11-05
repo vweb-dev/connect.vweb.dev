@@ -210,6 +210,14 @@ jobs:
               });
               assert.equal(await page.locator('#convert-pdf-list .convert-file-row').count(),0,
                 'Unsupported upload must never enter PDF file list');
+              assert.equal(await page.locator('#convert-pdf-input').getAttribute('aria-invalid'),'true');
+              await page.locator('#convert-pdf-input').setInputFiles({
+                name:'candidate.pdf',mimeType:'application/pdf',
+                buffer:Buffer.from('%PDF-1.4\nPlaceholder fixture for input selection')
+              });
+              assert.equal(await page.locator('#convert-pdf-list .convert-file-row').count(),1,
+                'Valid file selection must still work after a rejected file');
+              assert.equal(await page.locator('#convert-pdf-input').getAttribute('aria-invalid'),null);
             });
             await smoke('PDF Studio rejects renamed non-PDF before loading helper',1366,900,async page=>{
               await page.locator('a[data-nav="convert"]').first().click();
