@@ -285,6 +285,20 @@ $('#convert-image-run').addEventListener('click',function(){busy('image',this,as
  else status('image',done.length+' image(s) successfully converted locally. Use Download to save.','success');
 });});
 
+// Reject renamed/corrupt PDF inputs before downloading the processing engine.
+// A %PDF- signature is a necessary preliminary check, not a full integrity guarantee.
+async function verifyPdfHeaders(items){
+ for(const file of items){
+  if(file.size<8)throw Error(file.name+': not a valid PDF (file too small).');
+  const bytes=new Uint8Array(await file.slice(0,1024).arrayBuffer());
+  let match=false;
+  // Real PDFs normally begin at byte zero; some valid files include a short prefix.
+  for(let i=0;i<=Math.min(bytes.length-5,1019);i++){
+   if(bytes[i]===37&&bytes[i+1]===80&&bytes[i+2]===68&&bytes[i+3]===70&&bytes[i+4]===45){match=true;break;}
+  }
+  if(!match)throw Error(file.name+': invalid PDF file. The content does not have a PDF header.');
+ }
+}
 // Load pdf-lib from a pinned CDN only on explicit PDF operation.
 // The script download transfers NO user file contents.
 function getPdfLib(){
@@ -356,6 +370,7 @@ $('#convert-pdf-run').addEventListener('click',function(){busy('pdf',this,async(
  if(pdfMode==='merge'&&source.length<2)throw Error('Choose at least two PDFs to merge.');
  if((pdfMode==='extract'||pdfMode==='split')&&source.length!==1)throw Error('Choose exactly one PDF for this operation.');
  if(pdfMode==='photos'&&source.length>30)throw Error('Choose up to 30 images per PDF.');
+ if(pdfMode!=='photos')await verifyPdfHeaders(source);
  status('pdf','Loading PDF processing engine…','working');
  const PDF=await getPdfLib();
  cleanupResults('pdf');status('pdf','Processing '+source.length+' document(s) on your device…','working');
