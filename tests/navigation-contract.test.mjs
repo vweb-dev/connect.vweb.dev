@@ -117,21 +117,26 @@ test('PDF mode handlers use the multi-element selector without runtime crash',()
  assert.equal(converter.split(valid).length-1,2,'PDF button iteration must use querySelectorAll helper');
 });
 
-test('PHP deep links render correct tool, course and missing-page responses',()=>{
- const cases=[
-  ['/tools/password-generator',200,'Password Generator'],
-  ['/qr/website',200,'QR'],
-  ['/windows/activation',200,'Windows'],
-  ['/academy/course/windows11',200,'Windows'],
-  ['/tools/does-not-exist',404,'Page not found']
+test('every dedicated tool and course deep link renders the right PHP page',()=>{
+ const tools=JSON.parse(file('data/tool-routes.json')).tools;
+ const courses=JSON.parse(file('data/connect-hub.json')).courses;
+ assert.equal(tools.length,49);
+ assert.ok(courses.length>=5);
+ const checks=[
+  ...tools.map(t=>({route:t.path,marker:'data-connect-tool-route="'+t.id+'"'})),
+  ...courses.map(c=>({route:'/academy/course/'+c.id,marker:'data-connect-course-route="'+c.id+'"'}))
  ];
- for(const [route,expected,label] of cases){
-  const run=spawnSync('php',['-r','$_SERVER["REQUEST_URI"]=getenv("CONNECT_TEST_ROUTE"); include "seo.php";'],{
+ for(const {route,marker} of checks){
+  const result=spawnSync('php',['-r','$_SERVER["REQUEST_URI"]=getenv("CONNECT_TEST_ROUTE"); include "seo.php";'],{
    cwd:rootPath,env:{...process.env,CONNECT_TEST_ROUTE:route},encoding:'utf8',maxBuffer:1024*1024
   });
-  assert.equal(run.status,0,'PHP command should execute '+route+': '+run.stderr);
-  // PHP CLI does not emit HTTP headers; expose the response code after script output.
-  if(expected===200){assert.match(run.stdout,/<html[\s>]/i,route);assert.ok(run.stdout.includes(label),route);}
-  else assert.match(run.stdout,/^Page not found$/,route);
+  assert.equal(result.status,0,'PHP failed at '+route+': '+result.stderr);
+  assert.ok(result.stdout.includes(marker),'Missing correct route identity at '+route);
+  assert.match(result.stdout,/<html[\s>]/i,'Missing HTML shell at '+route);
  }
+ const missing=spawnSync('php',['-r','$_SERVER["REQUEST_URI"]="/tools/does-not-exist"; include "seo.php";'],{
+  cwd:rootPath,encoding:'utf8'
+ });
+ assert.equal(missing.status,0);
+ assert.equal(missing.stdout,'Page not found','Unknown deep links must not render app shell');
 });
