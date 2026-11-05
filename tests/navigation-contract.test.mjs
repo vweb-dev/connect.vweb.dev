@@ -42,7 +42,7 @@ test('service worker requires a valid cached HTML shell before activation',()=>{
  assert.match(sw,/shell\.headers\.get\('content-type'\)/);
  assert.match(sw,/cache\.put\(OFFLINE_SHELL,shell\)/);
  assert.match(sw,/cache\.match\(OFFLINE_SHELL\)/);
- assert.match(sw,/vweb-connect-static-v144/);
+ assert.match(sw,/vweb-connect-static-v145/);
 });
 test('49+ dedicated tool paths are unique and have compatible targets',()=>{
  assert.ok(catalog.tools.length>=49);
@@ -108,7 +108,7 @@ test('PDF Studio exposes accessible operation selection states',()=>{
  const converter=file('assets/converter.js');
  assert.match(converter,/setAttribute\('aria-pressed',String\(btn\.dataset\.pdfMode===pdfMode\)\)/);
  assert.match(converter,/other\.setAttribute\('aria-pressed',String\(active\)\)/);
- assert.match(html,/\/assets\/converter\.js\?v=144/);
+ assert.match(html,/\/assets\/converter\.js\?v=145/);
 });
 
 test('PDF mode handlers use the multi-element selector without runtime crash',()=>{
@@ -139,4 +139,13 @@ test('every dedicated tool and course deep link renders the right PHP page',()=>
  });
  assert.equal(missing.status,0);
  assert.equal(missing.stdout,'Page not found','Unknown deep links must not render app shell');
+});
+
+test('PDF signature preflight prevents misleading extension-only acceptance',()=>{
+ const source=file('assets/converter.js');
+ assert.match(source,/async function verifyPdfHeaders\(items\)/);
+ assert.match(source,/if\(pdfMode!=='photos'\)await verifyPdfHeaders\(source\)/);
+ assert.match(source,/invalid PDF file/);
+ assert.match(source,/pdfInput\.setAttribute\('aria-invalid','true'\)/);
+ assert.match(source,/pdfInput\.removeAttribute\('aria-invalid'\)/);
 });
