@@ -211,6 +211,22 @@ jobs:
               assert.equal(await page.locator('#convert-pdf-list .convert-file-row').count(),0,
                 'Unsupported upload must never enter PDF file list');
             });
+            await smoke('PDF Studio rejects renamed non-PDF before loading helper',1366,900,async page=>{
+              await page.locator('a[data-nav="convert"]').first().click();
+              await page.locator('#convert-tab-pdf').click();
+              await page.locator('[data-pdf-mode="extract"]').click();
+              await page.locator('#convert-pdf-input').setInputFiles({
+                name:'renamed.pdf',mimeType:'application/pdf',
+                buffer:Buffer.from('This file is not a valid PDF despite its name.')
+              });
+              assert.equal(await page.locator('#convert-pdf-list .convert-file-row').count(),1);
+              await page.locator('#convert-pdf-run').click();
+              await page.locator('#convert-pdf-status[data-state="error"]').waitFor();
+              assert.match(await page.locator('#convert-pdf-status').innerText(),/invalid PDF file/i);
+              assert.equal(await page.evaluate(()=>typeof window.PDFLib),'undefined',
+                'PDF engine should not load for an invalid file');
+              assert.equal(await page.locator('#convert-pdf-results a[download]').count(),0);
+            });
             await smoke('PDF Studio converts photos into a downloadable PDF',1366,900,async page=>{
               await page.locator('a[data-nav="convert"]').first().click();
               await page.locator('#convert-tab-pdf').click();
