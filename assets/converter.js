@@ -455,9 +455,16 @@ function pdfSelection(existing,incoming,mode){
 function pdfPick(items){
  if(processing.has('pdf'))return;
  const selection=pdfSelection(files.pdf,items,pdfMode);
- if(selection.error){status('pdf',selection.error,'error');return}
+ if(selection.error){
+  // Clearing the native input allows choosing the same file again after an error.
+  // Keep previously accepted files and their results intact.
+  pdfInput.value='';
+  pdfInput.setAttribute('aria-invalid','true');
+  status('pdf',selection.error,'error');
+  return;
+ }
  files.pdf=selection.files;
- pdfInput.value='';showFiles('pdf');cleanupResults('pdf');
+ pdfInput.value='';pdfInput.removeAttribute('aria-invalid');showFiles('pdf');cleanupResults('pdf');
  status('pdf',selection.warning||files.pdf.length+' input file(s) ready.',selection.warning?'error':undefined);
 }
 // Capture input before the generic handler, so PDF mode-specific types
