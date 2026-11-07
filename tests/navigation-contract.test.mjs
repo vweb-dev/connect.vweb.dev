@@ -149,3 +149,18 @@ test('PDF signature preflight prevents misleading extension-only acceptance',()=
  assert.match(source,/pdfInput\.setAttribute\('aria-invalid','true'\)/);
  assert.match(source,/pdfInput\.removeAttribute\('aria-invalid'\)/);
 });
+
+test('Filee desktop converter is discoverable in Apps > Converters with official download',()=>{
+ const embedded=html.match(/<script type="application\/json" id="hub-offline-catalog">([\s\S]*?)<\/script>/);
+ assert.ok(embedded,'embedded app directory exists');
+ const catalog=JSON.parse(embedded[1]);
+ const items=catalog.apps.filter(item=>item.id==='filee');
+ assert.equal(items.length,1,'Filee must not be duplicated');
+ const app=items[0];
+ assert.equal(app.category,'Converters');
+ assert.equal(app.kind,'Windows App');
+ assert.equal(app.open,'https://filee.sh/#download');
+ assert.equal(app.winget,'KnifeLemon.Filee');
+ assert.ok(app.tags.includes('offline'));
+ assert.ok(app.desc.includes('Linux')&&app.desc.includes('macOS'),'Disclose supported operating systems');
+});
