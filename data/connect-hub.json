@@ -1,6 +1,6 @@
 {
   "schema": 3,
-  "updated": "2026-10-18",
+  "updated": "2026-11-07",
   "courses": [
     {
       "id": "windows11",
@@ -456,6 +456,31 @@
         "video",
         "convert"
       ],
+      "initial": "⇄"
+    },
+    {
+      "id": "filee",
+      "name": "Filee",
+      "category": "Converters",
+      "kind": "Windows App",
+      "open": "https://filee.sh/#download",
+      "desc": "Free MIT-licensed desktop file converter. Convert images, PDFs, documents, video, audio and archives locally; 255 formats. Windows and Linux supported; macOS preview.",
+      "tags": [
+        "converter",
+        "offline",
+        "files",
+        "pdf",
+        "documents",
+        "video",
+        "audio",
+        "windows",
+        "macos",
+        "linux",
+        "open source",
+        "batch",
+        "255 formats"
+      ],
+      "winget": "KnifeLemon.Filee",
       "initial": "⇄"
     },
     {
