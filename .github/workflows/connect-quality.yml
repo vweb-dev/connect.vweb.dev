@@ -109,6 +109,19 @@ jobs:
               assert.equal(await page.locator('#page-qr').isVisible(),true);
               assert.equal(await page.locator('#qr-design').isVisible(),true);
             });
+            await smoke('Filee in Apps > Converters and searchable',1366,900,async page=>{
+              await page.locator('a[data-nav="apps"]').first().click();
+              assert.equal(new URL(page.url()).pathname,'/apps');
+              await page.locator('#hub-app-search').fill('Filee');
+              const card=page.locator('#hub-app-library [data-app-id="filee"]');
+              assert.equal(await card.count(),1,'Filee app card should be visible');
+              assert.equal(await card.locator('a.hub-card-link').getAttribute('href'),'https://filee.sh/#download');
+              assert.equal(await card.locator('button.hub-app-winget').count(),1);
+              await page.locator('#hub-app-search').fill('');
+              await page.locator('#hub-app-categories button').filter({hasText:'Converters'}).click();
+              await page.locator('#hub-app-search').fill('Filee');
+              assert.equal(await card.count(),1,'Filee must appear under Converters filter');
+            });
             await smoke('desktop LMS catalog',1366,900,async page=>{
               await page.locator('a[data-nav="academy"]').first().click();
               assert.equal(new URL(page.url()).pathname,'/academy');
