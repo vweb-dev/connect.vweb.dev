@@ -1,3 +1,19 @@
+<!-- VWEB:AUTO-README:START -->
+<div align="center"><img src="assets/vweb-readme-banner.svg" width="100%" alt="connect.vweb.dev project graphic" /></div>
+
+### Code-derived project snapshot
+
+| Attribute | Detected value |
+|---|---|
+| Latest source revision | `79f408ee6996` |
+| Tracked files reviewed | 199 |
+| Framework and platform indicators | PHP / Composer  /  PWA |
+| Source file types | JavaScript (55), CSS (48), PHP (23), Python (5), JSON (3), HTML (3) |
+| Main directories | assets, api, docs, tests, scripts, ops, db |
+
+> This section is regenerated from tracked filenames and manifests on code updates. It is not a QA or production-readiness certification. Handwritten project documentation is preserved.
+<!-- VWEB:AUTO-README:END -->
+
 ## iPhone installation and focused classroom — October 20, 2026
 
 Added iPhone Add to Home Screen metadata and official VWEB.DEV PNG touch icon links, PWA manifest icon fallbacks and an iPhone Safari install guide through mobile More. The LMS Classroom now hides the all-courses switcher in favor of just the current syllabus; All courses returns to Course Catalog. Previous notes, quiz records and progress are retained. Cache v28. Verify live iPhone icons/install and classroom before production sign-off.
