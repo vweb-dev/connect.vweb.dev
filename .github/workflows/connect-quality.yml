@@ -30,7 +30,7 @@ concurrency:
 jobs:
   source-regression:
     name: Source, routes and PWA contracts
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     timeout-minutes: 10
     steps:
       - name: Check out Connect
@@ -59,7 +59,7 @@ jobs:
 
   browser-smoke:
     name: Chromium desktop and mobile smoke
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     needs: source-regression
     timeout-minutes: 15
     steps:
