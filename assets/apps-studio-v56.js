@@ -62,7 +62,15 @@
 
  function render(){
   const favs=favoriteIds();
-  const filtered=apps.filter(a=>(category==='All'||(category==='Saved'?favs.includes(a.id):a.category===category))&&(kind==='All'||a.kind===kind)&&[a.name,a.desc,a.category,a.kind,...(Array.isArray(a.tags)?a.tags:[])].join(' ').toLowerCase().includes(search));
+  // Multi-word searches match terms anywhere across title, category and tags.
+  // Example: "AI video" finds ArtCraft without requiring adjacent words.
+  const terms=search.split(/\s+/).filter(Boolean);
+  const filtered=apps.filter(a=>{
+   if(category!=='All'&&(category==='Saved'?!favs.includes(a.id):a.category!==category))return false;
+   if(kind!=='All'&&a.kind!==kind)return false;
+   const haystack=[a.name,a.desc,a.category,a.kind,...(Array.isArray(a.tags)?a.tags:[])].join(' ').toLowerCase();
+   return terms.every(term=>haystack.includes(term));
+  });
   filtered.sort((a,b)=>{if(sort==='az')return a.name.localeCompare(b.name);if(sort==='za')return b.name.localeCompare(a.name);const aa=featured.indexOf(a.id),bb=featured.indexOf(b.id);return (aa<0?999:aa)-(bb<0?999:bb)||a.name.localeCompare(b.name);});
   const show=filtered.slice(0,limit),fragment=document.createDocumentFragment();show.forEach(app=>fragment.append(card(app)));
   if(!show.length)fragment.append(elt('p','hub-muted',apps.length?'No matching apps. Reset your filters to see all software.':'App catalog is temporarily unavailable.'));
