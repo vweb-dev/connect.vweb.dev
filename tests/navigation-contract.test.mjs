@@ -42,7 +42,7 @@ test('service worker requires a valid cached HTML shell before activation',()=>{
  assert.match(sw,/shell\.headers\.get\('content-type'\)/);
  assert.match(sw,/cache\.put\(OFFLINE_SHELL,shell\)/);
  assert.match(sw,/cache\.match\(OFFLINE_SHELL\)/);
- assert.match(sw,/vweb-connect-static-v147/);
+ assert.match(sw,/vweb-connect-static-v148/);
 });
 test('49+ dedicated tool paths are unique and have compatible targets',()=>{
  assert.ok(catalog.tools.length>=49);
@@ -179,4 +179,17 @@ test('ArtCraft Studio is listed as a web design app with clear external service 
  assert.equal(app.open,'https://app.getartcraft.com/');
  assert.match(app.desc,/paid credits/i);
  assert.ok(app.tags.includes('3d')&&app.tags.includes('video'));
+});
+
+test('Apps Directory v148 supports shareable filters and deep links',()=>{
+ const source=file('assets/apps-studio-v56.js');
+ assert.match(html,/\/assets\/apps-studio-v56\.js\?v=148/);
+ assert.match(html,/\/assets\/style\.css\?v=148/);
+ assert.match(source,/const linkedApp=apps\.find/);
+ assert.match(source,/url\.searchParams\.set\('category',category\)/);
+ assert.match(source,/url\.searchParams\.set\('kind',kind\)/);
+ assert.match(source,/history\.replaceState\(history\.state/);
+ assert.match(source,/terms\.every\(term=>haystack\.includes\(term\)\)/);
+ assert.match(source,/Copy filtered link/);
+ assert.match(source,/Copy Connect link for/);
 });
