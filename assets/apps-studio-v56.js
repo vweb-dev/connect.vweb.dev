@@ -39,7 +39,7 @@
  const stored=()=>{try{const value=JSON.parse(localStorage.getItem(key)||'{}');return value&&typeof value==='object'&&!Array.isArray(value)?value:{};}catch{return {};}};
  const favoriteIds=()=>{const favs=stored().favorites;return Array.isArray(favs)?favs.filter(v=>typeof v==='string'):[];};
  // Local-only usage history. No browsing history leaves this device.
- const recentIds=()=>{const ids=stored().recentApps;return Array.isArray(ids)?ids.filter(id=>typeof id==='string').slice(0,24):[];};
+ const recentIds=()=>{const ids=stored().recentApps;const valid=new Set(apps.map(app=>app.id));return Array.isArray(ids)?[...new Set(ids.filter(id=>typeof id==='string'&&valid.has(id)))].slice(0,24):[];};
  function recordOpen(id){
   const data=stored();
   data.recentApps=[id,...recentIds().filter(previous=>previous!==id)].slice(0,24);
@@ -80,13 +80,14 @@
    const haystack=[a.name,a.desc,a.category,a.kind,...(Array.isArray(a.tags)?a.tags:[])].join(' ').toLowerCase();
    return terms.every(term=>haystack.includes(term));
   });
-  filtered.sort((a,b)=>{if(sort==='az')return a.name.localeCompare(b.name);if(sort==='za')return b.name.localeCompare(a.name);const aa=featured.indexOf(a.id),bb=featured.indexOf(b.id);return (aa<0?999:aa)-(bb<0?999:bb)||a.name.localeCompare(b.name);});
+  filtered.sort((a,b)=>{if(sort==='az')return a.name.localeCompare(b.name);if(sort==='za')return b.name.localeCompare(a.name);if(category==='Recently opened')return recentIds().indexOf(a.id)-recentIds().indexOf(b.id);const aa=featured.indexOf(a.id),bb=featured.indexOf(b.id);return (aa<0?999:aa)-(bb<0?999:bb)||a.name.localeCompare(b.name);});
+  const clear=$('hub-app-clear-history');if(clear)clear.hidden=!recentIds().length;
   const show=filtered.slice(0,limit),fragment=document.createDocumentFragment();show.forEach(app=>fragment.append(card(app)));
-  if(!show.length)fragment.append(elt('p','hub-muted',apps.length?'No matching apps. Reset your filters to see all software.':'App catalog is temporarily unavailable.'));
+  if(!show.length)fragment.append(elt('p','hub-muted',category==='Recently opened'&&!recentIds().length?'No recently opened apps yet. Open an app from the directory to see it here.':apps.length?'No matching apps. Reset your filters to see all software.':'App catalog is temporarily unavailable.'));
   host.replaceChildren(fragment);host.classList.toggle('is-list',layout==='list');
   const filters=$('hub-app-categories');filters.replaceChildren();
   for(const c of categories){const count=c==='Saved'?favs.length:c==='Recently opened'?recentIds().length:c==='All'?apps.length:apps.filter(app=>app.category===c).length;const button=elt('button','hub-chip'+(category===c?' selected':''),c+' ('+count+')');button.type='button';button.setAttribute('aria-pressed',String(category===c));button.addEventListener('click',()=>{category=c;limit=24;saveState();});filters.append(button);}
-  $('hub-app-count').textContent='Showing '+show.length+' of '+filtered.length+' official apps · '+apps.length+' listed';
+  $('hub-app-count').setAttribute('role','status');$('hub-app-count').setAttribute('aria-live','polite');$('hub-app-count').textContent='Showing '+show.length+' of '+filtered.length+' apps · '+apps.length+' listed';
   const more=$('hub-app-more');more.hidden=show.length===filtered.length;more.textContent='Show '+Math.min(24,filtered.length-show.length)+' more apps ↓';
   for(const mode of ['grid','list'])$('hub-app-view-'+mode).setAttribute('aria-pressed',String(mode===layout));
  }
@@ -109,6 +110,8 @@
   copy.type='button';copy.setAttribute('aria-label','Copy current app directory filters');
   copy.addEventListener('click',()=>copyLink(location.href,copy));
   controls.append(copy);
+  const clear=elt('button','hub-app-clear-history','Clear recent history');clear.id='hub-app-clear-history';clear.type='button';clear.setAttribute('aria-label','Clear locally saved recently opened apps');clear.hidden=!recentIds().length;
+  clear.addEventListener('click',()=>{const data=stored();data.recentApps=[];try{localStorage.setItem(key,JSON.stringify(data));}catch{}clear.hidden=true;render();});controls.append(clear);
  }
  document.addEventListener('keydown',event=>{
   if(event.key!=='/'||event.ctrlKey||event.metaKey||event.altKey||location.pathname!=='/apps')return;
