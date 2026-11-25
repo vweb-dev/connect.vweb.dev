@@ -753,7 +753,13 @@ function trackVisit(){
 }
 function renderDashboard(){
  const favorites=state.favorites.filter(id=>data.apps.some(a=>a.id===id));
- const completed=Object.values(state.completed).reduce((n,v)=>n+(Array.isArray(v)?v.length:0),0);
+ // Count only unique, valid lesson indexes from current courses.
+ const validCompleted=course=>{
+  const total=flatLessons(course).length;
+  const entries=completedList(course.id);
+  return new Set(entries.filter(n=>Number.isInteger(n)&&n>=0&&n<total)).size;
+ };
+ const completed=data.courses.reduce((sum,course)=>sum+validCompleted(course),0);
  const pinned=state.pinnedTools.filter(id=>quickToolIndex.some(t=>t.tool===id));
  $('#hub-stat-saved').textContent=String(favorites.length+pinned.length);
  $('#hub-stat-done').textContent=String(completed);
@@ -761,10 +767,24 @@ function renderDashboard(){
  $('#hub-stat-recent').textContent=String(state.recent.length+recentAppIds.length);
  const learning=$('#hub-dashboard-learning');clear(learning);
  data.courses.forEach(course=>{
-  const all=flatLessons(course),count=completedList(course.id).length;
-  const b=el('button','hub-dashboard-row');b.type='button';
-  b.append(el('span','hub-dash-icon',course.icon),el('strong','',course.title),el('small','',count+'/'+all.length+' lessons'));
-  b.addEventListener('click',()=>{setCourse(course.id,true);location.hash='#academy';startLesson(lessonIndex);});
+  const total=flatLessons(course).length,count=validCompleted(course);
+  const percent=total?Math.round(100*count/total):0;
+  const b=el('button','hub-dashboard-row hub-dashboard-progress');b.type='button';
+  const heading=el('span','hub-dashboard-course-title');
+  heading.append(el('span','hub-dash-icon',course.icon),el('strong','',course.title));
+  const meta=el('small','',count+'/'+total+' lessons · '+percent+'%');
+  const meter=el('span','hub-course-progress-track');
+  meter.setAttribute('role','progressbar');
+  meter.setAttribute('aria-label',course.title+' learning progress');
+  meter.setAttribute('aria-valuemin','0');meter.setAttribute('aria-valuemax','100');
+  meter.setAttribute('aria-valuenow',String(percent));
+  meter.style.cssText='display:block;width:100%;height:7px;border-radius:999px;overflow:hidden;background:rgba(127,139,154,.22);margin-top:7px';
+  const fill=el('span','hub-course-progress-fill');
+  fill.style.cssText='display:block;height:100%;width:'+percent+'%;background:currentColor;border-radius:inherit;transition:width .2s ease';
+  meter.append(fill);
+  b.append(heading,meta,meter);
+  b.setAttribute('aria-label','Resume '+course.title+', '+percent+' percent complete');
+  b.addEventListener('click',()=>{window.ConnectLMS?.open(course.id);});
   learning.append(b);
  });
  const saved=$('#hub-dashboard-saved');clear(saved);
