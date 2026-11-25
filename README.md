@@ -5,7 +5,7 @@
 
 | Attribute | Detected value |
 |---|---|
-| Latest source revision | `3b685cc43606` |
+| Latest source revision | `e409f61ab5fb` |
 | Tracked files reviewed | 200 |
 | Framework and platform indicators | PHP / Composer  /  PWA |
 | Source file types | JavaScript (55), CSS (48), PHP (23), Python (5), JSON (3), HTML (3) |
