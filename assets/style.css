@@ -973,3 +973,11 @@ body.drawer-open{overflow:hidden}
 @media(max-width:720px){.mas-focus{border-radius:17px;padding:20px 16px}.mas-lead{grid-template-columns:1fr;gap:20px}.mas-at-a-glance{grid-template-columns:repeat(2,minmax(0,1fr));gap:15px;padding:16px}.mas-at-a-glance>div:not(.mas-source-note){padding-bottom:0;border:0}.mas-at-a-glance .mas-source-note{grid-column:1/-1;border-top:1px solid #39404a;padding-top:12px}.mas-lead h2{font-size:clamp(35px,8vw,54px)}.mas-section-heading{margin-top:25px}.mas-document-grid{grid-template-columns:1fr}}
 @media(max-width:520px){.mas-external-badge{font-size:9px}.mas-focus-bar{margin-bottom:13px}.mas-hero-actions{display:grid;grid-template-columns:1fr}.mas-method-grid{grid-template-columns:1fr}.mas-method-card{min-height:0}.mas-support-links{grid-template-columns:1fr}.mas-support-links a:last-child{grid-column:auto}.mas-lead h2{font-size:37px}.mas-brand-name{font-size:11px}.mas-caution{padding:12px}.mas-at-a-glance>div>span{font-size:26px}}
 @media(prefers-reduced-motion:reduce){.mas-method-card{transition:none}.mas-method-card:hover{transform:none}}
+
+/* Apps Directory v148 — accessible discovery and share controls */
+#page-apps .hub-app-copy-directory,#page-apps .hub-app-share{appearance:none;border:1px solid rgba(220,188,125,.42);background:rgba(16,26,35,.86);color:#f6e1b7;border-radius:11px;padding:9px 12px;min-height:40px;font:inherit;font-size:12px;font-weight:700;cursor:pointer;white-space:nowrap}
+#page-apps .hub-app-copy-directory:hover,#page-apps .hub-app-share:hover{background:#26323b;border-color:#f0cb88}
+#page-apps .hub-app-copy-directory:focus-visible,#page-apps .hub-app-share:focus-visible{outline:3px solid #e0ba7b;outline-offset:2px}
+#page-apps .hub-app-share{flex:0 0 auto;min-width:88px}
+#page-apps .hub-app-copy-directory{align-self:center}
+@media(max-width:700px){#page-apps .hub-app-copy-directory{width:100%;min-height:44px}#page-apps .hub-app-share{min-height:44px}}
