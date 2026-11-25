@@ -38,13 +38,22 @@
  const elt=(tag,cls,value)=>{const el=document.createElement(tag);if(cls)el.className=cls;if(value!=null)el.textContent=String(value);return el;};
  const stored=()=>{try{const value=JSON.parse(localStorage.getItem(key)||'{}');return value&&typeof value==='object'&&!Array.isArray(value)?value:{};}catch{return {};}};
  const favoriteIds=()=>{const favs=stored().favorites;return Array.isArray(favs)?favs.filter(v=>typeof v==='string'):[];};
+ // Local-only usage history. No browsing history leaves this device.
+ const recentIds=()=>{const ids=stored().recentApps;return Array.isArray(ids)?ids.filter(id=>typeof id==='string').slice(0,24):[];};
+ function recordOpen(id){
+  const data=stored();
+  data.recentApps=[id,...recentIds().filter(previous=>previous!==id)].slice(0,24);
+  try{localStorage.setItem(key,JSON.stringify(data));}catch{}
+  if(category==='Recently opened')render();
+ }
+ try{const saved=stored().appDirectoryLayout;if(saved==='list'||saved==='grid')layout=saved;}catch{}
  function toggleFavorite(app){const data=stored(),favs=favoriteIds();data.favorites=favs.includes(app.id)?favs.filter(id=>id!==app.id):[...favs,app.id].slice(-150);try{localStorage.setItem(key,JSON.stringify(data));}catch{};render();window.dispatchEvent(new CustomEvent('connect:apps-favorites-changed'));}
  function card(app){
   const el=elt('article','hub-app-card app56-card');el.dataset.appId=app.id;
   el.append(elt('div','hub-app-mark',app.initial||'◧'),elt('h3','',app.name),elt('p','',app.desc||'Explore the official publisher website.'));
   const meta=elt('div','hub-app-meta');meta.append(elt('span','hub-pill',app.category||'Software'),elt('span','hub-pill',app.kind||'App'));el.append(meta);
   const footer=elt('div','hub-app-footer'),link=elt('a','hub-card-link',app.kind==='Windows App'?'Official download ↗':'Open official app ↗');
-  link.href=app.open;link.target='_blank';link.rel='noopener noreferrer';footer.append(link);
+  link.href=app.open;link.target='_blank';link.rel='noopener noreferrer';link.addEventListener('click',()=>recordOpen(app.id));footer.append(link);
   const share=elt('button','hub-app-share','Copy link');share.type='button';
   share.setAttribute('aria-label','Copy Connect link for '+app.name);
   share.addEventListener('click',()=>copyLink(new URL('/apps?app='+encodeURIComponent(app.id),location.origin).href,share));
@@ -56,7 +65,7 @@
   const favorite=favoriteIds().includes(app.id),save=elt('button','hub-fav',favorite?'♥':'♡');save.type='button';save.setAttribute('aria-pressed',String(favorite));save.setAttribute('aria-label',(favorite?'Remove saved app: ':'Save app: ')+app.name);
   save.addEventListener('click',()=>toggleFavorite(app));footer.append(save);el.append(footer);return el;
  }
- const categories=['All',...new Set(apps.map(a=>a.category).filter(Boolean)),'Saved'];
+ const categories=['All',...new Set(apps.map(a=>a.category).filter(Boolean)),'Saved','Recently opened'];
  if(!categories.includes(category))category='All';
  const saveState=()=>{syncURL();render();};
 
@@ -66,7 +75,7 @@
   // Example: "AI video" finds ArtCraft without requiring adjacent words.
   const terms=search.split(/\s+/).filter(Boolean);
   const filtered=apps.filter(a=>{
-   if(category!=='All'&&(category==='Saved'?!favs.includes(a.id):a.category!==category))return false;
+   if(category!=='All'&&(category==='Saved'?!favs.includes(a.id):category==='Recently opened'?!recentIds().includes(a.id):a.category!==category))return false;
    if(kind!=='All'&&a.kind!==kind)return false;
    const haystack=[a.name,a.desc,a.category,a.kind,...(Array.isArray(a.tags)?a.tags:[])].join(' ').toLowerCase();
    return terms.every(term=>haystack.includes(term));
@@ -76,7 +85,7 @@
   if(!show.length)fragment.append(elt('p','hub-muted',apps.length?'No matching apps. Reset your filters to see all software.':'App catalog is temporarily unavailable.'));
   host.replaceChildren(fragment);host.classList.toggle('is-list',layout==='list');
   const filters=$('hub-app-categories');filters.replaceChildren();
-  for(const c of categories){const button=elt('button','hub-chip'+(category===c?' selected':''),c==='Saved'?'Saved ('+favs.length+')':c);button.type='button';button.setAttribute('aria-pressed',String(category===c));button.addEventListener('click',()=>{category=c;limit=24;saveState();});filters.append(button);}
+  for(const c of categories){const count=c==='Saved'?favs.length:c==='Recently opened'?recentIds().length:c==='All'?apps.length:apps.filter(app=>app.category===c).length;const button=elt('button','hub-chip'+(category===c?' selected':''),c+' ('+count+')');button.type='button';button.setAttribute('aria-pressed',String(category===c));button.addEventListener('click',()=>{category=c;limit=24;saveState();});filters.append(button);}
   $('hub-app-count').textContent='Showing '+show.length+' of '+filtered.length+' official apps · '+apps.length+' listed';
   const more=$('hub-app-more');more.hidden=show.length===filtered.length;more.textContent='Show '+Math.min(24,filtered.length-show.length)+' more apps ↓';
   for(const mode of ['grid','list'])$('hub-app-view-'+mode).setAttribute('aria-pressed',String(mode===layout));
@@ -87,7 +96,7 @@
  $('hub-app-sort').addEventListener('change',event=>{sort=event.target.value;saveState();});
  $('hub-app-reset').addEventListener('click',reset);
  $('hub-app-more').addEventListener('click',()=>{limit+=24;render();});
- for(const mode of ['grid','list'])$('hub-app-view-'+mode).addEventListener('click',()=>{layout=mode;render();});
+ for(const mode of ['grid','list'])$('hub-app-view-'+mode).addEventListener('click',()=>{layout=mode;const state=stored();state.appDirectoryLayout=layout;try{localStorage.setItem(key,JSON.stringify(state));}catch{}render();});
  document.querySelectorAll('[data-app-shortcut]').forEach(button=>button.addEventListener('click',()=>{category=button.dataset.appShortcut;kind='All';search='';limit=24;$('hub-app-search').value='';$('hub-app-kind').value='All';saveState();}));
  window.addEventListener('storage',event=>{if(event.key===key)render();});
  window.addEventListener('connect:apps-open-category',event=>{category=categories.includes(event.detail?.category)?event.detail.category:'All';search='';limit=24;saveState();});
@@ -106,6 +115,6 @@
   if(/^(INPUT|TEXTAREA|SELECT)$/.test(document.activeElement?.tagName||'')||document.activeElement?.isContentEditable)return;
   event.preventDefault();$('hub-app-search').focus();
  });
- window.ConnectApps={render,apps,categories,chooseCategory:(value)=>{category=categories.includes(value)?value:'All';search='';limit=24;saveState();}};
+ window.ConnectApps={render,apps,categories,recentIds,chooseCategory:(value)=>{category=categories.includes(value)?value:'All';search='';limit=24;saveState();}};
  render();
 })();
