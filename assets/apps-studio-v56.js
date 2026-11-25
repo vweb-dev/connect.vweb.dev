@@ -9,8 +9,32 @@
  window.__connectAppsStudio=true;
  const refs=['hub-app-search','hub-app-kind','hub-app-sort','hub-app-categories','hub-app-count','hub-app-more','hub-app-view-grid','hub-app-view-list','hub-app-reset'];
  if(refs.some(id=>!$(id)))return;
- const key='vweb.connect20.v1',featured=['powertoys','7zip','vscode','vlc','gimp','firefox','brave','obsidian','excalidraw','localsend','it-tools','vert'];
- let category='All',kind='All',sort='featured',search=(new URLSearchParams(location.search).get('q')||'').trim().toLowerCase().slice(0,120),limit=24,layout='grid';
+ const key='vweb.connect20.v1',featured=['powertoys','7zip','vscode','vlc','gimp','firefox','brave','obsidian','excalidraw','localsend','it-tools','vert','filee','artcraft'];
+ const params=new URLSearchParams(location.search);
+ let category=params.get('category')||'All',kind=params.get('kind')||'All',sort=params.get('sort')||'featured',search=(params.get('q')||'').trim().toLowerCase().slice(0,120),limit=24,layout='grid';
+ const linkedApp=apps.find(a=>a.id===params.get('app'));
+ if(linkedApp){search=linkedApp.name.toLowerCase();category='All';kind='All';sort='featured';}
+ const validKinds=['All','Web App','Windows App'];
+ if(!validKinds.includes(kind))kind='All';
+ if(!['featured','az','za'].includes(sort))sort='featured';
+ function syncURL(){
+  if(location.pathname!=='/apps')return;
+  const url=new URL(location.href);
+  for(const field of ['q','category','kind','sort','app'])url.searchParams.delete(field);
+  if(search)url.searchParams.set('q',search);
+  if(category!=='All')url.searchParams.set('category',category);
+  if(kind!=='All')url.searchParams.set('kind',kind);
+  if(sort!=='featured')url.searchParams.set('sort',sort);
+  history.replaceState(history.state,'',url.pathname+url.search+url.hash);
+ }
+ async function copyLink(url,button){
+  try{
+   await navigator.clipboard.writeText(url);
+   button.textContent='Copied ✓';
+  }catch(_){
+   button.textContent='Copy unavailable';
+  }
+ }
  const elt=(tag,cls,value)=>{const el=document.createElement(tag);if(cls)el.className=cls;if(value!=null)el.textContent=String(value);return el;};
  const stored=()=>{try{const value=JSON.parse(localStorage.getItem(key)||'{}');return value&&typeof value==='object'&&!Array.isArray(value)?value:{};}catch{return {};}};
  const favoriteIds=()=>{const favs=stored().favorites;return Array.isArray(favs)?favs.filter(v=>typeof v==='string'):[];};
@@ -21,6 +45,10 @@
   const meta=elt('div','hub-app-meta');meta.append(elt('span','hub-pill',app.category||'Software'),elt('span','hub-pill',app.kind||'App'));el.append(meta);
   const footer=elt('div','hub-app-footer'),link=elt('a','hub-card-link',app.kind==='Windows App'?'Official download ↗':'Open official app ↗');
   link.href=app.open;link.target='_blank';link.rel='noopener noreferrer';footer.append(link);
+  const share=elt('button','hub-app-share','Copy link');share.type='button';
+  share.setAttribute('aria-label','Copy Connect link for '+app.name);
+  share.addEventListener('click',()=>copyLink(new URL('/apps?app='+encodeURIComponent(app.id),location.origin).href,share));
+  footer.append(share);
   if(app.winget&&/^[-.\w+]+$/.test(app.winget)){
    const command='winget install --id '+app.winget+' --exact --source winget';
    const btn=elt('button','hub-app-winget','⌘ WinGet');btn.type='button';btn.title='Copy WinGet command';btn.addEventListener('click',async()=>{try{await navigator.clipboard.writeText(command);btn.textContent='Copied ✓';}catch{btn.textContent='Clipboard unavailable';}});footer.append(btn);
@@ -29,6 +57,9 @@
   save.addEventListener('click',()=>toggleFavorite(app));footer.append(save);el.append(footer);return el;
  }
  const categories=['All',...new Set(apps.map(a=>a.category).filter(Boolean)),'Saved'];
+ if(!categories.includes(category))category='All';
+ const saveState=()=>{syncURL();render();};
+
  function render(){
   const favs=favoriteIds();
   const filtered=apps.filter(a=>(category==='All'||(category==='Saved'?favs.includes(a.id):a.category===category))&&(kind==='All'||a.kind===kind)&&[a.name,a.desc,a.category,a.kind,...(Array.isArray(a.tags)?a.tags:[])].join(' ').toLowerCase().includes(search));
@@ -37,22 +68,36 @@
   if(!show.length)fragment.append(elt('p','hub-muted',apps.length?'No matching apps. Reset your filters to see all software.':'App catalog is temporarily unavailable.'));
   host.replaceChildren(fragment);host.classList.toggle('is-list',layout==='list');
   const filters=$('hub-app-categories');filters.replaceChildren();
-  for(const c of categories){const button=elt('button','hub-chip'+(category===c?' selected':''),c);button.type='button';button.setAttribute('aria-pressed',String(category===c));button.addEventListener('click',()=>{category=c;limit=24;render();});filters.append(button);}
+  for(const c of categories){const button=elt('button','hub-chip'+(category===c?' selected':''),c==='Saved'?'Saved ('+favs.length+')':c);button.type='button';button.setAttribute('aria-pressed',String(category===c));button.addEventListener('click',()=>{category=c;limit=24;saveState();});filters.append(button);}
   $('hub-app-count').textContent='Showing '+show.length+' of '+filtered.length+' official apps · '+apps.length+' listed';
   const more=$('hub-app-more');more.hidden=show.length===filtered.length;more.textContent='Show '+Math.min(24,filtered.length-show.length)+' more apps ↓';
   for(const mode of ['grid','list'])$('hub-app-view-'+mode).setAttribute('aria-pressed',String(mode===layout));
  }
- function reset(){category='All';kind='All';sort='featured';search='';limit=24;$('hub-app-search').value='';$('hub-app-kind').value='All';$('hub-app-sort').value='featured';render();}
- $('hub-app-search').addEventListener('input',event=>{search=event.target.value.trim().toLowerCase();limit=24;render();});
- $('hub-app-kind').addEventListener('change',event=>{kind=event.target.value;limit=24;render();});
- $('hub-app-sort').addEventListener('change',event=>{sort=event.target.value;render();});
+ function reset(){category='All';kind='All';sort='featured';search='';limit=24;$('hub-app-search').value='';$('hub-app-kind').value='All';$('hub-app-sort').value='featured';saveState();}
+ $('hub-app-search').addEventListener('input',event=>{search=event.target.value.trim().toLowerCase().slice(0,120);limit=24;saveState();});
+ $('hub-app-kind').addEventListener('change',event=>{kind=event.target.value;limit=24;saveState();});
+ $('hub-app-sort').addEventListener('change',event=>{sort=event.target.value;saveState();});
  $('hub-app-reset').addEventListener('click',reset);
  $('hub-app-more').addEventListener('click',()=>{limit+=24;render();});
  for(const mode of ['grid','list'])$('hub-app-view-'+mode).addEventListener('click',()=>{layout=mode;render();});
- document.querySelectorAll('[data-app-shortcut]').forEach(button=>button.addEventListener('click',()=>{category=button.dataset.appShortcut;kind='All';search='';limit=24;$('hub-app-search').value='';$('hub-app-kind').value='All';render();}));
+ document.querySelectorAll('[data-app-shortcut]').forEach(button=>button.addEventListener('click',()=>{category=button.dataset.appShortcut;kind='All';search='';limit=24;$('hub-app-search').value='';$('hub-app-kind').value='All';saveState();}));
  window.addEventListener('storage',event=>{if(event.key===key)render();});
- window.addEventListener('connect:apps-open-category',event=>{category=categories.includes(event.detail?.category)?event.detail.category:'All';search='';limit=24;render();});
+ window.addEventListener('connect:apps-open-category',event=>{category=categories.includes(event.detail?.category)?event.detail.category:'All';search='';limit=24;saveState();});
  $('hub-app-search').value=search;
- window.ConnectApps={render,apps,categories,chooseCategory:(value)=>{category=categories.includes(value)?value:'All';search='';limit=24;render();}};
+ $('hub-app-kind').value=kind;
+ $('hub-app-sort').value=sort;
+ const controls=$('hub-app-search').closest('.hub-app-controls')||$('hub-app-search').parentElement;
+ if(controls){
+  const copy=elt('button','hub-app-copy-directory','Copy filtered link');
+  copy.type='button';copy.setAttribute('aria-label','Copy current app directory filters');
+  copy.addEventListener('click',()=>copyLink(location.href,copy));
+  controls.append(copy);
+ }
+ document.addEventListener('keydown',event=>{
+  if(event.key!=='/'||event.ctrlKey||event.metaKey||event.altKey||location.pathname!=='/apps')return;
+  if(/^(INPUT|TEXTAREA|SELECT)$/.test(document.activeElement?.tagName||'')||document.activeElement?.isContentEditable)return;
+  event.preventDefault();$('hub-app-search').focus();
+ });
+ window.ConnectApps={render,apps,categories,chooseCategory:(value)=>{category=categories.includes(value)?value:'All';search='';limit=24;saveState();}};
  render();
 })();
