@@ -49,7 +49,7 @@ test('site shell and PWA cache use consistent current revision',()=>{
  for(const asset of ['app.js','hub.js'])
   assert.match(html,new RegExp('/assets/'+asset+'\\?v=[^\\"]+'),asset);
  assert.match(html,/\/assets\/converter\.js\?v=[^\"]+/);
- assert.ok(html.includes('/assets/style.css?v=connect-mas-first-20261020b'));
+ assert.ok(html.includes('/assets/style.css?v=148'));
  assert.match(html,/id="hub-offline-catalog"/);
  assert.match(hub,/restoreStaticCatalog/);
 });
