@@ -30,7 +30,17 @@ function loadStore(){
  }catch(_){return emptyState();}
 }
 let state=loadStore();
-function save(){try{localStorage.setItem(STORAGE,JSON.stringify(state));}catch(_){}}
+// Other independent studios share this storage record. Save only Hub-owned fields
+// so app history, layout preferences and future module fields are never erased.
+const HUB_STATE_KEYS=['favorites','pinnedTools','enrolled','bookmarks','assessments','completed','position','notes','recent'];
+function save(){
+ try{
+  const previous=JSON.parse(localStorage.getItem(STORAGE)||'{}');
+  const latest=previous&&typeof previous==='object'&&!Array.isArray(previous)?previous:{};
+  for(const field of HUB_STATE_KEYS)latest[field]=state[field];
+  localStorage.setItem(STORAGE,JSON.stringify(latest));
+ }catch(error){console.warn('Could not save Connect workspace',error);}
+}
 function link(label,href,cls='hub-card-link',external=false){
  const n=el('a',cls,label);n.href=href;
  if(external){n.target='_blank';n.rel='noopener noreferrer';}
@@ -747,7 +757,8 @@ function renderDashboard(){
  const pinned=state.pinnedTools.filter(id=>quickToolIndex.some(t=>t.tool===id));
  $('#hub-stat-saved').textContent=String(favorites.length+pinned.length);
  $('#hub-stat-done').textContent=String(completed);
- $('#hub-stat-recent').textContent=String(state.recent.length);
+ const recentAppIds=(()=>{try{const stored=JSON.parse(localStorage.getItem(STORAGE)||'{}');return Array.isArray(stored.recentApps)?[...new Set(stored.recentApps.filter(id=>typeof id==='string'))].slice(0,8):[];}catch{return [];}})();
+ $('#hub-stat-recent').textContent=String(state.recent.length+recentAppIds.length);
  const learning=$('#hub-dashboard-learning');clear(learning);
  data.courses.forEach(course=>{
   const all=flatLessons(course),count=completedList(course.id).length;
@@ -775,6 +786,10 @@ function renderDashboard(){
  });
  const recent=$('#hub-dashboard-recent');clear(recent);
  state.recent.filter(page=>pageNames[page]).forEach(page=>recent.append(link(pageNames[page]+' ↗','#'+page,'hub-recent-chip')));
+ recentAppIds.forEach(id=>{
+  const app=data.apps.find(item=>item.id===id);
+  if(app)recent.append(link('◧ '+app.name+' ↗','/apps?app='+encodeURIComponent(id),'hub-recent-chip'));
+ });
 }
 $('#hub-data-export').addEventListener('click',()=>{
  const blob=new Blob([JSON.stringify({format:'vweb-connect-workspace',version:1,exportedAt:new Date().toISOString(),data:state},null,2)],
