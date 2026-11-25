@@ -164,3 +164,19 @@ test('Filee desktop converter is discoverable in Apps > Converters with official
  assert.ok(app.tags.includes('offline'));
  assert.ok(app.desc.includes('Linux')&&app.desc.includes('macOS'),'Disclose supported operating systems');
 });
+
+test('ArtCraft Studio is listed as a web design app with clear external service terms',()=>{
+ const embedded=html.match(/<script type="application\/json" id="hub-offline-catalog">([\s\S]*?)<\/script>/);
+ assert.ok(embedded,'Apps Directory embedded catalog exists');
+ const data=JSON.parse(embedded[1]);
+ const fallback=JSON.parse(file('data/connect-hub.json'));
+ assert.deepEqual(data.apps,fallback.apps,'Embedded and offline app directories must match');
+ const apps=data.apps.filter(a=>a.id==='artcraft');
+ assert.equal(apps.length,1,'ArtCraft should be listed once');
+ const app=apps[0];
+ assert.equal(app.category,'Design');
+ assert.equal(app.kind,'Web App');
+ assert.equal(app.open,'https://app.getartcraft.com/');
+ assert.match(app.desc,/paid credits/i);
+ assert.ok(app.tags.includes('3d')&&app.tags.includes('video'));
+});
