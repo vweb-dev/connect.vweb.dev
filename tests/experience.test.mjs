@@ -100,7 +100,7 @@ test('ArtCraft Studio and Craft Apps directory are distinct, synchronized entrie
  assert.equal(studio?.open,'https://app.getartcraft.com/');
  assert.equal(crafts?.open,'https://getartcraft.com/apps');
  assert.match(crafts.desc,/alpha or in development/);
- const embedded=JSON.parse(html.match(/<script type="application\\/json" id="hub-offline-catalog">([\\s\\S]*?)<\\/script>/)[1]);
+ const embedded=JSON.parse(html.split('id="hub-offline-catalog">')[1].split('</script>')[0]);
  for(const entry of [studio,crafts])assert.deepEqual(embedded.apps.find(app=>app.id===entry.id),entry);
  assert.match(worker,/vweb-connect-static-v155/);
 });
