@@ -109,6 +109,45 @@ jobs:
               assert.equal(await page.locator('#page-qr').isVisible(),true);
               assert.equal(await page.locator('#qr-design').isVisible(),true);
             });
+            await smoke('Apps filters are shareable and resettable',1366,900,async page=>{
+              await page.locator('a[data-nav="apps"]').first().click();
+              await page.locator('#hub-app-categories button').filter({hasText:'Design'}).click();
+              await page.locator('#hub-app-kind').selectOption('Web App');
+              await page.locator('#hub-app-sort').selectOption('az');
+              await page.locator('#hub-app-search').fill('ArtCraft');
+              const url=new URL(page.url());
+              assert.equal(url.searchParams.get('category'),'Design');
+              assert.equal(url.searchParams.get('kind'),'Web App');
+              assert.equal(url.searchParams.get('sort'),'az');
+              assert.equal(url.searchParams.get('q'),'artcraft');
+              assert.equal(await page.locator('#hub-app-library [data-app-id="artcraft"]').count(),1);
+              assert.equal(await page.locator('#hub-app-copy-directory').count(),1);
+              await page.locator('#hub-app-reset').click();
+              assert.equal(new URL(page.url()).search,'');
+              assert.equal(await page.locator('#hub-app-kind').inputValue(),'All');
+              assert.equal(await page.locator('#hub-app-search').inputValue(),'');
+            });
+            await smoke('Apps favorite, link sharing and keyboard focus',1366,900,async page=>{
+              await page.locator('a[data-nav="apps"]').first().click();
+              await page.keyboard.press('/');
+              assert.equal(await page.locator('#hub-app-search').evaluate(e=>e===document.activeElement),true);
+              await page.locator('#hub-app-search').fill('Filee');
+              const card=page.locator('#hub-app-library [data-app-id="filee"]');
+              assert.equal(await card.locator('.hub-app-share').count(),1);
+              await card.locator('.hub-fav').click();
+              assert.equal(await card.locator('.hub-fav').getAttribute('aria-pressed'),'true');
+              await page.locator('#hub-app-search').fill('');
+              await page.locator('#hub-app-categories button').filter({hasText:'Saved'}).click();
+              assert.equal(await card.count(),1);
+              assert.equal(new URL(page.url()).searchParams.get('category'),'Saved');
+            });
+            await smoke('Apps direct app query restores focused search',1366,900,async page=>{
+              await page.goto(base+'?app=artcraft',{waitUntil:'domcontentloaded'});
+              await page.locator('a[data-nav="apps"]').first().click();
+              assert.equal(await page.locator('#hub-app-library [data-app-id="artcraft"]').count(),1);
+              assert.equal(await page.locator('#hub-app-search').inputValue(),'artcraft');
+              assert.equal(await page.locator('#hub-app-library .hub-app-card').count(),1);
+            });
             await smoke('ArtCraft search and Design category',1366,900,async page=>{
               await page.locator('a[data-nav="apps"]').first().click();
               assert.equal(new URL(page.url()).pathname,'/apps');
