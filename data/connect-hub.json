@@ -503,7 +503,7 @@
       "category": "Design",
       "kind": "Web App",
       "open": "https://app.getartcraft.com/",
-      "desc": "AI image and video creation with 2D editing, 3D scene composition and camera controls. Hosted generation may require an account or paid credits.",
+      "desc": "AI image, video, audio and 3D creation studio with editing tools. Generations may require credits or external compute.",
       "tags": [
         "artcraft",
         "ai",
@@ -515,9 +515,37 @@
         "design",
         "creative",
         "generative",
-        "canvas"
+        "canvas",
+        "audio",
+        "image to video",
+        "moodboard",
+        "3d world",
+        "background change"
       ],
       "initial": "✦"
+    },
+    {
+      "id": "artcraft-craft-apps",
+      "name": "ArtCraft Craft Apps",
+      "category": "Design",
+      "kind": "Web App",
+      "open": "https://getartcraft.com/apps",
+      "desc": "Explore 17 open-source creative software projects, from PhotoCraft and PdfCraft to animation, design, CAD and spreadsheets. Many are alpha or in development.",
+      "tags": [
+        "artcraft",
+        "open source",
+        "rust",
+        "photo editor",
+        "pdf",
+        "vector",
+        "animation",
+        "video editor",
+        "cad",
+        "spreadsheet",
+        "desktop",
+        "early alpha"
+      ],
+      "initial": "✧"
     },
     {
       "id": "photopea",
