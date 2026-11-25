@@ -85,3 +85,11 @@ test('shared workspace saves only Hub-owned fields and dashboard includes recent
  assert.match(hub,/recentAppIds\.forEach\(id=>/);
  assert.match(hub,/\/apps\?app=/);
 });
+
+test('dashboard reports valid progress and resumes courses through LMS',()=>{
+ assert.match(hub,/const validCompleted=course=>/);
+ assert.match(hub,/new Set\(entries\.filter\(n=>Number\.isInteger\(n\)/);
+ assert.match(hub,/hub-course-progress-track/);
+ assert.match(hub,/aria-valuenow/);
+ assert.match(hub,/window\.ConnectLMS\?\.open\(course\.id\)/);
+});
