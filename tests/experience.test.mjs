@@ -93,3 +93,14 @@ test('dashboard reports valid progress and resumes courses through LMS',()=>{
  assert.match(hub,/aria-valuenow/);
  assert.match(hub,/window\.ConnectLMS\?\.open\(course\.id\)/);
 });
+
+test('ArtCraft Studio and Craft Apps directory are distinct, synchronized entries',()=>{
+ const studio=catalog.apps.find(app=>app.id==='artcraft');
+ const crafts=catalog.apps.find(app=>app.id==='artcraft-craft-apps');
+ assert.equal(studio?.open,'https://app.getartcraft.com/');
+ assert.equal(crafts?.open,'https://getartcraft.com/apps');
+ assert.match(crafts.desc,/alpha or in development/);
+ const embedded=JSON.parse(html.match(/<script type="application\\/json" id="hub-offline-catalog">([\\s\\S]*?)<\\/script>/)[1]);
+ for(const entry of [studio,crafts])assert.deepEqual(embedded.apps.find(app=>app.id===entry.id),entry);
+ assert.match(worker,/vweb-connect-static-v155/);
+});
