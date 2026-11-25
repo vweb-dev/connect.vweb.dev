@@ -109,6 +109,18 @@ jobs:
               assert.equal(await page.locator('#page-qr').isVisible(),true);
               assert.equal(await page.locator('#qr-design').isVisible(),true);
             });
+            await smoke('ArtCraft search and Design category',1366,900,async page=>{
+              await page.locator('a[data-nav="apps"]').first().click();
+              assert.equal(new URL(page.url()).pathname,'/apps');
+              await page.locator('#hub-app-search').fill('ArtCraft');
+              const card=page.locator('#hub-app-library [data-app-id="artcraft"]');
+              assert.equal(await card.count(),1,'ArtCraft must appear in Apps search');
+              assert.equal(await card.locator('a.hub-card-link').getAttribute('href'),'https://app.getartcraft.com/');
+              await page.locator('#hub-app-search').fill('');
+              await page.locator('#hub-app-categories button').filter({hasText:'Design'}).click();
+              await page.locator('#hub-app-search').fill('ArtCraft');
+              assert.equal(await card.count(),1,'ArtCraft must remain visible under Design');
+            });
             await smoke('Filee in Apps > Converters and searchable',1366,900,async page=>{
               await page.locator('a[data-nav="apps"]').first().click();
               assert.equal(new URL(page.url()).pathname,'/apps');
