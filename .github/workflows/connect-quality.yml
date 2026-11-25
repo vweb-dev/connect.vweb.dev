@@ -114,6 +114,9 @@ jobs:
               await page.locator('#hub-app-categories button').filter({hasText:'Design'}).click();
               await page.locator('#hub-app-kind').selectOption('Web App');
               await page.locator('#hub-app-sort').selectOption('az');
+              await page.locator('#hub-app-search').fill('AI video');
+              assert.equal(await page.locator('#hub-app-library [data-app-id="artcraft"]').count(),1,
+                'Multi-term search should find ArtCraft using separate tags');
               await page.locator('#hub-app-search').fill('ArtCraft');
               const url=new URL(page.url());
               assert.equal(url.searchParams.get('category'),'Design');
