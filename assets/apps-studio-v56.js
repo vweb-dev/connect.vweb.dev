@@ -88,7 +88,7 @@
  $('hub-app-sort').value=sort;
  const controls=$('hub-app-search').closest('.hub-app-controls')||$('hub-app-search').parentElement;
  if(controls){
-  const copy=elt('button','hub-app-copy-directory','Copy filtered link');
+  const copy=elt('button','hub-app-copy-directory','Copy filtered link');copy.id='hub-app-copy-directory';
   copy.type='button';copy.setAttribute('aria-label','Copy current app directory filters');
   copy.addEventListener('click',()=>copyLink(location.href,copy));
   controls.append(copy);
