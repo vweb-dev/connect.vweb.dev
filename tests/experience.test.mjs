@@ -77,3 +77,11 @@ test('QR studio is an independent route with complete navigation',()=>{
  assert.ok(read('assets/app.js').includes("'qr'"));
  assert.ok(read('assets/hub.js').includes("destination:'#qr'"));
 });
+
+test('shared workspace saves only Hub-owned fields and dashboard includes recent apps',()=>{
+ assert.match(hub,/const HUB_STATE_KEYS=\[/);
+ assert.match(hub,/for\(const field of HUB_STATE_KEYS\)latest\[field\]=state\[field\]/);
+ assert.match(hub,/localStorage\.setItem\(STORAGE,JSON\.stringify\(latest\)\)/);
+ assert.match(hub,/recentAppIds\.forEach\(id=>/);
+ assert.match(hub,/\/apps\?app=/);
+});
