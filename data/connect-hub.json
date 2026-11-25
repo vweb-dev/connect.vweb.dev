@@ -1,6 +1,6 @@
 {
   "schema": 3,
-  "updated": "2026-11-07",
+  "updated": "2026-11-25",
   "courses": [
     {
       "id": "windows11",
@@ -496,6 +496,28 @@
         "developer"
       ],
       "initial": "{ }"
+    },
+    {
+      "id": "artcraft",
+      "name": "ArtCraft Studio",
+      "category": "Design",
+      "kind": "Web App",
+      "open": "https://app.getartcraft.com/",
+      "desc": "AI image and video creation with 2D editing, 3D scene composition and camera controls. Hosted generation may require an account or paid credits.",
+      "tags": [
+        "artcraft",
+        "ai",
+        "image",
+        "video",
+        "3d",
+        "scene",
+        "camera",
+        "design",
+        "creative",
+        "generative",
+        "canvas"
+      ],
+      "initial": "✦"
     },
     {
       "id": "photopea",
